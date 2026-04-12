@@ -195,3 +195,44 @@ input[type="number"] {
     transform: translateX(10%);
   }
 }
+
+/* Shimmer effect for primary buttons */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  animation: shimmer 2.5s infinite;
+}
+
+.shimmer:hover::after {
+  animation-duration: 1.5s;
+}
+
+@keyframes shimmer {
+  to {
+    left: 100%;
+  }
+}
+
+/* Planet hover rotation */
+.planet-spin {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.planet-spin:hover {
+  transform: rotate(15deg) scale(1.1);
+}
+
+/* Toggle switch transition */
+.toggle-dot {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
