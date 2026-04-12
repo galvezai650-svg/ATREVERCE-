@@ -511,7 +511,7 @@ function DetailPanel({ item, type, onClose }: {
         )}
 
         {/* Missions */}
-        {p.missions && p.missions.length > 0 && (
+        {Array.isArray(p.missions) && p.missions.length > 0 && (
           <div className="px-6 pb-6">
             <h3 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
               <Rocket size={14} className="text-emerald-400" />
