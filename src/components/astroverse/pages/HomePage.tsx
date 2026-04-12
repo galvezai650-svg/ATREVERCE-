@@ -1,12 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Compass, FlaskConical, Crown, Search, Play, Sparkles,
-  ArrowRight, Bookmark, BookmarkCheck, RefreshCw,
+  ArrowRight, RefreshCw, Pause, Volume2, VolumeX, Maximize2,
 } from 'lucide-react'
-import { toast } from 'sonner'
 import { cardBase, staggerContainer, staggerItem } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
 
@@ -15,16 +14,25 @@ import CardGradientTop from '../shared/CardGradientTop'
 // ============================================================
 export default function HomePage({ userName, onNavigate }: { userName: string; onNavigate?: (page: string) => void }) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [bookmarks, setBookmarks] = useState<Set<string>>(new Set())
   const [factIndex, setFactIndex] = useState(0)
 
   const videos = [
-    { id: 'v1', title: 'El Sistema Solar: Un Viaje Increíble', desc: 'Explora los 8 planetas y sus características únicas', gradient: 'from-cyan-500/20 to-violet-500/20', duration: '12:34', color: '#00d4ff' },
-    { id: 'v2', title: 'Agujeros Negros: Misterios del Espacio', desc: 'Descubre qué hay dentro de un agujero negro', gradient: 'from-violet-500/20 to-pink-500/20', duration: '18:45', color: '#7c3aed' },
-    { id: 'v3', title: 'La Vía Láctea: Nuestra Galaxia', desc: 'Un recorrido por nuestra galaxia espiral', gradient: 'from-pink-500/20 to-amber-500/20', duration: '15:22', color: '#ec4899' },
-    { id: 'v4', title: 'Nebulosas: Fábricas de Estrellas', desc: 'Las cunas donde nacen las estrellas', gradient: 'from-amber-500/20 to-emerald-500/20', duration: '10:18', color: '#f59e0b' },
-    { id: 'v5', title: 'Marte: El Planeta Rojo', desc: 'Todo sobre el planeta que podría albergar vida', gradient: 'from-emerald-500/20 to-cyan-500/20', duration: '14:56', color: '#10b981' },
-    { id: 'v6', title: 'Eclipse Solar: Fenómeno Cósmico', desc: 'La ciencia detrás de los eclipses', gradient: 'from-cyan-500/20 to-pink-500/20', duration: '8:33', color: '#00d4ff' },
+    {
+      id: 'v1',
+      src: '/videos/video1.mp4',
+      title: 'Exploración Espacial',
+      desc: 'Mira la increíble inmensidad del universo y sus fenómenos más impresionantes',
+      gradient: 'from-cyan-500/30 to-violet-500/30',
+      color: '#00d4ff',
+    },
+    {
+      id: 'v2',
+      src: '/videos/video2.mp4',
+      title: 'El Cosmos en Movimiento',
+      desc: 'Viaja a través de galaxias, nebulosas y sistemas estelares',
+      gradient: 'from-violet-500/30 to-pink-500/30',
+      color: '#a855f7',
+    },
   ]
 
   const spaceFacts = [
@@ -37,26 +45,41 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
     'La estrella más grande conocida, UY Scuti, tiene un radio 1,700 veces mayor que el del Sol.',
   ]
 
-  const filteredVideos = searchQuery.trim()
-    ? videos.filter(v => v.title.toLowerCase().includes(searchQuery.toLowerCase()) || v.desc.toLowerCase().includes(searchQuery.toLowerCase()))
-    : videos
-
-  const toggleBookmark = (id: string) => {
-    setBookmarks(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-        toast.info('Eliminado de marcadores')
-      } else {
-        next.add(id)
-        toast.success('Añadido a marcadores')
-      }
-      return next
-    })
-  }
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
+  const [playing, setPlaying] = useState<Record<string, boolean>>({})
+  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true })
 
   const cycleFact = () => {
     setFactIndex(prev => (prev + 1) % spaceFacts.length)
+  }
+
+  const togglePlay = (id: string) => {
+    const video = videoRefs.current[id]
+    if (!video) return
+    if (video.paused) {
+      video.play().catch(() => {})
+      setPlaying(prev => ({ ...prev, [id]: true }))
+    } else {
+      video.pause()
+      setPlaying(prev => ({ ...prev, [id]: false }))
+    }
+  }
+
+  const toggleMute = (id: string) => {
+    const video = videoRefs.current[id]
+    if (!video) return
+    video.muted = !video.muted
+    setMuted(prev => ({ ...prev, [id]: video.muted }))
+  }
+
+  const toggleFullscreen = (id: string) => {
+    const video = videoRefs.current[id]
+    if (!video) return
+    if (document.fullscreenElement) {
+      document.exitFullscreen()
+    } else {
+      video.requestFullscreen()
+    }
   }
 
   return (
@@ -165,84 +188,108 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
         </div>
       </motion.div>
 
-      {/* Videos grid */}
+      {/* Videos Section */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-        <h2 className="text-xl font-bold text-white mb-4">Videos Destacados</h2>
-        <AnimatePresence mode="wait">
-          {filteredVideos.length === 0 ? (
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-xl font-bold text-white">Videos Destacados</h2>
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.2)', color: '#00d4ff' }}>
+            {videos.length} videos
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {videos.map((video, i) => (
             <motion.div
-              key="empty"
-              className="rounded-2xl p-12 text-center backdrop-blur-xl"
+              key={video.id}
+              className="rounded-2xl overflow-hidden relative group"
               style={cardBase}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.1 }}
+              onHoverStart={e => {
+                if (e.currentTarget) {
+                  e.currentTarget.style.borderColor = `${video.color}30`
+                  e.currentTarget.style.boxShadow = `0 0 30px ${video.color}10, 0 8px 32px rgba(0,0,0,0.4)`
+                }
+              }}
+              onHoverEnd={e => {
+                if (e.currentTarget) {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }
+              }}
             >
-              <Search size={40} className="mx-auto text-white/10 mb-4" />
-              <p className="text-white/40 text-lg font-medium">No se encontraron resultados</p>
-              <p className="text-white/20 text-sm mt-1">Intenta con otros términos de búsqueda</p>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="grid"
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-              variants={staggerContainer}
-              initial="initial"
-              animate="animate"
-            >
-              {filteredVideos.map((video, i) => (
-                <motion.div
-                  key={video.id}
-                  className="group cursor-pointer rounded-xl overflow-hidden backdrop-blur-xl relative"
-                  style={{
-                    ...cardBase,
-                  }}
-                  variants={staggerItem}
-                  whileHover={{ scale: 1.02 }}
-                  onHoverStart={e => {
-                    if (e.currentTarget) {
-                      e.currentTarget.style.borderColor = `${video.color}30`
-                      e.currentTarget.style.boxShadow = `0 0 25px ${video.color}10, 0 8px 32px rgba(0,0,0,0.3)`
-                    }
-                  }}
-                  onHoverEnd={e => {
-                    if (e.currentTarget) {
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
-                      e.currentTarget.style.boxShadow = 'none'
-                    }
-                  }}
-                  onClick={() => toast.info(`Reproduciendo: ${video.title}`)}
-                >
-                  <CardGradientTop color={`linear-gradient(90deg, ${video.color}, transparent)`} />
-                  {/* Thumbnail */}
-                  <div className={`relative h-40 bg-gradient-to-br ${video.gradient} flex items-center justify-center`}>
-                    <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/20 transition-all group-hover:scale-110">
-                      <Play size={20} className="text-white ml-0.5" />
-                    </div>
-                    <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded text-xs text-white/80 bg-black/40 backdrop-blur-sm">
-                      {video.duration}
-                    </div>
-                    {/* Bookmark button */}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleBookmark(video.id) }}
-                      className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-all duration-200 active:scale-90 hover:scale-110"
-                    >
-                      {bookmarks.has(video.id) ? (
-                        <BookmarkCheck size={16} className="text-amber-400" />
-                      ) : (
-                        <Bookmark size={16} className="text-white/50" />
-                      )}
-                    </button>
+              <CardGradientTop color={`linear-gradient(90deg, ${video.color}, transparent)`} />
+
+              {/* Video Player */}
+              <div className={`relative bg-gradient-to-br ${video.gradient}`}>
+                <video
+                  ref={el => { videoRefs.current[video.id] = el }}
+                  src={video.src}
+                  className="w-full aspect-video object-cover"
+                  playsInline
+                  preload="metadata"
+                  muted={muted[video.id] ?? true}
+                  loop
+                  poster={undefined}
+                  onPlay={() => setPlaying(prev => ({ ...prev, [video.id]: true }))}
+                  onPause={() => setPlaying(prev => ({ ...prev, [video.id]: false }))}
+                />
+
+                {/* Overlay controls */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-black/20" />
+                  {/* Play/Pause center */}
+                  <button
+                    onClick={() => togglePlay(video.id)}
+                    className="relative z-10 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center hover:bg-white/25 transition-all duration-200 hover:scale-110 active:scale-95"
+                  >
+                    {playing[video.id] ? (
+                      <Pause size={28} className="text-white" />
+                    ) : (
+                      <Play size={28} className="text-white ml-1" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Bottom controls bar */}
+                <div className="absolute bottom-0 left-0 right-0 p-3 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent">
+                  <button
+                    onClick={() => toggleMute(video.id)}
+                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all active:scale-90"
+                  >
+                    {muted[video.id] ? (
+                      <VolumeX size={14} className="text-white/70" />
+                    ) : (
+                      <Volume2 size={14} className="text-white/70" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => toggleFullscreen(video.id)}
+                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all active:scale-90"
+                  >
+                    <Maximize2 size={14} className="text-white/70" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h3 className="text-white font-semibold text-sm mb-1">{video.title}</h3>
+                    <p className="text-white/40 text-xs leading-relaxed">{video.desc}</p>
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-white text-sm font-semibold mb-1 group-hover:text-cyan-400 transition-colors">{video.title}</h3>
-                    <p className="text-white/40 text-xs">{video.desc}</p>
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+                    style={{ background: `${video.color}15` }}
+                  >
+                    <Play size={14} style={{ color: video.color }} className="ml-0.5" />
                   </div>
-                </motion.div>
-              ))}
+                </div>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          ))}
+        </div>
       </motion.div>
     </div>
   )
