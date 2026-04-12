@@ -692,8 +692,8 @@ function GravitySimulator() {
         ))}
       </div>
 
-      <div
-        ref={canvasRef as React.RefObject<HTMLDivElement>}
+      <canvas
+        ref={canvasRef}
         className="w-full h-48 rounded-xl overflow-hidden"
         style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.06)' }}
       />
