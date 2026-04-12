@@ -2,14 +2,14 @@
 
 import React, { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, Crown, User, MessageSquare, LogOut, X, Menu } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, Crown, User, BookOpen, LogOut, X, Menu } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
 import SimulatorsPage from './pages/SimulatorsPage'
 import PremiumPage from './pages/PremiumPage'
 import ProfilePage from './pages/ProfilePage'
-import AiChatPage from './pages/AiChatPage'
+import SpaceEncyclopediaPage from './pages/SpaceEncyclopediaPage'
 
 // ============================================================
 // Sidebar Navigation
@@ -21,7 +21,7 @@ const navItems = [
   { id: 'simulators', label: 'Simuladores', icon: FlaskConical },
   { id: 'premium', label: 'Premium', icon: Crown },
   { id: 'profile', label: 'Perfil', icon: User },
-  { id: 'ai-chat', label: 'Asistente IA', icon: MessageSquare },
+  { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
 ]
 
 function Sidebar({
@@ -176,7 +176,7 @@ export default function AstroVerseLayout({
       case 'simulators': return <SimulatorsPage />
       case 'premium': return <PremiumPage />
       case 'profile': return <ProfilePage userName={userName} userEmail={userEmail} />
-      case 'ai-chat': return <AiChatPage />
+      case 'encyclopedia': return <SpaceEncyclopediaPage />
       default: return <HomePage userName={userName} onNavigate={handleNavigate} />
     }
   }
