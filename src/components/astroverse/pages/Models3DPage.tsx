@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { cardBase, staggerContainer, staggerItem } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
 
-const NASA_SOLAR_SYSTEM_URL = 'https://eyes.nasa.gov/apps/solar-system/#/home?interactPrompt=true&surfaceMapTiling=true&hd=true&forceRestart=true&maxSessionTime=1&spout=true'
+const NASA_SOLAR_SYSTEM_URL = 'https://eyes.nasa.gov/apps/solar-system/#/home?interactPrompt=true&surfaceMapTiling=true&hd=true&maxSessionTime=100&spout=true'
 
 // ============================================================
 // Solar System Viewer — Fullscreen NASA Explorer
