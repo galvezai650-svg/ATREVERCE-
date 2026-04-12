@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
@@ -120,6 +120,73 @@ function Sidebar({
             )
           })}
         </nav>
+
+        {/* Luminous Donate USD Button */}
+        <div className="px-3 py-2">
+          <motion.button
+            onClick={() => { onNavigate('pro'); if (window.innerWidth < 1024) onToggleCollapse() }}
+            className={`w-full relative overflow-hidden rounded-xl transition-all duration-200 active:scale-[0.97] ${
+              collapsed ? 'h-11 flex items-center justify-center' : 'py-3'
+            }`}
+            style={{
+              background: 'linear-gradient(135deg, #f59e0b, #ec4899, #f59e0b)',
+              backgroundSize: '200% 200%',
+              boxShadow: '0 0 25px rgba(245,158,11,0.4), 0 0 50px rgba(236,72,153,0.2), 0 0 80px rgba(245,158,11,0.1)',
+              border: '1px solid rgba(245,158,11,0.4)',
+            }}
+            whileHover={{
+              scale: 1.03,
+              boxShadow: '0 0 40px rgba(245,158,11,0.6), 0 0 80px rgba(236,72,153,0.3), 0 0 120px rgba(245,158,11,0.15)',
+            }}
+            whileTap={{ scale: 0.97 }}
+          >
+            {/* Animated shimmer sweep */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0.25) 55%, transparent 70%)',
+              }}
+              animate={{ x: ['-200%', '200%'] }}
+              transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+            />
+            {/* Pulsing glow overlay */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 70%)',
+              }}
+              animate={{ opacity: [0.3, 0.7, 0.3] }}
+              transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+            />
+            <div className={`relative z-10 flex items-center ${collapsed ? '' : 'gap-2.5 px-3'}`}>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+                className="shrink-0"
+              >
+                <Heart size={18} className="text-white" fill="white" />
+              </motion.div>
+              {!collapsed && (
+                <>
+                  <span className="text-xs font-bold text-white tracking-wide">Donar</span>
+                  <span className="ml-auto text-[10px] font-black text-white/90 bg-white/20 px-2 py-0.5 rounded-md backdrop-blur-sm">USD</span>
+                </>
+              )}
+            </div>
+          </motion.button>
+
+          {!collapsed && (
+            <motion.div
+              className="flex items-center justify-center gap-1 mt-1.5"
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+            >
+              <Sparkles size={8} className="text-amber-400/40" />
+              <span className="text-[9px] text-amber-400/40 font-medium">Apoya nuestro proyecto</span>
+              <Sparkles size={8} className="text-amber-400/40" />
+            </motion.div>
+          )}
+        </div>
 
         {/* User section */}
         <div className="p-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
