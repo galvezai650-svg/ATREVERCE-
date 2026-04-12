@@ -21,8 +21,8 @@ const navItems = [
   { id: 'models3d', label: 'Modelos 3D', icon: Box },
   { id: 'simulators', label: 'Simuladores', icon: FlaskConical },
   { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
-  { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'PRO' },
-  { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap },
+  { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
+  { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
   { id: 'profile', label: 'Perfil', icon: User },
 ]
 
@@ -84,7 +84,9 @@ function Sidebar({
         <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
           {navItems.map(item => {
             const isActive = activePage === item.id
-            const isSpecial = item.id === 'aula' || item.id === 'pro'
+            const isAula = item.id === 'aula'
+            const isPro = item.id === 'pro'
+            const isSpecial = isAula || isPro
             return (
               <button
                 key={item.id}
@@ -95,7 +97,7 @@ function Sidebar({
                 style={{
                   background: isActive ? 'rgba(0,212,255,0.08)' : 'transparent',
                   borderLeft: isActive ? '2px solid #00d4ff' : '2px solid transparent',
-                  color: isActive ? '#00d4ff' : isSpecial ? 'rgba(16,185,129,0.7)' : 'rgba(255,255,255,0.4)',
+                  color: isActive ? '#00d4ff' : isAula ? 'rgba(16,185,129,0.7)' : isPro ? 'rgba(0,212,255,0.7)' : 'rgba(255,255,255,0.4)',
                   boxShadow: isActive ? '0 0 15px rgba(0,212,255,0.08)' : 'none',
                 }}
               >
@@ -104,7 +106,11 @@ function Sidebar({
                   <>
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.badge && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{
+                        background: item.id === 'aula' ? 'rgba(16,185,129,0.1)' : 'rgba(0,212,255,0.1)',
+                        color: item.id === 'aula' ? '#10b981' : '#00d4ff',
+                        border: item.id === 'aula' ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(0,212,255,0.2)',
+                      }}>
                         {item.badge}
                       </span>
                     )}

@@ -5,14 +5,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   GraduationCap, Users, BookOpen, Heart, ChevronDown,
   Gift, Check, Zap, Globe2, Rocket, Sparkles, Coffee,
-  Crown, Star, Shield, Monitor, School, Eye, Award, Video
+  Crown, Star, Shield, Monitor, School, Eye, Award, Video,
+  Lock, CreditCard
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cardBase } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
 
 // ============================================================
-// PremiumPage → ASTROVERSE PRO
+// PremiumPage → ASTROVERSE PRO  ($4.99/mes)
 // ============================================================
 export default function PremiumPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null)
@@ -26,32 +27,29 @@ export default function PremiumPage() {
     const next = !isPro
     setIsPro(next)
     localStorage.setItem('astroverse_pro', String(next))
-    toast.success(next ? '🎓 ¡Activado ASTROVERSE PRO!' : 'Plan Básico activado')
+    toast.success(next ? '🎓 ¡ASTROVERSE PRO Activado por $4.99/mes!' : 'Plan Básico activado')
   }
 
   const proFeatures = [
     { text: 'Panel de Profesor completo', icon: School },
-    { text: 'Aula Virtual con código de acceso', icon: Users },
-    { text: 'Asignar tareas y ver videos', icon: Video },
-    { text: 'Seguimiento en tiempo real', icon: Monitor },
-    { text: 'Simuladores para el aula', icon: Rocket },
-    { text: 'Modelos 3D del sistema solar', icon: Globe2 },
+    { text: 'Crear y gestionar Aulas Virtuales', icon: Users },
+    { text: 'Tareas en línea y videos asignados', icon: Video },
     { text: 'Calificaciones automáticas', icon: Award },
+    { text: 'Seguimiento de estudiantes en tiempo real', icon: Monitor },
+    { text: 'Sistema Solar verificado por NASA', icon: Eye },
     { text: 'Certificados para estudiantes', icon: Shield },
-    { text: 'Datos verificados por la NASA', icon: Eye },
-    { text: 'Contenido sin restricciones', icon: Star },
-    { text: 'Soporte prioritario', icon: Zap },
-    { text: 'Acceso anticipado a funciones', icon: Sparkles },
+    { text: 'Soporte prioritario 24/7', icon: Zap },
+    { text: 'Acceso anticipado a nuevas funciones', icon: Sparkles },
   ]
 
   const comparison = [
-    { feature: 'Simuladores básicos', basic: true, pro: true },
+    { feature: 'Simuladores interactivos', basic: true, pro: true },
     { feature: 'Enciclopedia Espacial', basic: true, pro: true },
     { feature: 'Videos educativos', basic: true, pro: true },
     { feature: 'Exploración del catálogo', basic: true, pro: true },
-    { feature: 'Modelos 3D interactivos', basic: false, pro: true },
+    { feature: 'Modelos 3D interactivos', basic: true, pro: true },
+    { feature: 'Crear Aulas Virtuales', basic: false, pro: true },
     { feature: 'Panel de Profesor', basic: false, pro: true },
-    { feature: 'Aula Virtual', basic: false, pro: true },
     { feature: 'Tareas en línea', basic: false, pro: true },
     { feature: 'Calificaciones automáticas', basic: false, pro: true },
     { feature: 'Seguimiento de estudiantes', basic: false, pro: true },
@@ -68,9 +66,10 @@ export default function PremiumPage() {
   ]
 
   const faqs = [
-    { q: '¿Qué es ASTROVERSE PRO?', a: 'Es la versión educativa avanzada con herramientas para profesores: aula virtual, tareas en línea, calificaciones, certificados y acceso a todo el contenido.' },
-    { q: '¿Cuánto cuesta?', a: 'Es completamente GRATUITO para profesores y estudiantes. Nuestra misión es democratizar la educación espacial en Latinoamérica.' },
-    { q: '¿Cómo funciona el Aula Virtual?', a: 'Creas un aula, compartes el código con tus estudiantes, y desde el panel de profesor puedes asignar tareas, ver quién está en línea, calificar y dar seguimiento en tiempo real.' },
+    { q: '¿Qué es ASTROVERSE PRO?', a: 'Es la versión avanzada con herramientas para profesores: crear aulas virtuales, asignar tareas, calificaciones automáticas, certificados y acceso a datos verificados por la NASA.' },
+    { q: '¿Cuánto cuesta?', a: '$4.99 USD al mes. Cancela cuando quieras. Sin contratos ni compromisos.' },
+    { q: '¿Qué incluye el plan básico?', a: 'Todo el contenido educativo: simuladores, enciclopedia, videos, modelos 3D y más. ¡Completamente gratis!' },
+    { q: '¿Puedo entrar a un aula sin PRO?', a: '¡Sí! Entrar a un aula es gratis. Solo necesitas PRO si quieres CREAR y gestionar aulas como profesor.' },
     { q: '¿Las donaciones son obligatorias?', a: 'No, son 100% voluntarias. Cada donación nos ayuda a mantener servidores, crear contenido y expandir la plataforma.' },
   ]
 
@@ -95,7 +94,7 @@ export default function PremiumPage() {
             EDUCATIVO
           </span>
         </div>
-        <p className="text-white/40">Para profesores y estudiantes · Herramientas educativas avanzadas</p>
+        <p className="text-white/40">Para profesores · Herramientas avanzadas a <span className="text-cyan-400 font-semibold">$4.99/mes</span></p>
       </motion.div>
 
       {/* Active PRO Banner */}
@@ -117,16 +116,19 @@ export default function PremiumPage() {
               <GraduationCap size={24} className="text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-bold text-white">ASTROVERSE PRO Activo</h2>
-              <p className="text-white/40 text-sm">Tienes acceso al panel de profesor, aula virtual y todas las funciones.</p>
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                ASTROVERSE PRO Activo
+                <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-400/15 text-cyan-400 border border-cyan-400/25">ACTIVO</span>
+              </h2>
+              <p className="text-white/40 text-sm">Suscripción activa a <span className="text-cyan-400 font-medium">$4.99/mes</span> · Acceso completo a todas las funciones.</p>
               <div className="flex flex-wrap gap-2 mt-2">
-                {['Aula Virtual', 'Tareas', 'Calificaciones', 'Certificados'].map(f => (
+                {['Aula Virtual', 'Tareas', 'Calificaciones', 'Certificados', 'NASA'].map(f => (
                   <span key={f} className="px-2 py-0.5 rounded text-[10px] font-semibold" style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.2)', color: '#00d4ff' }}>{f}</span>
                 ))}
               </div>
             </div>
-            <motion.button onClick={togglePro} className="px-4 py-2 rounded-lg text-xs text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} whileTap={{ scale: 0.95 }}>
-              Desactivar
+            <motion.button onClick={togglePro} className="px-4 py-2 rounded-lg text-xs text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}>
+              Cancelar Suscripción
             </motion.button>
           </div>
         </motion.div>
@@ -141,10 +143,10 @@ export default function PremiumPage() {
               <Star size={28} className="text-cyan-400" />
             </div>
             <h2 className="text-xl font-bold text-white mb-1">Básico</h2>
-            <p className="text-white/30 text-sm mb-4">Todo desbloqueado para explorar</p>
+            <p className="text-white/30 text-sm mb-4">Todo el contenido educativo gratis</p>
             <div className="mb-6">
               <span className="text-4xl font-black text-white">Gratis</span>
-              <span className="text-white/30 text-sm"> / siempre</span>
+              <span className="text-white/30 text-sm"> / para siempre</span>
             </div>
             {!isPro && (
               <div className="px-3 py-1.5 rounded-full text-[10px] font-bold inline-block mb-4" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#10b981' }}>
@@ -152,7 +154,7 @@ export default function PremiumPage() {
               </div>
             )}
             {isPro && (
-              <motion.button onClick={togglePro} className="w-full py-3 rounded-xl text-sm font-semibold mb-4 text-white/70" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }} whileHover={{ borderColor: 'rgba(255,255,255,0.2)' }} whileTap={{ scale: 0.98 }}>
+              <motion.button onClick={togglePro} className="w-full py-3 rounded-xl text-sm font-semibold mb-4 text-white/70" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }} whileHover={{ scale: 1.02, borderColor: 'rgba(255,255,255,0.2)' }} whileTap={{ scale: 0.98 }}>
                 Cambiar a Básico
               </motion.button>
             )}
@@ -162,9 +164,8 @@ export default function PremiumPage() {
               'Simuladores interactivos',
               'Enciclopedia Espacial completa',
               'Videos educativos',
-              'Catálogo de exploración',
+              'Exploración del catálogo',
               'Modelos 3D del sistema solar',
-              'Contenido actualizado',
             ].map((f, i) => (
               <div key={i} className="flex items-center gap-2.5">
                 <div className="w-5 h-5 rounded-md flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.1)' }}><Check size={12} className="text-emerald-400" /></div>
@@ -174,40 +175,59 @@ export default function PremiumPage() {
           </div>
         </motion.div>
 
-        {/* PRO Plan */}
+        {/* PRO Plan — $4.99/mes with shimmer border */}
         <motion.div className="rounded-2xl p-6 md:p-8 relative overflow-hidden" style={{ ...cardBase, border: '1px solid rgba(0,212,255,0.2)' }} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-          {/* Shimmer border */}
+          {/* Spinning conic-gradient shimmer border */}
           <div className="absolute inset-0 rounded-2xl pointer-events-none overflow-hidden">
-            <div className="absolute inset-[-200%] animate-[spin_6s_linear_infinite]" style={{ background: 'conic-gradient(from 0deg, rgba(0,212,255,0.15), transparent, rgba(16,185,129,0.15), transparent, rgba(0,212,255,0.15))' }} />
+            <div className="absolute inset-[-200%] animate-[spin_6s_linear_infinite]" style={{ background: 'conic-gradient(from 0deg, rgba(0,212,255,0.2), transparent, rgba(16,185,129,0.2), transparent, rgba(124,58,237,0.15), transparent, rgba(0,212,255,0.2))' }} />
             <div className="absolute inset-[1px] rounded-2xl" style={{ background: 'rgba(5,5,16,0.97)' }} />
+          </div>
+          {/* RECOMENDADO floating badge */}
+          <div className="absolute top-4 right-4 z-20">
+            <span className="px-3 py-1 rounded-full text-[9px] font-black tracking-wider" style={{
+              background: 'linear-gradient(135deg, #00d4ff, #10b981)',
+              color: 'white',
+              boxShadow: '0 0 20px rgba(0,212,255,0.4)',
+            }}>
+              ★ RECOMENDADO
+            </span>
           </div>
           <div className="text-center relative z-10">
             <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #00d4ff, #10b981)', boxShadow: '0 0 30px rgba(0,212,255,0.3)' }}>
-              <GraduationCap size={28} className="text-white" />
+              <Crown size={28} className="text-white" />
             </div>
             <h2 className="text-xl font-bold text-white mb-1 flex items-center justify-center gap-2">
               ASTROVERSE PRO
-              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-400/15 text-cyan-400 border border-cyan-400/25">GRATIS</span>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-400/15 text-cyan-400 border border-cyan-400/25">PAGO</span>
             </h2>
-            <p className="text-white/30 text-sm mb-4">Para profesores · Todo + Aula Virtual</p>
-            <div className="mb-6">
-              <span className="text-4xl font-black text-white">Gratis</span>
-              <span className="text-white/30 text-sm"> / para educación</span>
+            <p className="text-white/30 text-sm mb-4">Para profesores · Todo incluido + Aulas</p>
+            <div className="mb-2">
+              <span className="text-5xl font-black bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">$4.99</span>
             </div>
+            <p className="text-white/30 text-xs mb-6">USD / mes · Cancela cuando quieras</p>
             {isPro ? (
-              <div className="px-3 py-1.5 rounded-full text-[10px] font-bold inline-block mb-4" style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)', color: '#00d4ff' }}>
-                ACTIVO
+              <div className="space-y-3 mb-2">
+                <div className="px-4 py-2 rounded-full text-[11px] font-bold inline-flex items-center gap-2" style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)', color: '#00d4ff' }}>
+                  <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                    <Sparkles size={12} />
+                  </motion.span>
+                  ACTIVO — $4.99/mes
+                </div>
+                <motion.button onClick={togglePro} className="w-full py-2.5 rounded-xl text-xs font-medium text-white/40 flex items-center justify-center gap-1.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }} whileHover={{ scale: 1.01, borderColor: 'rgba(239,68,68,0.3)', color: 'rgba(239,68,68,0.7)' }} whileTap={{ scale: 0.98 }}>
+                  <Lock size={12} />
+                  Cancelar Suscripción
+                </motion.button>
               </div>
             ) : (
               <motion.button
                 onClick={togglePro}
                 className="w-full py-3.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 mb-4"
                 style={{ background: 'linear-gradient(135deg, #00d4ff, #10b981)', boxShadow: '0 0 30px rgba(0,212,255,0.3), 0 4px 15px rgba(0,0,0,0.3)' }}
-                whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(0,212,255,0.4), 0 4px 15px rgba(0,0,0,0.3)' }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.03, boxShadow: '0 0 45px rgba(0,212,255,0.45), 0 4px 15px rgba(0,0,0,0.3)' }}
+                whileTap={{ scale: 0.97 }}
               >
-                <GraduationCap size={16} />
-                Activar PRO Gratis
+                <CreditCard size={16} />
+                Obtener PRO — $4.99/mes
               </motion.button>
             )}
           </div>

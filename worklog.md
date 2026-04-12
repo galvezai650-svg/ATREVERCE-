@@ -111,3 +111,56 @@ Stage Summary:
 - **Button improvements**: Shimmer overlay on primary CTAs, active:scale-[0.98] press feedback, animated underline nav links, hover glow/scale on all buttons
 - **New functionality**: Search bar filters videos, video bookmarking, space fact cycling (7 facts), quick action nav buttons, explore detail modal with sort options, "Notificarme" email signup, planet detail panels with hover rotation, weight comparison table, gravity reset/launch buttons, age bar chart visualization, premium plan comparison table, profile toggle preferences with state, inline profile editing, activity history section, AI chat quick suggestion chips, floating back-to-top button, hero parallax, social media footer buttons
 - ESLint: 0 errors | Dev Server: Compiling successfully | Page: 200 OK
+
+---
+Task ID: 3-b
+Agent: fullstack-developer (PremiumPage)
+Task: Update PremiumPage.tsx with $4.99/month pricing
+
+Work Log:
+- Changed PRO plan price from Gratis to $4.99/mes
+- Updated comparison table with clear free vs paid features
+- Updated FAQ with new pricing information
+- Added "RECOMENDADO" badge to PRO card
+- Kept glowing donations section with illuminated buttons
+- Updated PRO active banner with price display
+
+Stage Summary:
+- PremiumPage now shows ASTROVERSE PRO at $4.99/month
+- Clear differentiation: Basic = free (all content), PRO = paid (teacher tools + create classrooms)
+- Glowing donation buttons preserved
+
+---
+Task ID: 3
+Agent: fullstack-developer (AulaPage)
+Task: Rewrite AulaPage.tsx with ENTRAR A AULA (free) and CREAR AULA (PRO only) sections
+
+Work Log:
+- Redesigned AulaPage with two main tabs: ENTRAR A AULA (free) and CREAR AULA (PRO)
+- ENTRAR A AULA: code input, join button, student dashboard with tasks and video player
+- CREAR AULA: PRO-gated with lock overlay, teacher dashboard with students/tasks/grades
+- Used localStorage check for PRO status
+- Maintained glassmorphism design system with cardBase and CardGradientTop
+- Added responsive layout with tabs on mobile
+
+Stage Summary:
+- Complete AulaPage with dual-mode classroom system
+- Free students can join via code, PRO teachers can create/manage classrooms
+- $4.99 PRO gating with clear upgrade prompts
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Update AstroVerseLayout.tsx nav badges and verify all pages
+
+Work Log:
+- Changed Aula Virtual nav badge from 'PRO' to 'FREE' (green badge)
+- Added '$4.99' badge to AstroVerse PRO nav item (cyan badge)
+- Split special nav styling: Aula = emerald, PRO = cyan
+- Ran lint: 0 errors
+- Verified dev server: GET / 200, compiling successfully
+
+Stage Summary:
+- Sidebar navigation now clearly differentiates FREE (Aula) vs PAID ($4.99 PRO)
+- Aula Virtual = FREE green badge, AstroVerse PRO = $4.99 cyan badge
+- ESLint: 0 errors | Dev Server: Compiling successfully | Page: 200 OK
