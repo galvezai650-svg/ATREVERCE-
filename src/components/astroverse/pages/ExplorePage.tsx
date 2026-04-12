@@ -10,7 +10,7 @@ import CardGradientTop from '../shared/CardGradientTop'
 // ============================================================
 // ExplorePage
 // ============================================================
-export default function ExplorePage({ isPremium, onUpgrade }: { isPremium?: boolean; onUpgrade?: () => void }) {
+export default function ExplorePage() {
   const categories = ['Todos', 'Planetas', 'Agujeros Negros', 'Galaxias', 'Nebulosas', 'Estrellas']
   const [activeCategory, setActiveCategory] = useState('Todos')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
