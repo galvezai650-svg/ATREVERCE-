@@ -12,7 +12,7 @@ import CardGradientTop from '../shared/CardGradientTop'
 // ============================================================
 // SimulatorsPage
 // ============================================================
-export default function SimulatorsPage() {
+export default function SimulatorsPage({ isPremium, onUpgrade }: { isPremium?: boolean; onUpgrade?: () => void }) {
   const [activeTab, setActiveTab] = useState(0)
 
   const tabs = [

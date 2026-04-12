@@ -4,17 +4,26 @@ import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Compass, FlaskConical, Crown, Search, Play, Sparkles,
-  ArrowRight, RefreshCw, Pause, Volume2, VolumeX, Maximize2,
+  ArrowRight, RefreshCw, Pause, Volume2, VolumeX, Maximize2, Lock,
 } from 'lucide-react'
 import { cardBase, staggerContainer, staggerItem } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
+import { UpgradeBanner, PlanBadge, PremiumLock } from '../shared/PremiumLock'
 
 // ============================================================
 // HomePage - Dashboard
 // ============================================================
-export default function HomePage({ userName, onNavigate }: { userName: string; onNavigate?: (page: string) => void }) {
+export default function HomePage({ userName, onNavigate, isPremium, onUpgrade }: { 
+  userName: string; 
+  onNavigate?: (page: string) => void
+  isPremium?: boolean
+  onUpgrade?: () => void
+}) {
   const [searchQuery, setSearchQuery] = useState('')
   const [factIndex, setFactIndex] = useState(0)
+
+  const premium = isPremium ?? false
+  const upgrade = onUpgrade ?? (() => {})
 
   const videos = [
     {
@@ -24,6 +33,7 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
       desc: 'Mira la increíble inmensidad del universo y sus fenómenos más impresionantes',
       gradient: 'from-cyan-500/30 to-violet-500/30',
       color: '#00d4ff',
+      locked: false,
     },
     {
       id: 'v2',
@@ -32,7 +42,17 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
       desc: 'Viaja a través de galaxias, nebulosas y sistemas estelares',
       gradient: 'from-violet-500/30 to-pink-500/30',
       color: '#a855f7',
+      locked: false,
     },
+    ...(premium ? [] : [{
+      id: 'v3',
+      src: '',
+      title: 'Agujeros Negros: Misterios del Espacio',
+      desc: 'Descubre qué hay dentro de un agujero negro y cómo se forman',
+      gradient: 'from-rose-500/20 to-amber-500/20',
+      color: '#f43f5e',
+      locked: true as const,
+    }]),
   ]
 
   const spaceFacts = [
@@ -41,7 +61,6 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
     'Si pudieras conducir un coche a la velocidad de la luz, tardarías 8 minutos y 19 segundos en llegar al Sol.',
     'Neptuno no ha completado ni una sola órbita desde que fue descubierto en 1846. Su año dura 165 años terrestres.',
     'Hay más estrellas en el universo que granos de arena en todas las playas de la Tierra. Se estima que hay 70 sextillones de estrellas.',
-    'El sonido viaja aproximadamente 4.3 veces más rápido en el agua que en el aire. En el espacio no hay sonido porque no hay medio para propagarse.',
     'La estrella más grande conocida, UY Scuti, tiene un radio 1,700 veces mayor que el del Sol.',
   ]
 
@@ -84,13 +103,24 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
 
   return (
     <div className="space-y-8">
-      {/* Welcome */}
+      {/* Welcome with plan badge */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          Hola, {userName} 👋
-        </h1>
-        <p className="text-white/40">Bienvenido de vuelta a AstroVerse. ¿Qué quieres explorar hoy?</p>
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
+            Hola, {userName} {premium ? '✦' : '👋'}
+          </h1>
+          <PlanBadge isPremium={premium} size="md" />
+        </div>
+        <p className="text-white/40">
+          {premium
+            ? 'Bienvenido de vuelta. Tienes acceso completo a todo el contenido.'
+            : 'Bienvenido a AstroVerse. Explora el espacio con tu plan Básico.'
+          }
+        </p>
       </motion.div>
+
+      {/* Upgrade banner for basic users */}
+      {!premium && <UpgradeBanner onUpgrade={upgrade} />}
 
       {/* Search bar */}
       <motion.div className="relative max-w-xl" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
@@ -113,33 +143,41 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
       {onNavigate && (
         <motion.div className="flex flex-wrap gap-3" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
           {[
-            { label: 'Explorar', icon: Compass, page: 'explore', color: '#00d4ff' },
-            { label: 'Simuladores', icon: FlaskConical, page: 'simulators', color: '#f59e0b' },
-            { label: 'Premium', icon: Crown, page: 'premium', color: '#ec4899' },
+            { label: 'Explorar', icon: Compass, page: 'explore', color: '#00d4ff', premium: false },
+            { label: 'Simuladores', icon: FlaskConical, page: 'simulators', color: '#f59e0b', premium: false },
+            { label: 'Modelos 3D', icon: Crown, page: 'models3d', color: '#ec4899', premium: true },
           ].map(btn => (
             <button
               key={btn.page}
-              onClick={() => onNavigate(btn.page)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+              onClick={() => {
+                if (btn.premium && !premium) {
+                  upgrade()
+                  return
+                }
+                onNavigate(btn.page)
+              }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] relative"
               style={{
-                background: `${btn.color}10`,
-                border: `1px solid ${btn.color}25`,
-                color: btn.color,
+                background: premium || !btn.premium ? `${btn.color}10` : 'rgba(255,255,255,0.03)',
+                border: premium || !btn.premium ? `1px solid ${btn.color}25` : '1px solid rgba(255,255,255,0.08)',
+                color: premium || !btn.premium ? btn.color : 'rgba(255,255,255,0.3)',
                 boxShadow: `0 0 0px ${btn.color}00`,
               }}
               onMouseEnter={e => {
                 if (e.currentTarget) {
-                  e.currentTarget.style.boxShadow = `0 0 20px ${btn.color}15`
-                  e.currentTarget.style.background = `${btn.color}18`
+                  const c = (premium || !btn.premium) ? btn.color : '#f59e0b'
+                  e.currentTarget.style.boxShadow = `0 0 20px ${c}15`
+                  e.currentTarget.style.background = `${c}18`
                 }
               }}
               onMouseLeave={e => {
                 if (e.currentTarget) {
-                  e.currentTarget.style.boxShadow = `0 0 0px ${btn.color}00`
-                  e.currentTarget.style.background = `${btn.color}10`
+                  e.currentTarget.style.boxShadow = 'none'
+                  e.currentTarget.style.background = (premium || !btn.premium) ? `${btn.color}10` : 'rgba(255,255,255,0.03)'
                 }
               }}
             >
+              {btn.premium && !premium && <Lock size={12} />}
               <btn.icon size={16} />
               {btn.label}
               <ArrowRight size={14} className="opacity-50" />
@@ -151,12 +189,15 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
       {/* Dato del día */}
       <motion.div
         className="rounded-2xl p-6 relative overflow-hidden backdrop-blur-xl"
-        style={cardBase}
+        style={{
+          ...cardBase,
+          borderColor: premium ? 'rgba(245,158,11,0.12)' : 'rgba(255,255,255,0.08)',
+        }}
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <CardGradientTop color="linear-gradient(90deg, #f59e0b, #f59e0b00)" />
+        <CardGradientTop color={premium ? 'linear-gradient(90deg, #f59e0b, #ec4899)' : 'linear-gradient(90deg, #f59e0b, #f59e0b00)'} />
         <div className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #f59e0b, transparent)', filter: 'blur(40px)' }} />
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(245,158,11,0.1)' }}>
@@ -193,15 +234,23 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
         <div className="flex items-center gap-3 mb-4">
           <h2 className="text-xl font-bold text-white">Videos Destacados</h2>
           <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.2)', color: '#00d4ff' }}>
-            {videos.length} videos
+            {videos.filter(v => !v.locked || premium).length} videos
           </span>
+          {!premium && (
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold ml-auto" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}>
+              +5 en Premium
+            </span>
+          )}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {videos.map((video, i) => (
             <motion.div
               key={video.id}
               className="rounded-2xl overflow-hidden relative group"
-              style={cardBase}
+              style={{
+                ...cardBase,
+                borderColor: premium ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.08)',
+              }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 + i * 0.1 }}
@@ -213,7 +262,7 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
               }}
               onHoverEnd={e => {
                 if (e.currentTarget) {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                  e.currentTarget.style.borderColor = premium ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.08)'
                   e.currentTarget.style.boxShadow = 'none'
                 }
               }}
@@ -222,54 +271,67 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
 
               {/* Video Player */}
               <div className={`relative bg-gradient-to-br ${video.gradient}`}>
-                <video
-                  ref={el => { videoRefs.current[video.id] = el }}
-                  src={video.src}
-                  className="w-full aspect-video object-cover"
-                  playsInline
-                  preload="metadata"
-                  muted={muted[video.id] ?? true}
-                  loop
-                  poster={undefined}
-                  onPlay={() => setPlaying(prev => ({ ...prev, [video.id]: true }))}
-                  onPause={() => setPlaying(prev => ({ ...prev, [video.id]: false }))}
-                />
+                {video.locked && !premium ? (
+                  // Locked video placeholder
+                  <PremiumLock
+                    onUpgrade={upgrade}
+                    label="Video Exclusivo"
+                    message="Desbloquea más videos con Premium"
+                  >
+                    <div className="w-full aspect-video flex items-center justify-center">
+                      <Lock size={32} className="text-white/10" />
+                    </div>
+                  </PremiumLock>
+                ) : (
+                  <>
+                    <video
+                      ref={el => { videoRefs.current[video.id] = el }}
+                      src={video.src}
+                      className="w-full aspect-video object-cover"
+                      playsInline
+                      preload="metadata"
+                      muted={muted[video.id] ?? true}
+                      loop
+                      onPlay={() => setPlaying(prev => ({ ...prev, [video.id]: true }))}
+                      onPause={() => setPlaying(prev => ({ ...prev, [video.id]: false }))}
+                    />
 
-                {/* Overlay controls */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute inset-0 bg-black/20" />
-                  {/* Play/Pause center */}
-                  <button
-                    onClick={() => togglePlay(video.id)}
-                    className="relative z-10 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center hover:bg-white/25 transition-all duration-200 hover:scale-110 active:scale-95"
-                  >
-                    {playing[video.id] ? (
-                      <Pause size={28} className="text-white" />
-                    ) : (
-                      <Play size={28} className="text-white ml-1" />
-                    )}
-                  </button>
-                </div>
+                    {/* Overlay controls */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute inset-0 bg-black/20" />
+                      <button
+                        onClick={() => togglePlay(video.id)}
+                        className="relative z-10 w-16 h-16 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center hover:bg-white/25 transition-all duration-200 hover:scale-110 active:scale-95"
+                      >
+                        {playing[video.id] ? (
+                          <Pause size={28} className="text-white" />
+                        ) : (
+                          <Play size={28} className="text-white ml-1" />
+                        )}
+                      </button>
+                    </div>
 
-                {/* Bottom controls bar */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent">
-                  <button
-                    onClick={() => toggleMute(video.id)}
-                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all active:scale-90"
-                  >
-                    {muted[video.id] ? (
-                      <VolumeX size={14} className="text-white/70" />
-                    ) : (
-                      <Volume2 size={14} className="text-white/70" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => toggleFullscreen(video.id)}
-                    className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all active:scale-90"
-                  >
-                    <Maximize2 size={14} className="text-white/70" />
-                  </button>
-                </div>
+                    {/* Bottom controls bar */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 flex items-center justify-between bg-gradient-to-t from-black/60 to-transparent">
+                      <button
+                        onClick={() => toggleMute(video.id)}
+                        className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all active:scale-90"
+                      >
+                        {muted[video.id] ? (
+                          <VolumeX size={14} className="text-white/70" />
+                        ) : (
+                          <Volume2 size={14} className="text-white/70" />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => toggleFullscreen(video.id)}
+                        className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all active:scale-90"
+                      >
+                        <Maximize2 size={14} className="text-white/70" />
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Info */}
@@ -283,7 +345,11 @@ export default function HomePage({ userName, onNavigate }: { userName: string; o
                     className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
                     style={{ background: `${video.color}15` }}
                   >
-                    <Play size={14} style={{ color: video.color }} className="ml-0.5" />
+                    {video.locked && !premium ? (
+                      <Lock size={14} style={{ color: video.color }} />
+                    ) : (
+                      <Play size={14} style={{ color: video.color }} className="ml-0.5" />
+                    )}
                   </div>
                 </div>
               </div>

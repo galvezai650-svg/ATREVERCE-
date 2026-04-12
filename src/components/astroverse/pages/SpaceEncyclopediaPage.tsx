@@ -571,7 +571,7 @@ import { BarChart3, Sparkles } from 'lucide-react'
 // ============================================================
 // Main Page
 // ============================================================
-export default function SpaceEncyclopediaPage() {
+export default function SpaceEncyclopediaPage({ isPremium }: { isPremium?: boolean }) {
   const [activeTab, setActiveTab] = useState<'planets' | 'rockets' | 'satellites'>('planets')
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [selectedType, setSelectedType] = useState<'planet' | 'rocket' | 'satellite'>('planet')

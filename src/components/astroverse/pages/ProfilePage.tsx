@@ -13,7 +13,7 @@ import CardGradientTop from '../shared/CardGradientTop'
 // ============================================================
 // ProfilePage
 // ============================================================
-export default function ProfilePage({ userName, userEmail }: { userName: string; userEmail: string }) {
+export default function ProfilePage({ userName, userEmail, isPremium }: { userName: string; userEmail: string; isPremium?: boolean }) {
   const [prefs, setPrefs] = useState({ email: true, darkMode: true, animations: true })
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState(userName)
@@ -136,10 +136,15 @@ export default function ProfilePage({ userName, userEmail }: { userName: string;
           {/* Premium badge */}
           <div
             className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
-            style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#f59e0b' }}
+            style={{
+              background: isPremium ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.05)',
+              border: isPremium ? '1px solid rgba(245,158,11,0.3)' : '1px solid rgba(255,255,255,0.1)',
+              color: isPremium ? '#f59e0b' : 'rgba(255,255,255,0.4)',
+              boxShadow: isPremium ? '0 0 12px rgba(245,158,11,0.15)' : 'none',
+            }}
           >
             <Crown size={12} />
-            Free Plan
+            {isPremium ? 'Plan Premium' : 'Plan Básico'}
           </div>
         </motion.div>
 
