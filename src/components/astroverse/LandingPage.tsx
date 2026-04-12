@@ -456,7 +456,9 @@ function FeatureCard({ icon: Icon, title, description, color, sectionId }: {
         className="absolute inset-0 rounded-2xl pointer-events-none transition-shadow duration-500"
         style={{ boxShadow: 'none' }}
         onMouseEnter={e => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow = c.shadow
+          if (e.currentTarget) {
+            (e.currentTarget as HTMLDivElement).style.boxShadow = c.shadow
+          }
         }}
       />
 
@@ -741,12 +743,16 @@ function LandingNavbar({
             whileTap={{ scale: 0.98 }}
             style={{ border: '1px solid rgba(255,255,255,0.1)' }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(0,212,255,0.4)'
-              (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 15px rgba(0,212,255,0.15)'
+              if (e.currentTarget) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(0,212,255,0.4)'
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 15px rgba(0,212,255,0.15)'
+              }
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.1)'
-              (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none'
+              if (e.currentTarget) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.1)'
+                (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none'
+              }
             }}
           >
             Iniciar Sesión

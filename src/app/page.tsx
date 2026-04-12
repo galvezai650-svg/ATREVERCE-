@@ -1,13 +1,30 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Orbit } from 'lucide-react'
 import LandingPage from '@/components/astroverse/LandingPage'
 import AuthModal from '@/components/astroverse/AuthModal'
 import AstroVerseLayout from '@/components/astroverse/AstroVerseLayout'
 
-type AppView = 'loading' | 'landing' | 'transitioning' | 'app'
+type AppView = 'loading' | 'landing' | 'app'
+
+const STORAGE_KEY = 'astroverse_user'
+
+function getStoredUser(): { name: string; email: string } | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (parsed && typeof parsed.name === 'string' && typeof parsed.email === 'string') {
+      return parsed
+    }
+    return null
+  } catch {
+    return null
+  }
+}
 
 export default function Home() {
   const [view, setView] = useState<AppView>('loading')
@@ -15,9 +32,17 @@ export default function Home() {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
 
-  // Initial loading screen
+  // On mount: check for stored session
   useEffect(() => {
-    const timer = setTimeout(() => setView('landing'), 1500)
+    const stored = getStoredUser()
+    const timer = setTimeout(() => {
+      if (stored) {
+        setUser(stored)
+        setView('app')
+      } else {
+        setView('landing')
+      }
+    }, 1500)
     return () => clearTimeout(timer)
   }, [])
 
@@ -33,13 +58,14 @@ export default function Home() {
 
   const handleAuthSuccess = (data: { name: string; email: string }) => {
     setUser(data)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
     setShowAuth(false)
-    // Instant transition: go directly to app, skip the slow AnimatePresence exit
     setView('app')
   }
 
   const handleLogout = () => {
     setUser(null)
+    localStorage.removeItem(STORAGE_KEY)
     setView('landing')
   }
 
