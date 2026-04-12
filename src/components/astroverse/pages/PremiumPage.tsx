@@ -3,8 +3,8 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  GraduationCap, Users, BookOpen, Heart, ChevronDown,
-  Gift, Check, Zap, Globe2, Rocket, Sparkles, Coffee,
+  GraduationCap, Users, BookOpen, ChevronDown,
+  Check, Zap, Rocket, Sparkles,
   Crown, Star, Shield, Monitor, School, Eye, Award, Video,
   Lock, CreditCard
 } from 'lucide-react'
@@ -17,7 +17,6 @@ import CardGradientTop from '../shared/CardGradientTop'
 // ============================================================
 export default function PremiumPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null)
-  const [selectedDonation, setSelectedDonation] = useState<number | null>(null)
   const [isPro, setIsPro] = useState(() => {
     if (typeof window !== 'undefined') return localStorage.getItem('astroverse_pro') === 'true'
     return false
@@ -58,25 +57,12 @@ export default function PremiumPage() {
     { feature: 'Soporte prioritario', basic: false, pro: true },
   ]
 
-  const donations = [
-    { amount: 5000, label: '$5.000', desc: 'Una estrella', emoji: '☄️', glow: 'rgba(245,158,11,0.3)' },
-    { amount: 10000, label: '$10.000', desc: 'Un cohete', emoji: '🚀', glow: 'rgba(0,212,255,0.3)' },
-    { amount: 25000, label: '$25.000', desc: 'Una galaxia', emoji: '🌌', glow: 'rgba(124,58,237,0.3)' },
-    { amount: 50000, label: '$50.000', desc: 'Un universo', emoji: '✨', glow: 'rgba(16,185,129,0.3)' },
-  ]
-
   const faqs = [
     { q: '¿Qué es ASTROVERSE PRO?', a: 'Es la versión avanzada con herramientas para profesores: crear aulas virtuales, asignar tareas, calificaciones automáticas, certificados y acceso a datos verificados por la NASA.' },
     { q: '¿Cuánto cuesta?', a: '$4.99 USD al mes. Cancela cuando quieras. Sin contratos ni compromisos.' },
     { q: '¿Qué incluye el plan básico?', a: 'Todo el contenido educativo: simuladores, enciclopedia, videos, modelos 3D y más. ¡Completamente gratis!' },
     { q: '¿Puedo entrar a un aula sin PRO?', a: '¡Sí! Entrar a un aula es gratis. Solo necesitas PRO si quieres CREAR y gestionar aulas como profesor.' },
-    { q: '¿Las donaciones son obligatorias?', a: 'No, son 100% voluntarias. Cada donación nos ayuda a mantener servidores, crear contenido y expandir la plataforma.' },
   ]
-
-  const handleDonate = (amount: number) => {
-    setSelectedDonation(amount)
-    toast.success(`¡Gracias! Donación de $${amount.toLocaleString()} COP registrada ❤️`)
-  }
 
   return (
     <div className="space-y-8">
@@ -259,123 +245,6 @@ export default function PremiumPage() {
               <div className="text-center"><Check size={16} className="text-cyan-400 mx-auto" /></div>
             </div>
           ))}
-        </div>
-      </motion.div>
-
-      {/* Donations Section with GLOWING buttons */}
-      <motion.div className="rounded-2xl relative overflow-hidden" style={cardBase} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-        <CardGradientTop color="linear-gradient(90deg, #f59e0b, #ec4899, #7c3aed, transparent)" />
-        <div className="p-6 md:p-8">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{
-              background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(236,72,153,0.2))',
-              border: '1px solid rgba(245,158,11,0.3)',
-              boxShadow: '0 0 25px rgba(245,158,11,0.15)',
-            }}>
-              <Heart size={24} className="text-amber-400" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                Apoya AstroVerse
-                <Coffee size={18} className="text-amber-400" />
-              </h2>
-              <p className="text-white/40 text-sm mt-1">AstroVerse es 100% gratuito. Tu donación nos ayuda a mantener servidores, crear contenido y expandir la plataforma para estudiantes de toda Latinoamérica.</p>
-            </div>
-          </div>
-
-          {/* Glowing donation cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {donations.map((d, i) => (
-              <motion.button
-                key={d.amount}
-                onClick={() => handleDonate(d.amount)}
-                className="rounded-2xl p-5 text-center relative overflow-hidden group"
-                style={{
-                  background: selectedDonation === d.amount ? `${d.glow.replace('0.3', '0.15')}` : 'rgba(255,255,255,0.02)',
-                  border: `1px solid ${selectedDonation === d.amount ? d.glow : 'rgba(255,255,255,0.06)'}`,
-                  boxShadow: selectedDonation === d.amount ? `0 0 30px ${d.glow}, 0 0 60px ${d.glow.replace('0.3', '0.1')}` : 'none',
-                  transition: 'box-shadow 0.4s ease',
-                }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: `0 0 35px ${d.glow}, 0 0 70px ${d.glow.replace('0.3', '0.15')}`,
-                  borderColor: d.glow,
-                }}
-                whileTap={{ scale: 0.97 }}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.08 }}
-              >
-                {/* Glow pulse background */}
-                <motion.div
-                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: `radial-gradient(circle at 50% 50%, ${d.glow.replace('0.3', '0.08')}, transparent 70%)`,
-                  }}
-                />
-                <div className="relative z-10">
-                  <motion.span
-                    className="text-3xl block mb-2"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                  >
-                    {d.emoji}
-                  </motion.span>
-                  <p className="text-white font-black text-lg">{d.label}</p>
-                  <p className="text-white/25 text-[10px] mt-0.5">COP · {d.desc}</p>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Custom amount + donate button */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-4">
-            <div className="flex-1 relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-medium">$</span>
-              <input
-                type="number"
-                placeholder="Otro monto (COP)"
-                className="w-full pl-8 pr-4 py-3.5 rounded-xl text-white text-sm focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all duration-200"
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
-              />
-            </div>
-            {/* ILLUMINATED Donate Button */}
-            <motion.button
-              onClick={() => toast.success('¡Gracias por apoyar AstroVerse! El proceso de pago estará disponible pronto. ❤️')}
-              className="px-8 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 shrink-0 relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, #f59e0b, #ec4899)',
-                boxShadow: '0 0 30px rgba(245,158,11,0.3), 0 0 60px rgba(236,72,153,0.15), 0 4px 15px rgba(0,0,0,0.3)',
-                color: 'white',
-              }}
-              whileHover={{
-                scale: 1.03,
-                boxShadow: '0 0 50px rgba(245,158,11,0.5), 0 0 100px rgba(236,72,153,0.25), 0 4px 15px rgba(0,0,0,0.3)',
-              }}
-              whileTap={{ scale: 0.97 }}
-            >
-              {/* Shimmer sweep */}
-              <motion.div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.2) 55%, transparent 60%)',
-                }}
-                animate={{ x: ['-200%', '200%'] }}
-                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-              />
-              <Gift size={16} className="relative z-10" />
-              <span className="relative z-10">Donar Ahora</span>
-              <Heart size={14} className="relative z-10" />
-            </motion.button>
-          </div>
-
-          {/* Impact message */}
-          <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(245,158,11,0.03)', border: '1px solid rgba(245,158,11,0.1)' }}>
-            <p className="text-white/30 text-xs leading-relaxed">
-              💡 Con <span className="text-amber-400 font-bold">$10.000 COP</span> ayudás a un estudiante a explorar el universo durante un mes.
-              Cada donación, por pequeña que sea, marca la diferencia. 🌟
-            </p>
-          </div>
         </div>
       </motion.div>
 

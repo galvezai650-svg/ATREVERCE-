@@ -11,6 +11,7 @@ import PremiumPage from './pages/PremiumPage'
 import ProfilePage from './pages/ProfilePage'
 import SpaceEncyclopediaPage from './pages/SpaceEncyclopediaPage'
 import AulaPage from './pages/AulaPage'
+import DonacionesPage from './pages/DonacionesPage'
 
 // ============================================================
 // Sidebar Navigation
@@ -23,6 +24,7 @@ const navItems = [
   { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
   { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
+  { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
   { id: 'profile', label: 'Perfil', icon: User },
 ]
 
@@ -86,7 +88,8 @@ function Sidebar({
             const isActive = activePage === item.id
             const isAula = item.id === 'aula'
             const isPro = item.id === 'pro'
-            const isSpecial = isAula || isPro
+            const isDonacion = item.id === 'donaciones'
+            const isSpecial = isAula || isPro || isDonacion
             return (
               <button
                 key={item.id}
@@ -97,7 +100,7 @@ function Sidebar({
                 style={{
                   background: isActive ? 'rgba(0,212,255,0.08)' : 'transparent',
                   borderLeft: isActive ? '2px solid #00d4ff' : '2px solid transparent',
-                  color: isActive ? '#00d4ff' : isAula ? 'rgba(16,185,129,0.7)' : isPro ? 'rgba(0,212,255,0.7)' : 'rgba(255,255,255,0.4)',
+                  color: isActive ? '#00d4ff' : isAula ? 'rgba(16,185,129,0.7)' : isPro ? 'rgba(0,212,255,0.7)' : isDonacion ? 'rgba(245,158,11,0.7)' : 'rgba(255,255,255,0.4)',
                   boxShadow: isActive ? '0 0 15px rgba(0,212,255,0.08)' : 'none',
                 }}
               >
@@ -107,9 +110,9 @@ function Sidebar({
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.badge && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{
-                        background: item.id === 'aula' ? 'rgba(16,185,129,0.1)' : 'rgba(0,212,255,0.1)',
-                        color: item.id === 'aula' ? '#10b981' : '#00d4ff',
-                        border: item.id === 'aula' ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(0,212,255,0.2)',
+                        background: item.id === 'aula' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : 'rgba(0,212,255,0.1)',
+                        color: item.id === 'aula' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : '#00d4ff',
+                        border: item.id === 'aula' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(0,212,255,0.2)',
                       }}>
                         {item.badge}
                       </span>
@@ -124,7 +127,7 @@ function Sidebar({
         {/* Luminous Donate USD Button */}
         <div className="px-3 py-2">
           <motion.button
-            onClick={() => { onNavigate('pro'); if (window.innerWidth < 1024) onToggleCollapse() }}
+            onClick={() => { onNavigate('donaciones'); if (window.innerWidth < 1024) onToggleCollapse() }}
             className={`w-full relative overflow-hidden rounded-xl transition-all duration-200 active:scale-[0.97] ${
               collapsed ? 'h-11 flex items-center justify-center' : 'py-3'
             }`}
@@ -243,6 +246,7 @@ export default function AstroVerseLayout({
       case 'simulators': return <SimulatorsPage />
       case 'pro': return <PremiumPage />
       case 'aula': return <AulaPage />
+      case 'donaciones': return <DonacionesPage />
       case 'profile': return <ProfilePage userName={userName} userEmail={userEmail} />
       case 'encyclopedia': return <SpaceEncyclopediaPage />
       default: return <HomePage userName={userName} onNavigate={handleNavigate} />
