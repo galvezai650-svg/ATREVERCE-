@@ -7,16 +7,17 @@ import LandingPage from '@/components/astroverse/LandingPage'
 import AuthModal from '@/components/astroverse/AuthModal'
 import AstroVerseLayout from '@/components/astroverse/AstroVerseLayout'
 
+type AppView = 'loading' | 'landing' | 'transitioning' | 'app'
+
 export default function Home() {
-  const [entered, setEntered] = useState(false)
+  const [view, setView] = useState<AppView>('loading')
   const [showAuth, setShowAuth] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
-  const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
 
-  // Simulate initial loading
+  // Initial loading screen
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500)
+    const timer = setTimeout(() => setView('landing'), 1500)
     return () => clearTimeout(timer)
   }, [])
 
@@ -33,16 +34,17 @@ export default function Home() {
   const handleAuthSuccess = (data: { name: string; email: string }) => {
     setUser(data)
     setShowAuth(false)
-    setEntered(true)
+    // Instant transition: go directly to app, skip the slow AnimatePresence exit
+    setView('app')
   }
 
   const handleLogout = () => {
     setUser(null)
-    setEntered(false)
+    setView('landing')
   }
 
   // Loading screen
-  if (loading) {
+  if (view === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#050510' }}>
         <div className="flex flex-col items-center gap-6">
@@ -72,33 +74,28 @@ export default function Home() {
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        {!entered ? (
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <LandingPage onLogin={handleLogin} onRegister={handleRegister} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="app"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <AstroVerseLayout
-              userName={user?.name || 'Explorador'}
-              userEmail={user?.email || 'explorador@astroverse.com'}
-              onLogout={handleLogout}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Landing Page */}
+      {view === 'landing' && (
+        <LandingPage onLogin={handleLogin} onRegister={handleRegister} />
+      )}
 
+      {/* App */}
+      {view === 'app' && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          style={{ backgroundColor: '#050510' }}
+        >
+          <AstroVerseLayout
+            userName={user?.name || 'Explorador'}
+            userEmail={user?.email || 'explorador@astroverse.com'}
+            onLogout={handleLogout}
+          />
+        </motion.div>
+      )}
+
+      {/* Auth Modal */}
       <AuthModal
         isOpen={showAuth}
         onClose={() => setShowAuth(false)}
