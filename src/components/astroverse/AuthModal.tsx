@@ -24,6 +24,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
   const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [forgotForm, setForgotForm] = useState({ email: '', code: '', newPassword: '', confirmPassword: '' })
   const [codeSent, setCodeSent] = useState(false)
+  const [generatedCode, setGeneratedCode] = useState('')
 
   const resetState = () => { setError(''); setSuccess(''); setCodeSent(false) }
 
@@ -103,8 +104,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
           body: JSON.stringify({ email: forgotForm.email }),
         })
         if (res.ok) {
+          const data = await res.json()
           setCodeSent(true)
-          setSuccess('Código de recuperación enviado a tu email')
+          if (data.code) {
+            setGeneratedCode(data.code)
+            setSuccess('¡Código generado! Cópialo abajo.')
+          } else {
+            setSuccess('Si el email existe, se generó un código')
+          }
         }
       } catch { setError('Error al enviar código') }
       setLoading(false)
@@ -345,10 +352,31 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
                       <button type="submit" disabled={loading}
                         className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                         style={{ background: 'linear-gradient(to right, #f59e0b, #ef4444)', boxShadow: '0 0 20px rgba(245,158,11,0.2)' }}>
-                        {loading ? <><Loader2 size={16} className="animate-spin" /> Enviando...</> : <><KeyRound size={16} /> Enviar Código</>}
+                        {loading ? <><Loader2 size={16} className="animate-spin" /> Enviando...</> : <><KeyRound size={16} /> Generar Código</>}
                       </button>
                     ) : (
                       <>
+                        {/* Generated Code Display */}
+                        {generatedCode && (
+                          <motion.div
+                            className="rounded-xl p-4 text-center"
+                            style={{ background: 'rgba(0,212,255,0.06)', border: '1px solid rgba(0,212,255,0.15)' }}
+                            initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                          >
+                            <p className="text-[10px] text-cyan-400/60 uppercase tracking-wider mb-1">Tu código de recuperación</p>
+                            <p className="text-3xl font-mono font-bold tracking-[0.3em] text-cyan-400" style={{ textShadow: '0 0 20px rgba(0,212,255,0.5)' }}>
+                              {generatedCode}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => { navigator.clipboard.writeText(generatedCode) }}
+                              className="mt-2 text-[10px] text-white/30 hover:text-cyan-400 transition-all"
+                            >
+                              📋 Copiar código
+                            </button>
+                            <p className="text-[9px] text-white/15 mt-1">Válido por 1 hora</p>
+                          </motion.div>
+                        )}
                         <div>
                           <label className="text-white/40 text-xs mb-1.5 block">Código de Verificación</label>
                           <div className="relative">

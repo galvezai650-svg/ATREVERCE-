@@ -26,12 +26,21 @@ export async function POST(request: NextRequest) {
           resetTokenExpiry,
         },
       })
+
+      // Return the code directly (in production, send via email service like Resend/SendGrid)
+      return NextResponse.json({
+        success: true,
+        message: 'Código generado exitosamente',
+        code: code,
+        expiresIn: '1 hora',
+        note: 'En producción este código se enviaría por email. Actualmente se muestra en pantalla para pruebas.',
+      })
     }
 
-    // Always return success (security best practice - don't reveal if email exists)
+    // User not found - still return success for security (don't reveal if email exists)
     return NextResponse.json({
       success: true,
-      message: 'Código enviado a tu email',
+      message: 'Si el email existe, se generó un código',
     })
   } catch (error) {
     console.error('Forgot password error:', error)
