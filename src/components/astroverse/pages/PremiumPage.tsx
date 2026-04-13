@@ -48,10 +48,9 @@ export default function PremiumPage() {
         if (cancelled) return
         const data = await res.json()
         if (cancelled) return
-        if (data.isPremium) {
-          setIsPro(true)
-          localStorage.setItem('astroverse_pro', 'true')
-        }
+        // Always sync with server — the server is the source of truth
+        setIsPro(data.isPremium)
+        localStorage.setItem('astroverse_pro', String(data.isPremium))
       } catch { /* ignore */ }
     }
     check()
