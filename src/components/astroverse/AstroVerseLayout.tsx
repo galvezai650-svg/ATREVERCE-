@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award, Shield } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
@@ -330,6 +330,16 @@ function Sidebar({
               </div>
             </div>
           )}
+          <button
+            onClick={() => window.location.href = '/admin'}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/25 hover:text-white/60 hover:bg-white/[0.04] transition-all duration-200 active:scale-[0.98] ${
+              collapsed ? 'justify-center' : ''
+            }`}
+            title="Panel de Administración"
+          >
+            <Shield size={18} className="shrink-0" />
+            {!collapsed && <span>Admin</span>}
+          </button>
           <button
             onClick={onLogout}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400/60 hover:text-red-400 hover:bg-red-400/10 hover:shadow-[0_0_15px_rgba(239,68,68,0.1)] transition-all duration-200 active:scale-[0.98] ${
