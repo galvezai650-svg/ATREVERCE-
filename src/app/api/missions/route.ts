@@ -2,16 +2,26 @@ import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
 const ALL_MISSIONS = [
-  { missionId: 'm1', title: 'Observa el cielo nocturno', description: 'Toma una foto del cielo nocturno y compártela', xp: 50 },
-  { missionId: 'm2', title: 'Completa un quiz astronómico', description: 'Termina un cuestionario sobre el espacio', xp: 100 },
-  { missionId: 'm3', title: 'Explora un planeta', description: 'Visita la página de cualquier planeta y léela completa', xp: 30 },
-  { missionId: 'm4', title: 'Usa el simulador de peso', description: 'Calcula tu peso en al menos 3 planetas diferentes', xp: 40 },
-  { missionId: 'm5', title: 'Comparte en la comunidad', description: 'Publica algo en la sección de comunidad', xp: 60 },
-  { missionId: 'm6', title: 'Aprende sobre una constelación', description: 'Investiga y comparte un dato sobre una constelación', xp: 45 },
-  { missionId: 'm7', title: 'Simulador de gravedad', description: 'Lanza un objeto en el simulador de gravedad', xp: 35 },
-  { missionId: 'm8', title: 'Lee el dato astronómico', description: 'Lee el dato astronómico del día', xp: 20 },
-  { missionId: 'm9', title: 'Visita el modelo 3D', description: 'Explora la sección de modelos 3D', xp: 30 },
-  { missionId: 'm10', title: 'Maestro del universo', description: 'Obtén una puntuación perfecta en cualquier quiz', xp: 150 },
+  { missionId: 'm1', title: 'Observa el cielo nocturno', description: 'Toma una foto del cielo nocturno y compártela', xp: 50, fact: 'La Vía Láctea contiene entre 100-400 mil millones de estrellas.' },
+  { missionId: 'm2', title: 'Completa un quiz astronómico', description: 'Termina un cuestionario sobre el espacio', xp: 100, fact: 'El Telescopio Hubble ha tomado más de 1.5 millones de observaciones desde 1990.' },
+  { missionId: 'm3', title: 'Explora un planeta', description: 'Visita la página de cualquier planeta y léela completa', xp: 25, fact: 'El Monte Olimpo en Marte es casi 3 veces más alto que el Everest.' },
+  { missionId: 'm4', title: 'Usa el simulador de peso', description: 'Calcula tu peso en al menos 3 planetas diferentes', xp: 50, fact: 'Júpiter tiene el día más corto de todos los planetas: solo 10 horas.' },
+  { missionId: 'm5', title: 'Comparte en la comunidad', description: 'Publica algo en la sección de comunidad', xp: 75, fact: 'La ISS orbita la Tierra a 28,000 km/h, completando 16 órbitas por día.' },
+  { missionId: 'm6', title: 'Aprende sobre una constelación', description: 'Investiga y comparte un dato sobre una constelación', xp: 50, fact: 'Hay más estrellas en el universo que granos de arena en todas las playas de la Tierra.' },
+  { missionId: 'm7', title: 'Simulador de gravedad', description: 'Lanza un objeto en el simulador de gravedad', xp: 25, fact: 'Saturno es tan poco denso que flotaría si encontraras una bañera lo suficientemente grande.' },
+  { missionId: 'm8', title: 'Lee el dato astronómico', description: 'Lee el dato astronómico del día', xp: 25, fact: 'Neptuno tarda 165 años en dar una vuelta alrededor del Sol.' },
+  { missionId: 'm9', title: 'Visita el modelo 3D', description: 'Explora la sección de modelos 3D', xp: 25, fact: 'Los astronautas crecen hasta 5 cm más en el espacio debido a la falta de gravedad.' },
+  { missionId: 'm10', title: 'Maestro del universo', description: 'Obtén una puntuación perfecta en cualquier quiz', xp: 150, fact: 'El agujero negro más grande conocido tiene 66 mil millones de veces la masa del Sol.' },
+  { missionId: 'night_sky', title: 'Cielo Nocturno', description: 'Mira el cielo nocturno esta noche', xp: 50, fact: 'La Vía Láctea contiene entre 100-400 mil millones de estrellas.' },
+  { missionId: 'photo_gallery', title: 'Galería NASA', description: 'Explora 3 fotos de la Galería NASA', xp: 75, fact: 'El Telescopio Hubble ha tomado más de 1.5 millones de observaciones desde 1990.' },
+  { missionId: 'moon_phases', title: 'Fase Lunar', description: 'Aprende sobre la Luna', xp: 50, fact: 'La Luna se aleja de la Tierra 3.8 cm cada año.' },
+  { missionId: 'community_read', title: 'Lector Social', description: 'Lee 3 publicaciones de la comunidad', xp: 50, fact: 'La ISS orbita la Tierra a 28,000 km/h, completando 16 órbitas por día.' },
+  { missionId: 'black_hole', title: 'Agujero Negro', description: 'Aprende sobre los agujeros negros', xp: 75, fact: 'El agujero negro supermasivo en el centro de la Vía Láctea se llama Sagitario A*.' },
+  { missionId: 'mars_day', title: 'Día Marciano', description: 'Descubre datos sobre Marte', xp: 50, fact: 'Un día en Marte (sol) dura 24 horas y 37 minutos.' },
+  { missionId: 'saturn_rings', title: 'Anillos de Saturno', description: 'Explora los anillos de Saturno', xp: 50, fact: 'Los anillos de Saturno están hechos principalmente de partículas de hielo y roca.' },
+  { missionId: 'speed_of_light', title: 'Velocidad de la Luz', description: 'Aprende sobre la velocidad de la luz', xp: 75, fact: 'La luz viaja a 299,792 km/s. Desde el Sol hasta la Tierra tarda 8 minutos y 20 segundos.' },
+  { missionId: 'iss_track', title: 'Rastrear la ISS', description: 'Sigue la posición de la Estación Espacial', xp: 75, fact: 'La Estación Espacial Internacional es visible a simple vista como una estrella móvil.' },
+  { missionId: 'comet_hunter', title: 'Cazador de Cometas', description: 'Aprende sobre cometas famosos', xp: 50, fact: 'El cometa Halley vuelve a pasar cerca de la Tierra cada 76 años. La próxima será en 2061.' },
 ]
 
 function getDailyMissions(): typeof ALL_MISSIONS {

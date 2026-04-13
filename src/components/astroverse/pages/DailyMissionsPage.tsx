@@ -15,6 +15,8 @@ import {
   Star,
   Clock,
   Flame,
+  Lightbulb,
+  ChevronDown,
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────
@@ -26,6 +28,7 @@ interface Mission {
   xp: number
   progress: number
   completed: boolean
+  fact?: string
 }
 
 interface MissionProgress {
@@ -34,7 +37,41 @@ interface MissionProgress {
   completed: boolean
 }
 
-// ─── Mission Pool (10 missions) ─────────────────────────────
+// ─── Daily Facts Pool (30 facts in Spanish) ─────────────────
+const dailyFacts = [
+  'Si pudieras volar a la velocidad de la luz, darías la vuelta a la Tierra 7.5 veces en un segundo.',
+  'Neptuno tarda 165 años en dar una vuelta alrededor del Sol.',
+  'Una cucharadita de materia de una estrella de neutrones pesaría 6 mil millones de toneladas.',
+  'En el espacio, nadie puede oírte gritar porque no hay atmósfera para propagar el sonido.',
+  'Júpiter tiene el día más corto de todos los planetas: solo 10 horas.',
+  'Venus gira al revés: el Sol sale por el oeste y se pone por el este.',
+  'La Gran Muralla China no es visible desde el espacio a simple vista.',
+  'Hay más estrellas en el universo que granos de arena en todas las playas de la Tierra.',
+  'Si dos piezas del mismo metal se tocan en el vacío del espacio, se soldarían permanentemente.',
+  'El Monte Olimpo en Marte es casi 3 veces más alto que el Everest.',
+  'La Tierra es el único planeta del sistema solar que no lleva el nombre de un dios.',
+  'En 2013, un meteorito explotó sobre Rusia con la fuerza de 30 bombas atómicas de Hiroshima.',
+  'Se necesitarían 1.3 millones de Tierras para llenar el volumen de Júpiter.',
+  'La luz del Sol tarda 4.24 años en llegar a la estrella más cercana, Próxima Centauri.',
+  'Saturno es tan poco denso que flotaría si encontraras una bañera lo suficientemente grande.',
+  'La Vía Láctea chocará con la galaxia de Andrómeda en aproximadamente 4 mil millones de años.',
+  'Los astronautas crecen hasta 5 cm más en el espacio debido a la falta de gravedad.',
+  'El agujero negro más grande conocido tiene 66 mil millones de veces la masa del Sol.',
+  'Hay planetas hechos de diamante. El exoplaneta 55 Cancri e tiene un tercio de diamante.',
+  'La temperatura en la Luna varía de 120°C de día a -130°C de noche.',
+  'La Vía Láctea contiene entre 100-400 mil millones de estrellas.',
+  'El Telescopio Hubble ha tomado más de 1.5 millones de observaciones desde 1990.',
+  'La Luna se aleja de la Tierra 3.8 cm cada año.',
+  'La ISS orbita la Tierra a 28,000 km/h, completando 16 órbitas por día.',
+  'El agujero negro supermasivo en el centro de la Vía Láctea se llama Sagitario A*.',
+  'Un día en Marte (sol) dura 24 horas y 37 minutos.',
+  'Los anillos de Saturno están hechos principalmente de partículas de hielo y roca.',
+  'La luz viaja a 299,792 km/s. Desde el Sol hasta la Tierra tarda 8 minutos y 20 segundos.',
+  'La Estación Espacial Internacional es visible a simple vista como una estrella móvil.',
+  'El cometa Halley vuelve a pasar cerca de la Tierra cada 76 años. La próxima será en 2061.',
+]
+
+// ─── Mission Pool (20 missions with facts & varied XP) ──────
 const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
   {
     id: 'explorer',
@@ -42,6 +79,7 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '🧭',
     description: 'Visita 3 páginas diferentes en AstroVerse',
     xp: 50,
+    fact: 'Hay más estrellas en el universo que granos de arena en todas las playas de la Tierra.',
   },
   {
     id: 'brain-power',
@@ -49,6 +87,7 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '🧠',
     description: 'Completa 1 quiz espacial',
     xp: 100,
+    fact: 'El Telescopio Hubble ha tomado más de 1.5 millones de observaciones desde 1990.',
   },
   {
     id: 'star-gazer',
@@ -56,6 +95,7 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '🔭',
     description: 'Mira 3 imágenes en la Galería NASA',
     xp: 75,
+    fact: 'El agujero negro supermasivo en el centro de la Vía Láctea se llama Sagitario A*.',
   },
   {
     id: 'bookworm',
@@ -63,6 +103,7 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '📰',
     description: 'Lee 2 artículos de noticias espaciales',
     xp: 75,
+    fact: 'La ISS orbita la Tierra a 28,000 km/h, completando 16 órbitas por día.',
   },
   {
     id: 'social-star',
@@ -70,6 +111,7 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '💬',
     description: 'Lee 5 publicaciones de la comunidad',
     xp: 50,
+    fact: 'Los astronautas crecen hasta 5 cm más en el espacio debido a la falta de gravedad.',
   },
   {
     id: 'simulator-pro',
@@ -77,6 +119,7 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '⚡',
     description: 'Usa cualquier simulador espacial',
     xp: 50,
+    fact: 'Júpiter tiene el día más corto de todos los planetas: solo 10 horas.',
   },
   {
     id: 'perfect-score',
@@ -84,27 +127,111 @@ const ALL_MISSIONS: Omit<Mission, 'progress' | 'completed'>[] = [
     emoji: '🌟',
     description: 'Obtén 100% en un quiz',
     xp: 150,
+    fact: 'El agujero negro más grande conocido tiene 66 mil millones de veces la masa del Sol.',
   },
   {
     id: 'streak-master',
     name: 'Streak Master',
     emoji: '🔥',
     description: 'Consigue una racha de 5+ respuestas correctas',
-    xp: 100,
+    xp: 125,
+    fact: 'En 2013, un meteorito explotó sobre Rusia con la fuerza de 30 bombas atómicas de Hiroshima.',
   },
   {
     id: 'encyclopedia',
     name: 'Encyclopedia',
     emoji: '📚',
     description: 'Visita la Enciclopedia Espacial',
-    xp: 50,
+    xp: 25,
+    fact: 'Neptuno tarda 165 años en dar una vuelta alrededor del Sol.',
   },
   {
     id: 'event-watcher',
     name: 'Event Watcher',
     emoji: '📅',
     description: 'Revisa los eventos espaciales próximos',
+    xp: 25,
+    fact: 'La luz del Sol tarda 4.24 años en llegar a la estrella más cercana, Próxima Centauri.',
+  },
+  {
+    id: 'night_sky',
+    name: 'Cielo Nocturno',
+    emoji: '🌃',
+    description: 'Mira el cielo nocturno esta noche',
     xp: 50,
+    fact: 'La Vía Láctea contiene entre 100-400 mil millones de estrellas.',
+  },
+  {
+    id: 'photo_gallery',
+    name: 'Galería NASA',
+    emoji: '📸',
+    description: 'Explora 3 fotos de la Galería NASA',
+    xp: 75,
+    fact: 'El Telescopio Hubble ha tomado más de 1.5 millones de observaciones desde 1990.',
+  },
+  {
+    id: 'moon_phases',
+    name: 'Fase Lunar',
+    emoji: '🌙',
+    description: 'Aprende sobre la Luna',
+    xp: 50,
+    fact: 'La Luna se aleja de la Tierra 3.8 cm cada año.',
+  },
+  {
+    id: 'community_read',
+    name: 'Lector Social',
+    emoji: '💬',
+    description: 'Lee 3 publicaciones de la comunidad',
+    xp: 50,
+    fact: 'La ISS orbita la Tierra a 28,000 km/h, completando 16 órbitas por día.',
+  },
+  {
+    id: 'black_hole',
+    name: 'Agujero Negro',
+    emoji: '🕳️',
+    description: 'Aprende sobre los agujeros negros',
+    xp: 75,
+    fact: 'El agujero negro supermasivo en el centro de la Vía Láctea se llama Sagitario A*.',
+  },
+  {
+    id: 'mars_day',
+    name: 'Día Marciano',
+    emoji: '🔴',
+    description: 'Descubre datos sobre Marte',
+    xp: 50,
+    fact: 'Un día en Marte (sol) dura 24 horas y 37 minutos.',
+  },
+  {
+    id: 'saturn_rings',
+    name: 'Anillos de Saturno',
+    emoji: '🪐',
+    description: 'Explora los anillos de Saturno',
+    xp: 50,
+    fact: 'Los anillos de Saturno están hechos principalmente de partículas de hielo y roca.',
+  },
+  {
+    id: 'speed_of_light',
+    name: 'Velocidad de la Luz',
+    emoji: '⚡',
+    description: 'Aprende sobre la velocidad de la luz',
+    xp: 75,
+    fact: 'La luz viaja a 299,792 km/s. Desde el Sol hasta la Tierra tarda 8 minutos y 20 segundos.',
+  },
+  {
+    id: 'iss_track',
+    name: 'Rastrear la ISS',
+    emoji: '🛰️',
+    description: 'Sigue la posición de la Estación Espacial',
+    xp: 100,
+    fact: 'La Estación Espacial Internacional es visible a simple vista como una estrella móvil.',
+  },
+  {
+    id: 'comet_hunter',
+    name: 'Cazador de Cometas',
+    emoji: '☄️',
+    description: 'Aprende sobre cometas famosos',
+    xp: 50,
+    fact: 'El cometa Halley vuelve a pasar cerca de la Tierra cada 76 años. La próxima será en 2061.',
   },
 ]
 
@@ -121,6 +248,44 @@ function getDailyMissions(): Omit<Mission, 'progress' | 'completed'>[] {
   return picked
 }
 
+// ─── Helper: Streak management ──────────────────────────────
+function getStreakData(): { streak: number; lastDate: string } {
+  if (typeof window === 'undefined') return { streak: 0, lastDate: '' }
+  try {
+    const raw = localStorage.getItem('astroverse_streak')
+    if (!raw) return { streak: 0, lastDate: '' }
+    const data = JSON.parse(raw) as { streak: number; lastDate: string }
+    return data
+  } catch {
+    return { streak: 0, lastDate: '' }
+  }
+}
+
+function updateStreak(completedAny: boolean): { streak: number; lastDate: string } {
+  if (typeof window === 'undefined') return { streak: 0, lastDate: '' }
+  try {
+    const data = getStreakData()
+    const today = new Date().toISOString().split('T')[0]
+
+    if (!completedAny) return data
+
+    if (data.lastDate === today) {
+      return data
+    }
+
+    const yesterday = new Date()
+    yesterday.setDate(yesterday.getDate() - 1)
+    const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+    const newStreak = data.lastDate === yesterdayStr ? data.streak + 1 : 1
+    const newData = { streak: newStreak, lastDate: today }
+    localStorage.setItem('astroverse_streak', JSON.stringify(newData))
+    return newData
+  } catch {
+    return { streak: 0, lastDate: '' }
+  }
+}
+
 // ─── Animation Variants ──────────────────────────────────────
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -133,20 +298,38 @@ const floatingXpVariant = {
   exit: { opacity: 0 },
 }
 
+const factRevealVariant = {
+  collapsed: { height: 0, opacity: 0, marginTop: 0 },
+  expanded: { height: 'auto', opacity: 1, marginTop: 12, transition: { duration: 0.4, ease: 'easeOut' } },
+}
+
 // ─── Component ───────────────────────────────────────────────
 export default function DailyMissionsPage({ userId }: { userId: string }) {
   const [missions, setMissions] = useState<Mission[]>([])
   const [displayXp, setDisplayXp] = useState(0)
   const [floatingXp, setFloatingXp] = useState<{ id: number; value: number; x: number } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [expandedFact, setExpandedFact] = useState<string | null>(null)
+  const [streak, setStreak] = useState(0)
+  const [hoveredMission, setHoveredMission] = useState<string | null>(null)
   const floatingIdRef = useRef(0)
   const animFrameRef = useRef<number | null>(null)
+
+  // ─── Daily fun fact ──────────────────────────────────────
+  const dailyFactIndex = Math.floor(Date.now() / 86400000) % dailyFacts.length
+  const dailyFact = dailyFacts[dailyFactIndex]
 
   // ─── Derived state ────────────────────────────────────────
   const totalXpEarned = missions.reduce((sum, m) => sum + (m.completed ? m.xp : 0), 0)
   const maxAvailableXp = missions.reduce((sum, m) => sum + m.xp, 0)
   const completedCount = missions.filter((m) => m.completed).length
   const allComplete = completedCount === MISSIONS_PER_DAY
+
+  // ─── Load streak on mount ────────────────────────────────
+  useEffect(() => {
+    const data = getStreakData()
+    setStreak(data.streak)
+  }, [])
 
   // ─── Animate XP counter ───────────────────────────────────
   useEffect(() => {
@@ -214,6 +397,10 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
         prev.map((m) => (m.id === missionId ? { ...m, progress: 100, completed: true } : m))
       )
 
+      // Update streak
+      const newStreakData = updateStreak(true)
+      setStreak(newStreakData.streak)
+
       // Floating XP animation
       if (clickX !== undefined) {
         const id = ++floatingIdRef.current
@@ -273,6 +460,7 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
     const dailyMissions = getDailyMissions()
     setMissions(dailyMissions.map((m) => ({ ...m, progress: 0, completed: false })))
     setDisplayXp(0)
+    setExpandedFact(null)
 
     try {
       await fetch('/api/missions', {
@@ -293,6 +481,11 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
       },
     })
   }, [userId])
+
+  // ─── Toggle fact expand ───────────────────────────────────
+  const toggleFact = useCallback((missionId: string) => {
+    setExpandedFact((prev) => (prev === missionId ? null : missionId))
+  }, [])
 
   // ─── Loading state ────────────────────────────────────────
   if (isLoading) {
@@ -362,7 +555,7 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.15, duration: 0.5 } }}
-        className="relative overflow-hidden rounded-2xl mb-8"
+        className="relative overflow-hidden rounded-2xl mb-6"
         style={cardBase}
       >
         <CardGradientTop color="linear-gradient(90deg, #f59e0b, #ec4899, #7c3aed)" />
@@ -396,10 +589,26 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
                   {completedCount}/{MISSIONS_PER_DAY}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <Flame className="w-4 h-4" style={{ color: '#ec4899' }} />
-                <span className="text-white/60">Día</span>
-              </div>
+              {/* Streak Counter */}
+              <motion.div
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg"
+                style={{
+                  background: streak > 0
+                    ? 'linear-gradient(135deg, rgba(236,72,153,0.15), rgba(245,158,11,0.1))'
+                    : 'rgba(255,255,255,0.03)',
+                  border: streak > 0
+                    ? '1px solid rgba(236,72,153,0.3)'
+                    : '1px solid rgba(255,255,255,0.06)',
+                }}
+                animate={streak > 0 ? { scale: [1, 1.05, 1] } : {}}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Flame className="w-4 h-4" style={{ color: streak > 0 ? '#ec4899' : 'rgba(255,255,255,0.25)' }} />
+                <span className="text-white/60 text-xs font-medium">Racha</span>
+                <span className="font-bold text-sm" style={{ color: streak > 0 ? '#ec4899' : 'rgba(255,255,255,0.4)' }}>
+                  {streak}
+                </span>
+              </motion.div>
             </div>
           </div>
 
@@ -451,6 +660,63 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
         </div>
       </motion.div>
 
+      {/* ─── Daily Fun Fact Banner ─────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: 0.25, duration: 0.6, ease: 'easeOut' } }}
+        className="relative overflow-hidden rounded-2xl mb-6"
+        style={{
+          ...cardBase,
+          background:
+            'linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(0,212,255,0.05) 50%, rgba(245,158,11,0.06) 100%), bg-white/[0.03]',
+        }}
+      >
+        {/* Starry background pattern */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                width: Math.random() * 2 + 1,
+                height: Math.random() * 2 + 1,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                background: 'rgba(255,255,255,0.3)',
+              }}
+              animate={{ opacity: [0.2, 0.8, 0.2] }}
+              transition={{ duration: Math.random() * 3 + 2, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
+            />
+          ))}
+        </div>
+
+        <CardGradientTop color="linear-gradient(90deg, #f59e0b, #ec4899)" />
+
+        <div className="relative z-10 p-5">
+          <div className="flex items-start gap-3">
+            <motion.div
+              animate={{ rotate: [0, 15, -15, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 3 }}
+              className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(236,72,153,0.15))',
+                border: '1px solid rgba(245,158,11,0.25)',
+              }}
+            >
+              <Lightbulb className="w-5 h-5" style={{ color: '#f59e0b' }} />
+            </motion.div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs uppercase tracking-wider font-semibold mb-1.5" style={{ color: '#f59e0b' }}>
+                💡 Dato del Día
+              </p>
+              <p className="text-white/80 text-sm leading-relaxed">
+                {dailyFact}
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
       {/* ─── Mission Cards ────────────────────────────────── */}
       <motion.div
         variants={staggerContainer}
@@ -472,6 +738,8 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
                     }
                   : {}),
               }}
+              onMouseEnter={() => setHoveredMission(mission.id)}
+              onMouseLeave={() => setHoveredMission(null)}
             >
               {/* Top gradient accent */}
               <CardGradientTop
@@ -595,6 +863,74 @@ export default function DailyMissionsPage({ userId }: { userId: string }) {
                     />
                   </div>
                 </div>
+
+                {/* Hover tooltip: Dato Curioso (non-completed only) */}
+                <AnimatePresence>
+                  {!mission.completed && hoveredMission === mission.id && mission.fact && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0, transition: { duration: 0.25 } }}
+                      exit={{ opacity: 0, y: -4, transition: { duration: 0.15 } }}
+                      className="mb-3 px-3 py-2 rounded-lg text-xs leading-relaxed"
+                      style={{
+                        background: 'rgba(124,58,237,0.08)',
+                        border: '1px solid rgba(124,58,237,0.15)',
+                        color: 'rgba(255,255,255,0.55)',
+                      }}
+                    >
+                      <span style={{ color: '#a78bfa' }}>✨ Dato curioso:</span> {mission.fact}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Completed fact reveal (clickable) */}
+                {mission.completed && mission.fact && (
+                  <div className="mb-3">
+                    <button
+                      onClick={() => toggleFact(mission.id)}
+                      className="flex items-center gap-1.5 text-xs font-medium transition-all hover:opacity-80"
+                      style={{
+                        color: 'rgba(16,185,129,0.7)',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: 0,
+                      }}
+                    >
+                      <Lightbulb className="w-3.5 h-3.5" />
+                      <span>Dato curioso desbloqueado</span>
+                      <motion.div
+                        animate={{ rotate: expandedFact === mission.id ? 180 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </motion.div>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {expandedFact === mission.id && (
+                        <motion.div
+                          variants={factRevealVariant}
+                          initial="collapsed"
+                          animate="expanded"
+                          exit="collapsed"
+                          className="overflow-hidden"
+                        >
+                          <div
+                            className="px-3 py-2.5 rounded-lg text-sm leading-relaxed"
+                            style={{
+                              background: 'rgba(16,185,129,0.06)',
+                              border: '1px solid rgba(16,185,129,0.15)',
+                              color: 'rgba(255,255,255,0.7)',
+                            }}
+                          >
+                            🌟 {mission.fact}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
 
                 {/* Action button */}
                 {!mission.completed && (

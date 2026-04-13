@@ -11,6 +11,8 @@ import {
   ArrowRight,
   Sparkles,
   Loader2,
+  Lightbulb,
+  RefreshCw,
 } from 'lucide-react'
 import { cardBase, staggerContainer, staggerItem } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
@@ -25,7 +27,15 @@ interface Article {
   source: string
   date: string
   category: string
-  imageUrl: string
+  thumbnail: string
+  url: string
+}
+
+interface NewsResponse {
+  articles: Article[]
+  total?: number
+  dayIndex?: number
+  showing?: number
 }
 
 // ============================================================
@@ -42,6 +52,35 @@ const categoryConfig: Record<string, { color: string; gradient: string; icon: st
 const categories = ['Todas', 'NASA', 'SpaceX', 'Descubrimientos', 'Telescopios', 'Exploración']
 
 // ============================================================
+// Space facts pool (20+ facts, rotates daily)
+// ============================================================
+const spaceFacts = [
+  'Una cucharadita de materia de una estrella de neutrones pesaría aproximadamente 6 mil millones de toneladas.',
+  'El Monte Olimpo en Marte es casi 3 veces más alto que el Monte Everest, con 21.9 km de altura.',
+  'En el espacio, el sol se ve blanco puro, no amarillo. La atmósfera terrestre le da su color amarillento.',
+  'Hay más estrellas en el universo que granos de arena en todas las playas de la Tierra.',
+  'Un día en Venus es más largo que un año venusiano. Tarda 243 días terrestres en rotar pero solo 225 en orbitar.',
+  'La Gran Muralla de Herculos es la estructura más grande conocida del universo, midiendo 10 mil millones de años luz.',
+  'Si pudieras volar un avión a Plutón, el viaje tomaría más de 800 años.',
+  'Los anillos de Saturno son increíblemente delgados: tienen 282,000 km de ancho pero solo 10 metros de grosor en promedio.',
+  'En el espacio vacío nadie puede oírte gritar. El sonido necesita un medio como el aire para viajar.',
+  'La Voyager 1, lanzada en 1977, es el objeto humano más lejano y aún envía datos desde fuera del sistema solar.',
+  'El 95% del universo está compuesto de materia oscura y energía oscura, que no podemos ver ni detectar directamente.',
+  'En Júpiter y Saturno llueven diamantes. Las tormentas convierten el carbono de la atmósfera en piedras preciosas.',
+  'La luz del Sol tarda 8 minutos y 20 segundos en llegar a la Tierra viajando a 300,000 km/s.',
+  'Marte tiene el volcán más alto y el cañón más largo del sistema solar: el Monte Olimpo y el Valles Marineris.',
+  'Hay planetas donde llueve cristales de vidrio a 8,000 km/h. HD 189733b es uno de ellos.',
+  'El agujero negro supermasivo en el centro de la Vía Láctea, Sagitario A*, tiene 4 millones de veces la masa del Sol.',
+  'La ISS viaja a 28,000 km/h, lo que significa que los astronautas ven 16 amaneceres cada día.',
+  'Titán, la luna de Saturno, es el único cuerpo del sistema solar además de la Tierra con lagos y ríos líquidos en su superficie.',
+  'El universo tiene aproximadamente 13,800 millones de años. La Tierra se formó hace unos 4,500 millones de años.',
+  'Se estima que hay 100 mil millones de galaxias en el universo observable, cada una con cientos de miles de millones de estrellas.',
+  'La temperatura en la cara oscura de la Luna puede llegar a -173°C, mientras que en la iluminada alcanza 127°C.',
+  'El planeta Kepler-452b es el "gemelo" de la Tierra más parecido encontrado hasta ahora, orbitando una estrella similar al Sol.',
+  'Un año en Neptuno equivale a 165 años terrestres. Desde su descubrimiento en 1846, apenas ha completado una órbita.',
+]
+
+// ============================================================
 // Helpers
 // ============================================================
 function formatDate(iso: string) {
@@ -54,18 +93,25 @@ function formatDate(iso: string) {
 // ============================================================
 function SkeletonCard() {
   return (
-    <div
-      className="rounded-xl overflow-hidden relative"
-      style={cardBase}
-    >
-      <div className="h-44 bg-white/[0.03] animate-pulse" />
-      <div className="p-5 space-y-3">
+    <div className="rounded-xl overflow-hidden relative" style={cardBase}>
+      <div className="h-40 bg-white/[0.03] animate-pulse relative overflow-hidden">
+        {/* Shimmer */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)',
+            animation: 'shimmer 2s infinite',
+          }}
+        />
+      </div>
+      <div className="p-4 space-y-3">
         <div className="h-4 w-24 rounded-full bg-white/[0.04] animate-pulse" />
         <div className="h-5 w-full rounded bg-white/[0.05] animate-pulse" />
         <div className="h-5 w-3/4 rounded bg-white/[0.05] animate-pulse" />
         <div className="h-3 w-full rounded bg-white/[0.03] animate-pulse" />
         <div className="h-3 w-5/6 rounded bg-white/[0.03] animate-pulse" />
-        <div className="pt-2 flex items-center justify-between">
+        <div className="pt-1 flex items-center justify-between">
           <div className="h-3 w-20 rounded bg-white/[0.04] animate-pulse" />
           <div className="h-3 w-16 rounded bg-white/[0.04] animate-pulse" />
         </div>
@@ -81,7 +127,16 @@ function SkeletonFeatured() {
       style={{ ...cardBase, background: 'rgba(255,255,255,0.04)' }}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-        <div className="h-56 md:h-auto bg-white/[0.03] animate-pulse" />
+        <div className="h-56 md:h-auto bg-white/[0.03] animate-pulse relative overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)',
+              animation: 'shimmer 2s infinite',
+            }}
+          />
+        </div>
         <div className="p-6 md:p-8 space-y-4">
           <div className="h-5 w-32 rounded-full bg-white/[0.04] animate-pulse" />
           <div className="h-7 w-full rounded bg-white/[0.05] animate-pulse" />
@@ -108,19 +163,19 @@ function FeaturedArticle({ article }: { article: Article }) {
 
   return (
     <motion.div
-      className="rounded-2xl overflow-hidden relative group cursor-pointer"
+      className="rounded-2xl overflow-hidden relative group"
       style={cardBase}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       whileHover={{ scale: 1.005 }}
-      onHoverStart={e => {
+      onHoverStart={(e) => {
         if (e.currentTarget) {
           e.currentTarget.style.borderColor = `${cfg.color}25`
           e.currentTarget.style.boxShadow = `0 0 40px ${cfg.color}10, 0 12px 40px rgba(0,0,0,0.4)`
         }
       }}
-      onHoverEnd={e => {
+      onHoverEnd={(e) => {
         if (e.currentTarget) {
           e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
           e.currentTarget.style.boxShadow = 'none'
@@ -130,7 +185,7 @@ function FeaturedArticle({ article }: { article: Article }) {
       <CardGradientTop color={`linear-gradient(90deg, ${cfg.color}, ${cfg.color}00)`} />
 
       {/* Badge */}
-      <div className="absolute top-4 left-4 z-10">
+      <div className="absolute top-4 left-4 z-20">
         <div
           className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-md"
           style={{
@@ -145,11 +200,22 @@ function FeaturedArticle({ article }: { article: Article }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-        {/* Image placeholder */}
-        <div className={`relative h-56 md:h-auto min-h-[240px] bg-gradient-to-br ${cfg.gradient} flex items-center justify-center overflow-hidden`}>
-          <span className="text-7xl opacity-60 group-hover:scale-110 transition-transform duration-500">
-            {cfg.icon}
-          </span>
+        {/* Image area */}
+        <div className="relative h-56 md:h-auto min-h-[240px] overflow-hidden">
+          <img
+            src={article.thumbnail}
+            alt={article.title}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+          {/* Fallback gradient if image fails */}
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${cfg.gradient} flex items-center justify-center`}
+          >
+            <span className="text-7xl opacity-40">{cfg.icon}</span>
+          </div>
           <div
             className="absolute inset-0 opacity-10"
             style={{
@@ -193,8 +259,11 @@ function FeaturedArticle({ article }: { article: Article }) {
             </span>
           </div>
 
-          {/* CTA */}
-          <button
+          {/* CTA — external link */}
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.98] w-fit group/btn"
             style={{
               background: `linear-gradient(135deg, ${cfg.color}20, ${cfg.color}08)`,
@@ -203,8 +272,11 @@ function FeaturedArticle({ article }: { article: Article }) {
             }}
           >
             Leer más
-            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-          </button>
+            <ExternalLink
+              size={14}
+              className="group-hover/btn:translate-x-0.5 transition-transform"
+            />
+          </a>
         </div>
       </div>
     </motion.div>
@@ -214,22 +286,22 @@ function FeaturedArticle({ article }: { article: Article }) {
 // ============================================================
 // Article Card
 // ============================================================
-function ArticleCard({ article, index }: { article: Article; index: number }) {
+function ArticleCard({ article }: { article: Article }) {
   const cfg = categoryConfig[article.category] || categoryConfig.NASA
 
   return (
     <motion.div
-      className="rounded-xl overflow-hidden relative group cursor-pointer"
+      className="rounded-xl overflow-hidden relative group"
       style={cardBase}
       variants={staggerItem}
       whileHover={{ scale: 1.02 }}
-      onHoverStart={e => {
+      onHoverStart={(e) => {
         if (e.currentTarget) {
           e.currentTarget.style.borderColor = `${cfg.color}25`
           e.currentTarget.style.boxShadow = `0 0 30px ${cfg.color}10, 0 8px 32px rgba(0,0,0,0.3)`
         }
       }}
-      onHoverEnd={e => {
+      onHoverEnd={(e) => {
         if (e.currentTarget) {
           e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
           e.currentTarget.style.boxShadow = 'none'
@@ -238,11 +310,22 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
     >
       <CardGradientTop color={`linear-gradient(90deg, ${cfg.color}, transparent)`} />
 
-      {/* Image placeholder */}
-      <div className={`relative h-40 bg-gradient-to-br ${cfg.gradient} flex items-center justify-center overflow-hidden`}>
-        <span className="text-5xl opacity-50 group-hover:scale-110 transition-transform duration-500">
-          {cfg.icon}
-        </span>
+      {/* Image area */}
+      <div className="relative h-40 overflow-hidden">
+        <img
+          src={article.thumbnail}
+          alt={article.title}
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+          }}
+        />
+        {/* Fallback gradient if image fails */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${cfg.gradient} flex items-center justify-center`}
+        >
+          <span className="text-5xl opacity-40">{cfg.icon}</span>
+        </div>
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -251,7 +334,7 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
         />
         {/* Category badge on image */}
         <span
-          className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg text-xs font-medium backdrop-blur-md"
+          className="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-lg text-xs font-medium backdrop-blur-md z-10"
           style={{
             background: `${cfg.color}20`,
             border: `1px solid ${cfg.color}30`,
@@ -283,13 +366,16 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
               {formatDate(article.date)}
             </span>
           </div>
-          <button
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-1 text-xs font-medium transition-colors duration-200"
             style={{ color: `${cfg.color}cc` }}
           >
             Leer más
             <ExternalLink size={11} />
-          </button>
+          </a>
         </div>
       </div>
     </motion.div>
@@ -301,23 +387,36 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
 // ============================================================
 export default function NewsPage() {
   const [articles, setArticles] = useState<Article[]>([])
+  const [totalArticles, setTotalArticles] = useState(0)
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('Todas')
 
   useEffect(() => {
     fetch('/api/news')
-      .then(res => res.json())
-      .then(data => setArticles(data.articles || []))
+      .then((res) => res.json())
+      .then((data: NewsResponse) => {
+        if (Array.isArray(data.articles)) {
+          setArticles(data.articles)
+        }
+        if (typeof data.total === 'number') {
+          setTotalArticles(data.total)
+        }
+      })
       .catch(() => setArticles([]))
       .finally(() => setLoading(false))
   }, [])
 
-  const filtered = activeCategory === 'Todas'
-    ? articles
-    : articles.filter(a => a.category === activeCategory)
+  const filtered =
+    activeCategory === 'Todas'
+      ? articles
+      : articles.filter((a) => a.category === activeCategory)
 
   const featured = filtered[0]
   const rest = filtered.slice(1)
+
+  // Daily fact
+  const dayIndex = Math.floor(Date.now() / 86400000)
+  const dailyFact = spaceFacts[dayIndex % spaceFacts.length]
 
   return (
     <div className="space-y-8">
@@ -338,18 +437,71 @@ export default function NewsPage() {
           </div>
         </div>
         <p className="text-white/40 ml-[52px]">
-          Las últimas novedades del universo, actualizadas constantemente
+          Las últimas novedades del universo, actualizadas diariamente
         </p>
       </motion.div>
+
+      {/* Dato del día */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.05 }}
+        className="rounded-2xl p-5 md:p-6 relative overflow-hidden"
+        style={{
+          background: 'rgba(245,158,11,0.04)',
+          border: '1px solid rgba(245,158,11,0.15)',
+          backdropFilter: 'blur(24px)',
+        }}
+      >
+        <CardGradientTop color="linear-gradient(90deg, #f59e0b, transparent)" />
+        <div className="flex items-start gap-4">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+            style={{
+              background: 'rgba(245,158,11,0.12)',
+              border: '1px solid rgba(245,158,11,0.25)',
+            }}
+          >
+            <Lightbulb size={20} className="text-amber-400" />
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
+                Dato del día
+              </span>
+              <span className="text-[10px] text-white/20 flex items-center gap-1">
+                <RefreshCw size={10} />
+                cambia cada día
+              </span>
+            </div>
+            <p className="text-white/60 text-sm leading-relaxed">{dailyFact}</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Rotation indicator */}
+      {totalArticles > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-center gap-2 text-xs text-white/30"
+        >
+          <Sparkles size={12} className="text-cyan-400/50" />
+          <span>
+            {articles.length} de {totalArticles}+ noticias hoy · Rotación diaria automática
+          </span>
+        </motion.div>
+      )}
 
       {/* Category filter tabs */}
       <motion.div
         className="flex flex-wrap items-center gap-2"
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.15 }}
       >
-        {categories.map(cat => {
+        {categories.map((cat) => {
           const cfg = cat !== 'Todas' ? categoryConfig[cat] : null
           const isActive = activeCategory === cat
           return (
@@ -379,11 +531,13 @@ export default function NewsPage() {
                     : '0 0 15px rgba(0,212,255,0.08)'
                   : 'none',
               }}
-              onMouseEnter={e => {
-                if (e.currentTarget && !isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+              onMouseEnter={(e) => {
+                if (e.currentTarget && !isActive)
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
               }}
-              onMouseLeave={e => {
-                if (e.currentTarget && !isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+              onMouseLeave={(e) => {
+                if (e.currentTarget && !isActive)
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
               }}
             >
               {cat === 'Todas' && <Sparkles size={13} />}
@@ -396,11 +550,7 @@ export default function NewsPage() {
 
       {/* Loading state */}
       {loading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="space-y-6"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
           <SkeletonFeatured />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -459,8 +609,8 @@ export default function NewsPage() {
                 initial="initial"
                 animate="animate"
               >
-                {rest.map((article, i) => (
-                  <ArticleCard key={article.id} article={article} index={i} />
+                {rest.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
                 ))}
               </motion.div>
             )}

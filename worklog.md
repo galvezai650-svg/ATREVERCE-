@@ -328,3 +328,62 @@ Stage Summary:
 - Sidebar now has 18 navigation items with all 6 new features integrated
 - userId and isPremium flow: layout fetches from check-premium API → passes to child components
 - ESLint: 0 errors | Dev Server: Compiling successfully
+
+---
+Task ID: 3 (Improvement)
+Agent: fullstack-developer
+Task: Improve Daily Missions page and API with more variety, daily data, and fun facts
+
+Work Log:
+- Updated /src/app/api/missions/route.ts: expanded mission pool from 10 to 20 missions
+- Added `fact` field with fun space facts to all 20 missions in the API
+- Varied XP rewards: 25, 50, 75, 100, 125, 150 across missions (was 20-150)
+- Added 10 new mission categories: Cielo Nocturno, Galería NASA, Fase Lunar, Lector Social, Agujero Negro, Día Marciano, Anillos de Saturno, Velocidad de la Luz, Rastrear la ISS, Cazador de Cometas
+- Updated DailyMissionsPage.tsx with 5 new features:
+  1. **Daily Fun Fact Banner**: "💡 Dato del Día" card below XP bar with rotating daily fact from pool of 30, starry animated background, animated entrance
+  2. **Mission Fact Reveal**: Completed missions show clickable "Dato curioso desbloqueado" with expandable fact section (smooth height animation via framer-motion)
+  3. **Streak Counter**: "Racha de Días" indicator in XP bar showing consecutive days with completed missions, stored in localStorage (astroverse_streak), animated pulse when active
+  4. **Hover Fact Tooltip**: Non-completed missions show "✨ Dato curioso:" tooltip on hover with AnimatePresence fade-in/out
+  5. **Varied XP Rewards**: Mission pool now includes 25, 50, 75, 100, 125, 150 XP values
+- Added 30 daily facts in Spanish covering diverse space topics
+- Added new imports: Lightbulb, ChevronDown from lucide-react
+- All new UI follows existing glassmorphism design system (cardBase, CardGradientTop)
+- Ran ESLint: 0 errors
+
+Stage Summary:
+- API now returns 20 missions with `fact` field, varied XP (25-150)
+- DailyMissionsPage enhanced with daily fun fact banner, streak counter, hover tooltips, expandable facts on completed missions
+- 30 rotating daily facts in Spanish
+- ESLint: 0 errors
+
+---
+Task ID: 1 (News Rewrite)
+Agent: fullstack-developer
+Task: Rewrite News API + page with 40+ real articles, daily rotation, thumbnails and external links
+
+Work Log:
+- Rewrote `/src/app/api/news/route.ts`:
+  - 44 real-topic articles across 5 categories: NASA (10), SpaceX (9), Descubrimientos (8), Telescopios (9), Exploración (8)
+  - Every article has a real external URL (nasa.gov, space.com, esa.int, spacex.com, eso.org, starlink.com)
+  - Every article has a real Unsplash thumbnail image (20 different space image IDs)
+  - Daily rotation: `Math.floor(Date.now() / 86400000)` picks starting index, returns 10 consecutive articles wrapping around
+  - `?all=true` query param returns all 44 articles with metadata (total, dayIndex) for debugging
+  - `Array.isArray` guard in GET handler; try/catch with 500 error response
+- Rewrote `/src/components/astroverse/pages/NewsPage.tsx`:
+  - Added `thumbnail` and `url` fields to Article interface
+  - FeaturedArticle: real `<img>` with `onError` fallback to gradient+emoji, hover scale animation
+  - ArticleCard: real `<img>` with `onError` fallback, hover scale, external `<a>` link
+  - "Leer más" buttons now open real article URLs in new tabs via `<a target="_blank" rel="noopener noreferrer">`
+  - "Dato del día" section: amber-colored card with 23 rotating space facts, Lightbulb icon, "cambia cada día" indicator
+  - Rotation indicator: "10 de 44+ noticias hoy · Rotación diaria automática"
+  - Loading skeletons with shimmer effect on image areas
+  - Response parsing uses `Array.isArray(data.articles)` guard
+  - Fetched `total` from API response for rotation indicator display
+- Verified: ESLint 0 errors, Dev Server 200 OK, API returns 10 articles with valid thumbnails/URLs
+
+Stage Summary:
+- News API serves 44 real articles with daily rotation (10/day) and ?all=true debug mode
+- NewsPage shows real thumbnails with fallback, external links, daily space fact, rotation indicator
+- All URLs point to real domains: nasa.gov, science.nasa.gov, space.com, esa.int, spacex.com, eso.org, starlink.com
+- All thumbnails use Unsplash CDN with 20 different space images
+- ESLint: 0 errors | Dev Server: 200 OK
