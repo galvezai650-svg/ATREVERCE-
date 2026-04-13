@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Users, GraduationCap, Play, Check, Clock, Video, BookOpen,
   Plus, Send, Eye, MessageSquare, Star, CircleDot, Trophy,
   X, Copy, CheckCheck, ClipboardList, Award, Lock, LogIn,
-  DoorOpen
+  DoorOpen, Orbit, Download
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cardBase } from '../shared/styles'
@@ -310,6 +310,10 @@ function StudentDashboard({ tasks, studentCompletedTasks, onCompleteTask, playin
   overallProgress: number
 }) {
   const activeTasks = tasks.filter(t => t.status === 'active')
+  const [showCertificate, setShowCertificate] = useState(false)
+  const certRef = useRef<HTMLDivElement>(null)
+  const allCompleted = studentCompletedTasks.size === tasks.length
+  const today = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 
   return (
     <div className="space-y-6">
@@ -425,10 +429,184 @@ function StudentDashboard({ tasks, studentCompletedTasks, onCompleteTask, playin
           })}
         </div>
       </div>
+
+      {/* Certificate Button - appears when all tasks completed */}
+      <AnimatePresence>
+        {allCompleted && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <motion.button
+              onClick={() => setShowCertificate(true)}
+              className="w-full py-4 rounded-2xl text-sm font-bold flex items-center justify-center gap-3 relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                boxShadow: '0 0 30px rgba(245,158,11,0.25), 0 4px 15px rgba(0,0,0,0.3)',
+                border: '1px solid rgba(245,158,11,0.4)',
+                color: 'white',
+              }}
+              whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(245,158,11,0.4), 0 4px 20px rgba(0,0,0,0.3)' }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.2) 55%, transparent 70%)',
+                }}
+                animate={{ x: ['-200%', '200%'] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+              />
+              <span className="text-xl">📜</span>
+              Obtener Certificado
+              <Award size={18} />
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Certificate Modal */}
+      <AnimatePresence>
+        {showCertificate && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowCertificate(false)} />
+            <motion.div
+              className="relative z-10 w-full max-w-2xl"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            >
+              {/* Close button */}
+              <motion.button
+                onClick={() => setShowCertificate(false)}
+                className="absolute -top-12 right-0 text-white/40 hover:text-white transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X size={24} />
+              </motion.button>
+
+              {/* Certificate */}
+              <div ref={certRef} className="rounded-2xl p-8 md:p-12 relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(5,5,16,0.97), rgba(15,15,35,0.97))',
+                  border: '3px solid transparent',
+                  borderImage: 'linear-gradient(135deg, #f59e0b, #d97706, #f59e0b, #fbbf24, #f59e0b) 1',
+                  boxShadow: '0 0 60px rgba(245,158,11,0.15), 0 25px 80px rgba(0,0,0,0.5)',
+                }}
+              >
+                {/* Inner gradient border effect */}
+                <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{
+                  border: '1px solid rgba(245,158,11,0.15)',
+                }} />
+
+                {/* Decorative corners */}
+                <div className="absolute top-4 left-4 w-12 h-12" style={{ borderTop: '2px solid rgba(245,158,11,0.4)', borderLeft: '2px solid rgba(245,158,11,0.4)' }} />
+                <div className="absolute top-4 right-4 w-12 h-12" style={{ borderTop: '2px solid rgba(245,158,11,0.4)', borderRight: '2px solid rgba(245,158,11,0.4)' }} />
+                <div className="absolute bottom-4 left-4 w-12 h-12" style={{ borderBottom: '2px solid rgba(245,158,11,0.4)', borderLeft: '2px solid rgba(245,158,11,0.4)' }} />
+                <div className="absolute bottom-4 right-4 w-12 h-12" style={{ borderBottom: '2px solid rgba(245,158,11,0.4)', borderRight: '2px solid rgba(245,158,11,0.4)' }} />
+
+                {/* Stars decoration */}
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 flex gap-1 opacity-30">
+                  {['⭐', '✨', '⭐'].map((s, i) => <span key={i} className="text-xs">{s}</span>)}
+                </div>
+
+                <div className="text-center space-y-6">
+                  {/* Logo / Branding */}
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #00d4ff, #7c3aed)', boxShadow: '0 0 20px rgba(124,58,237,0.4)' }}>
+                      <Orbit size={20} className="text-white" />
+                    </div>
+                    <span className="text-xl font-black tracking-wider" style={{
+                      background: 'linear-gradient(to right, #00d4ff, #7c3aed)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}>ASTROVERSE</span>
+                  </div>
+
+                  <div>
+                    <p className="text-amber-400/60 text-xs uppercase tracking-[0.3em] font-medium">Certificado de Completación</p>
+                    <div className="w-24 h-[1px] mx-auto mt-2" style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.4), transparent)' }} />
+                  </div>
+
+                  <div>
+                    <p className="text-white/40 text-sm">Se certifica que</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-white mt-2">Estudiante</h2>
+                  </div>
+
+                  <div>
+                    <p className="text-white/40 text-sm">ha completado exitosamente el curso</p>
+                    <h3 className="text-xl md:text-2xl font-bold mt-2" style={{
+                      background: 'linear-gradient(to right, #f59e0b, #fbbf24)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}>Exploración del Universo</h3>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-4 pt-2">
+                    <div className="text-center">
+                      <p className="text-white/30 text-[10px] uppercase tracking-wider">Profesor</p>
+                      <p className="text-white/70 text-sm font-medium mt-1">Prof. Alejandro Vega</p>
+                    </div>
+                    <div className="w-[1px] h-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
+                    <div className="text-center">
+                      <p className="text-white/30 text-[10px] uppercase tracking-wider">Fecha</p>
+                      <p className="text-white/70 text-sm font-medium mt-1">{today}</p>
+                    </div>
+                    <div className="w-[1px] h-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
+                    <div className="text-center">
+                      <p className="text-white/30 text-[10px] uppercase tracking-wider">Calificación</p>
+                      <p className="text-amber-400 text-sm font-bold mt-1">100%</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <div className="w-24 h-[1px] mx-auto" style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.4), transparent)' }} />
+                    <p className="text-white/15 text-[10px] mt-3">ID: AV-{Date.now().toString(36).toUpperCase()} · Emitido por AstroVerse Academy</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Download button (outside the certificate ref) */}
+              <div className="mt-6 flex justify-center gap-3">
+                <motion.button
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold"
+                  style={{
+                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                    boxShadow: '0 0 20px rgba(245,158,11,0.2)',
+                    color: 'white',
+                  }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Download size={16} />
+                  Descargar Certificado
+                </motion.button>
+                <motion.button
+                  onClick={() => setShowCertificate(false)}
+                  className="px-6 py-3 rounded-xl text-sm font-semibold text-white/40"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Cerrar
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
-
 // ============================================================
 // 3. PRO LOCK SECTION (when not PRO)
 // ============================================================

@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
@@ -12,6 +12,9 @@ import ProfilePage from './pages/ProfilePage'
 import SpaceEncyclopediaPage from './pages/SpaceEncyclopediaPage'
 import AulaPage from './pages/AulaPage'
 import DonacionesPage from './pages/DonacionesPage'
+import QuizPage from './pages/QuizPage'
+import EventsPage from './pages/EventsPage'
+import NewsPage from './pages/NewsPage'
 
 // ============================================================
 // Sidebar Navigation
@@ -22,10 +25,20 @@ const navItems = [
   { id: 'models3d', label: 'Modelos 3D', icon: Box },
   { id: 'simulators', label: 'Simuladores', icon: FlaskConical },
   { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
+  { id: 'quiz', label: 'Quiz Espacial', icon: Brain },
+  { id: 'events', label: 'Eventos', icon: Calendar },
+  { id: 'news', label: 'Noticias', icon: Newspaper },
   { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
   { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
   { id: 'profile', label: 'Perfil', icon: User },
+]
+
+const notifications = [
+  { id: 1, title: '¡Nueva lluvia de meteoros!', desc: 'Las Perseidas serán visibles esta noche', time: 'Hace 1h', emoji: '☄️', read: false },
+  { id: 2, title: 'Nuevo quiz disponible', desc: 'Astronomía: El Sistema Solar', time: 'Hace 3h', emoji: '🧠', read: false },
+  { id: 3, title: 'Lanzamiento SpaceX', desc: 'Starship Flight Test programado', time: 'Ayer', emoji: '🚀', read: true },
+  { id: 4, title: 'Bienvenido a AstroVerse', desc: 'Explora el universo desde tu pantalla', time: 'Hace 5 días', emoji: '🌍', read: true },
 ]
 
 function Sidebar({
@@ -38,6 +51,22 @@ function Sidebar({
   collapsed: boolean
   onToggleCollapse: () => void
 }) {
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifs] = useState(notifications)
+  const notifRef = useRef<HTMLDivElement>(null)
+
+  const unreadCount = notifs.filter(n => !n.read).length
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   return (
     <>
       <AnimatePresence>
@@ -81,6 +110,90 @@ function Sidebar({
         <button onClick={onToggleCollapse} className="absolute top-5 right-4 lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all duration-200 active:scale-95">
           <X size={18} />
         </button>
+
+        {/* Notification Bell */}
+        {!collapsed && (
+          <div className="px-5 pb-3 relative" ref={notifRef}>
+            <motion.button
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all duration-200 hover:bg-white/[0.04]"
+              style={{ background: showNotifications ? 'rgba(0,212,255,0.06)' : 'transparent', border: '1px solid rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.4)' }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Bell size={18} className="text-white/50" />
+                  {unreadCount > 0 && (
+                    <motion.div
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"
+                      style={{ background: '#ef4444', boxShadow: '0 0 8px rgba(239,68,68,0.5)' }}
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                    >
+                      <span className="text-[8px] font-bold text-white">{unreadCount}</span>
+                    </motion.div>
+                  )}
+                </div>
+                <span className="text-white/50 text-xs">Notificaciones</span>
+              </div>
+              <motion.span
+                animate={{ rotate: showNotifications ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                className="text-white/20 text-xs"
+              >
+                ▾
+              </motion.span>
+            </motion.button>
+
+            <AnimatePresence>
+              {showNotifications && (
+                <motion.div
+                  className="absolute left-5 right-5 top-full mt-2 rounded-xl overflow-hidden z-[60]"
+                  style={{
+                    background: 'rgba(10,10,30,0.95)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    backdropFilter: 'blur(24px)',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                  }}
+                  initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="p-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div className="flex items-center justify-between">
+                      <p className="text-white font-semibold text-xs">Notificaciones</p>
+                      <span className="text-[10px] text-cyan-400 font-medium">{unreadCount} nuevas</span>
+                    </div>
+                  </div>
+                  <div className="max-h-72 overflow-y-auto">
+                    {notifs.map((n, i) => (
+                      <motion.div
+                        key={n.id}
+                        className="flex items-start gap-3 p-3 transition-colors duration-150 hover:bg-white/[0.03]"
+                        style={{ background: !n.read ? 'rgba(0,212,255,0.03)' : 'transparent' }}
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04 }}
+                      >
+                        <span className="text-lg mt-0.5">{n.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className={`text-xs font-medium ${!n.read ? 'text-white/80' : 'text-white/40'}`}>{n.title}</p>
+                            {!n.read && <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: '#00d4ff', boxShadow: '0 0 4px rgba(0,212,255,0.5)' }} />}
+                          </div>
+                          <p className="text-[10px] text-white/25 mt-0.5 truncate">{n.desc}</p>
+                          <p className="text-[9px] text-white/15 mt-0.5">{n.time}</p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
 
         {/* Nav items */}
         <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
@@ -249,6 +362,9 @@ export default function AstroVerseLayout({
       case 'donaciones': return <DonacionesPage />
       case 'profile': return <ProfilePage userName={userName} userEmail={userEmail} />
       case 'encyclopedia': return <SpaceEncyclopediaPage />
+      case 'quiz': return <QuizPage />
+      case 'events': return <EventsPage />
+      case 'news': return <NewsPage />
       default: return <HomePage userName={userName} onNavigate={handleNavigate} />
     }
   }

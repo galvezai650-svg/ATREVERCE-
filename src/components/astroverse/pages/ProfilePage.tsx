@@ -4,11 +4,26 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Play, Heart, Star, FlaskConical, Clock, Compass,
-  Cpu, Edit3, Save, Activity, Orbit,
+  Cpu, Edit3, Save, Activity, Orbit, Trophy, Lock,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cardBase, staggerContainer, staggerItem } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
+
+const achievements = [
+  { id: 'first_login', name: 'Primer Paso', desc: 'Iniciaste sesión por primera vez', emoji: '🚀', unlocked: true },
+  { id: 'explorer', name: 'Explorador', desc: 'Visitaste 5 páginas diferentes', emoji: '🧭', unlocked: true },
+  { id: 'quiz_1', name: 'Científico', desc: 'Completaste tu primer quiz espacial', emoji: '🧠', unlocked: false },
+  { id: 'quiz_perfect', name: 'Maestro del Universo', desc: 'Obtuviste 100% en un quiz', emoji: '🌟', unlocked: false },
+  { id: 'streak_5', name: 'En Racha', desc: '5 respuestas correctas seguidas', emoji: '🔥', unlocked: false },
+  { id: 'video_5', name: 'Observador', desc: 'Viste 5 videos', emoji: '🔭', unlocked: false },
+  { id: 'all_sim', name: 'Simulador Pro', desc: 'Usaste todos los simuladores', emoji: '⚡', unlocked: false },
+  { id: 'pro_member', name: 'PRO Member', desc: 'Te suscribiste a AstroVerse PRO', emoji: '👑', unlocked: false },
+  { id: 'donor', name: 'Generoso', desc: 'Realizaste una donación', emoji: '💝', unlocked: false },
+  { id: 'events', name: 'Astrónomo', desc: 'Revisaste los eventos espaciales', emoji: '📅', unlocked: false },
+  { id: 'certificate', name: 'Graduado', desc: 'Obtuviste tu primer certificado', emoji: '📜', unlocked: false },
+  { id: 'encyclopedia', name: 'Erudito', desc: 'Leíste toda la enciclopedia', emoji: '📚', unlocked: false },
+]
 
 // ============================================================
 // ProfilePage
@@ -272,6 +287,72 @@ export default function ProfilePage({ userName, userEmail }: { userName: string;
           </motion.div>
         </div>
       </div>
+
+      {/* Achievements / Badges Section */}
+      <motion.div
+        className="rounded-2xl p-6 backdrop-blur-xl relative"
+        style={cardBase}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <CardGradientTop color="linear-gradient(90deg, #f59e0b, #ec4899, transparent)" />
+        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+          <Trophy size={18} className="text-amber-400" />
+          🏆 Logros y Badges
+          <span className="text-white/20 text-xs font-normal ml-auto">{achievements.filter(a => a.unlocked).length}/{achievements.length} desbloqueados</span>
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {achievements.map((ach, i) => (
+            <motion.div
+              key={ach.id}
+              className="rounded-xl p-4 text-center relative overflow-hidden cursor-default"
+              style={{
+                background: ach.unlocked ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.015)',
+                border: ach.unlocked ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(255,255,255,0.04)',
+                boxShadow: ach.unlocked ? '0 0 20px rgba(245,158,11,0.08)' : 'none',
+                opacity: ach.unlocked ? 1 : 0.35,
+              }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: ach.unlocked ? 1 : 0.35, scale: 1 }}
+              transition={{ delay: 0.4 + i * 0.04 }}
+              whileHover={ach.unlocked ? {
+                scale: 1.04,
+                boxShadow: '0 0 30px rgba(245,158,11,0.15)',
+                borderColor: 'rgba(245,158,11,0.35)',
+              } : undefined}
+              onHoverStart={e => {
+                if (e.currentTarget && ach.unlocked) {
+                  e.currentTarget.style.borderColor = 'rgba(245,158,11,0.35)'
+                  e.currentTarget.style.boxShadow = '0 0 30px rgba(245,158,11,0.15)'
+                }
+              }}
+              onHoverEnd={e => {
+                if (e.currentTarget && ach.unlocked) {
+                  e.currentTarget.style.borderColor = 'rgba(245,158,11,0.2)'
+                  e.currentTarget.style.boxShadow = '0 0 20px rgba(245,158,11,0.08)'
+                }
+              }}
+            >
+              <div className="text-3xl mb-2" style={{ filter: ach.unlocked ? 'none' : 'grayscale(1)' }}>
+                {ach.unlocked ? ach.emoji : <Lock size={24} className="text-white/15 mx-auto" />}
+              </div>
+              <p className={`text-xs font-semibold ${ach.unlocked ? 'text-amber-300' : 'text-white/20'}`}>{ach.name}</p>
+              <p className="text-[10px] text-white/20 mt-0.5 leading-tight">{ach.desc}</p>
+              {ach.unlocked && (
+                <motion.div
+                  className="absolute top-2 right-2"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.5 + i * 0.04, type: 'spring' }}
+                >
+                  <span className="text-[10px]">✨</span>
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   )
 }
