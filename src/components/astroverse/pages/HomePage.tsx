@@ -36,6 +36,14 @@ export default function HomePage({ userName, onNavigate }: {
       gradient: 'from-violet-500/30 to-pink-500/30',
       color: '#a855f7',
     },
+    {
+      id: 'v3',
+      src: '/videos/artemis2-moon-mission.mp4',
+      title: 'Artemis II Moon Mission Complete!',
+      desc: 'Mira la histórica misión Artemis II que lleva humanos de vuelta a la órbita de la Luna',
+      gradient: 'from-amber-500/30 to-red-500/30',
+      color: '#f59e0b',
+    },
   ]
 
   const spaceFacts = [
@@ -49,7 +57,7 @@ export default function HomePage({ userName, onNavigate }: {
 
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const [playing, setPlaying] = useState<Record<string, boolean>>({})
-  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true })
+  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true })
 
   const cycleFact = () => {
     setFactIndex(prev => (prev + 1) % spaceFacts.length)
