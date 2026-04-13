@@ -563,3 +563,23 @@ Stage Summary:
 - **Biblioteca ASTROVERSE** (mixed free/PRO): 8 interactive books with 90 chapters, 24+ free chapters with real educational content, reading progress in localStorage, book reader with chapter navigation, PRO gate for locked chapters
 - AstroVerseLayout now has 21 navigation items with 3 new monetizable sections
 - ESLint: 0 errors | Dev Server: 200 OK
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Change Certificados de Estudio to code verification + diploma download system
+
+Work Log:
+- Rewrote CertificatesPage.tsx: removed course completion flow, replaced with code verification input
+- New flow: Take exam in Certificaciones Oficiales → get CERT-XXXXXXXX → enter code → view diploma → download PDF
+- Code verification calls existing /api/certification-exams?verificationCode=X API
+- Verified exam results show score, grade, time, with "Ver Diploma" and "Descargar PDF" buttons
+- Certificate preview modal reuses CertificateTemplate (NASA logo, OKS LABS signature)
+- Real PDF download via html2canvas-pro + jsPDF (A4 landscape)
+- History of verified diplomas saved to localStorage
+- 3-step instructions, copy code, color-coded grades, PRO gate preserved
+
+Stage Summary:
+- Certificados de Estudio is now a diploma verification page (enter CERT code)
+- Users earn codes via Certificaciones Oficiales exams to unlock/download diplomas
+- ESLint: 0 errors | Dev Server: 200 OK
