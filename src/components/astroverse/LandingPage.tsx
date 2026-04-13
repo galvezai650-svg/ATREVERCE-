@@ -1676,7 +1676,7 @@ export default function LandingPage({
           >
             Respaldado por
           </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
             {/* NASA DATA Badge */}
             <motion.div
               className="relative rounded-2xl p-6 md:p-8 text-center group cursor-default transition-all duration-500"
@@ -1722,6 +1722,49 @@ export default function LandingPage({
                 <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.25)' }}>API NASA</span>
                 <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.25)' }}>Tiempo Real</span>
                 <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.25)' }}>APOD</span>
+              </div>
+            </motion.div>
+
+            {/* SpaceX Badge */}
+            <motion.div
+              className="relative rounded-2xl p-6 md:p-8 text-center group cursor-default transition-all duration-500"
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(20px)',
+              }}
+              whileHover={{
+                y: -6,
+                borderColor: 'rgba(236,72,153,0.3)',
+                boxShadow: '0 0 40px rgba(236,72,153,0.15)',
+              }}
+            >
+              <motion.div
+                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(236,72,153,0.15), rgba(245,158,11,0.1))',
+                  border: '1px solid rgba(236,72,153,0.25)',
+                  boxShadow: '0 0 30px rgba(236,72,153,0.15)',
+                }}
+              >
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  animate={{ opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ repeat: Infinity, duration: 2.8 }}
+                  style={{ background: 'radial-gradient(circle, rgba(236,72,153,0.15), transparent 70%)' }}
+                />
+                <svg fill="#fafafa" width="44" height="44" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" className="relative z-10">
+                  <path d="M31.937 9.287c-0.011 0-0.016-0.005-0.020-0.005-0.011 0-0.021 0.005-0.032 0.011-20.172 2.031-29.651 10.801-31.885 12.959l0.297 0.468h3.525c9.161-9.213 21.541-12.271 28.089-13.276l0.005 0.005c0.004 0 0.009-0.011 0.015-0.011 0.037-0.005 0.068-0.036 0.068-0.077 0-0.037-0.027-0.063-0.063-0.073zM0.505 14.011l-0.213 0.401 4.328 3.156c0.875-0.511 1.771-0.984 2.683-1.432l-2.901-2.125zM10.125 18.197c-0.719 0.532-1.448 1.095-2.235 1.756l3.803 2.765h3.943l0.167-0.359z"/>
+                </svg>
+              </motion.div>
+              <h3 className="text-lg md:text-xl font-bold text-white mb-1">
+                <span style={{ background: 'linear-gradient(to right, #ec4899, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>SPACE X</span>
+              </h3>
+              <p className="text-white/30 text-xs mb-4">Inspiración en exploración espacial</p>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.25)' }}>Falcon 9</span>
+                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}>Starship</span>
+                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)' }}>Mars</span>
               </div>
             </motion.div>
 
