@@ -624,3 +624,28 @@ Stage Summary:
 - No simulated payment processing — users must actually pay via the Premium page flow
 - **Certificados de Estudio**: Still completely FREE for everyone
 - ESLint: 0 errors | Dev Server: Compiling successfully
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Add auto-collapse sidebar animation on PC (icons-only by default, expand on hover)
+
+Work Log:
+- Added `desktopHovered` state and `hoverTimeoutRef` to Sidebar component
+- On desktop (lg+): sidebar shows only icons (80px) by default
+- When mouse enters sidebar → expands to full width (288px) with smooth Framer Motion animation
+- When mouse leaves sidebar → collapses back after 150ms delay
+- Used `motion.aside` with `animate={{ width }}` for smooth width transition (0.25s ease)
+- Replaced all `!collapsed` and `collapsed` checks with `showLabels` variable (true when expanded or hovered)
+- Added `onMouseEnter`/`onMouseLeave` handlers with desktop-only check
+- Main content stays at `lg:ml-20` always (sidebar overlays during hover)
+- Added native `title` attribute on nav items for tooltips in collapsed mode
+- Logo, notification bell, nav items, donate button, user section — all respond to showLabels
+- Mobile behavior unchanged (hamburger menu)
+
+Stage Summary:
+- PC sidebar: icons-only by default → expands with animation on hover → collapses when mouse leaves
+- Smooth 250ms cubic-bezier animation for sidebar width
+- Native browser tooltips on hover when collapsed
+- Mobile: unchanged hamburger menu behavior
+- ESLint: 0 errors | Dev Server: Compiling successfully

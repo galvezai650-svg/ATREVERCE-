@@ -77,9 +77,18 @@ function Sidebar({
 }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [notifs] = useState(notifications)
+  const [desktopHovered, setDesktopHovered] = useState(false)
   const notifRef = useRef<HTMLDivElement>(null)
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const unreadCount = notifs.filter(n => !n.read).length
+
+  // On desktop: collapsed by default, expanded on hover
+  const isExpanded = collapsed ? false : true
+  const isDesktopExpanded = desktopHovered
+  // Mobile: collapsed = hidden, not collapsed = shown
+  // Desktop: always visible, icons-only or full based on hover
+  const showLabels = isExpanded || isDesktopExpanded
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -101,31 +110,52 @@ function Sidebar({
 
       <motion.aside
         className={`fixed top-0 left-0 h-full z-50 flex flex-col ${
-          collapsed ? '-translate-x-full lg:translate-x-0 lg:w-20' : 'translate-x-0 w-72'
-        } transition-all duration-300`}
+          collapsed ? '-translate-x-full lg:translate-x-0' : 'translate-x-0'
+        }`}
+        animate={{
+          width: collapsed
+            ? (isDesktopExpanded ? 288 : 80)
+            : 288,
+        }}
+        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         style={{
           background: 'rgba(5,5,16,0.95)',
           borderRight: '1px solid rgba(255,255,255,0.06)',
           backdropFilter: 'blur(20px)',
         }}
+        onMouseEnter={() => {
+          if (window.innerWidth >= 1024) {
+            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current)
+            setDesktopHovered(true)
+          }
+        }}
+        onMouseLeave={() => {
+          if (window.innerWidth >= 1024) {
+            hoverTimeoutRef.current = setTimeout(() => setDesktopHovered(false), 150)
+          }
+        }}
       >
         <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'linear-gradient(90deg, #00d4ff, #7c3aed, #ec4899)' }} />
 
         {/* Logo */}
-        <div className="p-5 flex items-center gap-3">
+        <div className={`flex items-center shrink-0 ${collapsed && !isDesktopExpanded ? 'justify-center px-5 py-5' : 'p-5 px-5 gap-3'}`}>
           <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #00d4ff, #7c3aed)', boxShadow: '0 0 20px rgba(124,58,237,0.4)' }}>
             <Orbit size={20} className="text-white" />
           </div>
-          {!collapsed && (
-            <motion.div className="flex flex-col">
-              <motion.span
+          {showLabels && (
+            <motion.div
+              className="flex flex-col overflow-hidden"
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <span
                 className="text-lg font-bold whitespace-nowrap"
                 style={{ background: 'linear-gradient(to right, #00d4ff, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
               >
                 AstroVerse
-              </motion.span>
+              </span>
               <span className="text-[9px] font-medium text-white/25 tracking-wider">EXPLORADOR ESPACIAL</span>
             </motion.div>
           )}
@@ -136,7 +166,7 @@ function Sidebar({
         </button>
 
         {/* Notification Bell */}
-        {!collapsed && (
+        {showLabels && (
           <div className="px-5 pb-3 relative" ref={notifRef}>
             <motion.button
               onClick={() => setShowNotifications(!showNotifications)}
@@ -231,8 +261,9 @@ function Sidebar({
               <button
                 key={item.id}
                 onClick={() => { onNavigate(item.id); if (window.innerWidth < 1024) onToggleCollapse() }}
+                title={showLabels ? undefined : item.label}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group relative ${
-                  collapsed ? 'justify-center' : ''
+                  showLabels ? '' : 'justify-center'
                 } ${isActive ? '' : 'hover:bg-white/[0.04]'}`}
                 style={{
                   background: isActive ? 'rgba(0,212,255,0.08)' : 'transparent',
@@ -242,7 +273,7 @@ function Sidebar({
                 }}
               >
                 <item.icon size={20} className="shrink-0 group-hover:scale-110 transition-transform" />
-                {!collapsed && (
+                {showLabels && (
                   <>
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.badge && (
@@ -266,7 +297,7 @@ function Sidebar({
           <motion.button
             onClick={() => { onNavigate('donaciones'); if (window.innerWidth < 1024) onToggleCollapse() }}
             className={`w-full relative overflow-hidden rounded-xl transition-all duration-200 active:scale-[0.97] ${
-              collapsed ? 'h-11 flex items-center justify-center' : 'py-3'
+              showLabels ? 'py-3' : 'h-11 flex items-center justify-center'
             }`}
             style={{
               background: 'linear-gradient(135deg, #f59e0b, #ec4899, #f59e0b)',
@@ -298,7 +329,7 @@ function Sidebar({
               animate={{ opacity: [0.3, 0.7, 0.3] }}
               transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
             />
-            <div className={`relative z-10 flex items-center ${collapsed ? '' : 'gap-2.5 px-3'}`}>
+            <div className={`relative z-10 flex items-center ${showLabels ? 'gap-2.5 px-3' : ''}`}>
               <motion.div
                 animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
                 transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
@@ -306,7 +337,7 @@ function Sidebar({
               >
                 <Heart size={18} className="text-white" fill="white" />
               </motion.div>
-              {!collapsed && (
+              {showLabels && (
                 <>
                   <span className="text-xs font-bold text-white tracking-wide">Donar</span>
                   <span className="ml-auto text-[10px] font-black text-white/90 bg-white/20 px-2 py-0.5 rounded-md backdrop-blur-sm">USD</span>
@@ -315,7 +346,7 @@ function Sidebar({
             </div>
           </motion.button>
 
-          {!collapsed && (
+          {showLabels && (
             <motion.div
               className="flex items-center justify-center gap-1 mt-1.5"
               animate={{ opacity: [0.3, 0.6, 0.3] }}
@@ -330,7 +361,7 @@ function Sidebar({
 
         {/* User section */}
         <div className="p-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          {!collapsed && (
+          {showLabels && (
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 relative" style={{ background: 'linear-gradient(135deg, #00d4ff, #7c3aed)' }}>
                 {userName.charAt(0).toUpperCase()}
@@ -345,21 +376,21 @@ function Sidebar({
           <button
             onClick={() => window.location.href = '/admin'}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/25 hover:text-white/60 hover:bg-white/[0.04] transition-all duration-200 active:scale-[0.98] ${
-              collapsed ? 'justify-center' : ''
+              showLabels ? '' : 'justify-center'
             }`}
             title="Panel de Administración"
           >
             <Shield size={18} className="shrink-0" />
-            {!collapsed && <span>Admin</span>}
+            {showLabels && <span>Admin</span>}
           </button>
           <button
             onClick={onLogout}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400/60 hover:text-red-400 hover:bg-red-400/10 hover:shadow-[0_0_15px_rgba(239,68,68,0.1)] transition-all duration-200 active:scale-[0.98] ${
-              collapsed ? 'justify-center' : ''
+              showLabels ? '' : 'justify-center'
             }`}
           >
             <LogOut size={18} className="shrink-0" />
-            {!collapsed && <span>Cerrar Sesión</span>}
+            {showLabels && <span>Cerrar Sesión</span>}
           </button>
         </div>
       </motion.aside>
@@ -455,7 +486,7 @@ export default function AstroVerseLayout({
     <div className="min-h-screen" style={{ backgroundColor: '#050510' }}>
       <Sidebar activePage={activePage} onNavigate={handleNavigate} userName={userName} onLogout={onLogout} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
-      <main className={`transition-all duration-300 min-h-screen ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-72'}`}>
+      <main className="transition-all duration-[250ms] min-h-screen lg:ml-20" style={{ transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)' }}>
         {/* Mobile header */}
         <div className="lg:hidden sticky top-0 z-30 flex items-center gap-3 p-4" style={{ background: 'rgba(5,5,16,0.9)', borderBottom: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
           <button onClick={() => setSidebarCollapsed(false)} className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 active:scale-90">
