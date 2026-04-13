@@ -4,7 +4,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cardBase, staggerContainer, staggerItem } from '../shared/styles'
 import CardGradientTop from '../shared/CardGradientTop'
+import CertificateTemplate from '../CertificateTemplate'
 import { toast } from 'sonner'
+import html2canvas from 'html2canvas-pro'
+import jsPDF from 'jspdf'
 import {
   Award,
   Lock,
@@ -17,6 +20,10 @@ import {
   ChevronRight,
   GraduationCap,
   Trophy,
+  X,
+  Eye,
+  Globe,
+  FileText,
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────
@@ -36,16 +43,120 @@ interface Course {
   lessons: number
   gradient: string
   color: string
+  description: string
+  topics: string[]
 }
 
-// ─── Course Data ─────────────────────────────────────────────
+// ─── 12 Real Courses ────────────────────────────────────────
 const courses: Course[] = [
-  { name: 'Introducción a la Astronomía', emoji: '🌌', lessons: 4, gradient: 'linear-gradient(135deg, #00d4ff, #7c3aed)', color: '#00d4ff' },
-  { name: 'El Sistema Solar', emoji: '☀️', lessons: 8, gradient: 'linear-gradient(135deg, #f59e0b, #ec4899)', color: '#f59e0b' },
-  { name: 'Estrellas y Galaxias', emoji: '✨', lessons: 6, gradient: 'linear-gradient(135deg, #7c3aed, #ec4899)', color: '#7c3aed' },
-  { name: 'Exploración Espacial', emoji: '🚀', lessons: 5, gradient: 'linear-gradient(135deg, #00d4ff, #10b981)', color: '#10b981' },
-  { name: 'Telescopios y Observación', emoji: '🔭', lessons: 4, gradient: 'linear-gradient(135deg, #ec4899, #f59e0b)', color: '#ec4899' },
-  { name: 'Astrofísica Básica', emoji: '🧪', lessons: 7, gradient: 'linear-gradient(135deg, #10b981, #00d4ff)', color: '#10b981' },
+  {
+    name: 'Introducción a la Astronomía',
+    emoji: '🌌',
+    lessons: 12,
+    gradient: 'linear-gradient(135deg, #00d4ff, #7c3aed)',
+    color: '#00d4ff',
+    description: 'Fundamentos de la astronomía moderna: historia, herramientas y métodos de observación del cielo nocturno.',
+    topics: ['Historia de la Astronomía', 'Coordenadas Celestes', 'Instrumentos Ópticos', 'Mapas Estelares', 'Observación a Ojo Desnudo'],
+  },
+  {
+    name: 'El Sistema Solar',
+    emoji: '☀️',
+    lessons: 18,
+    gradient: 'linear-gradient(135deg, #f59e0b, #ec4899)',
+    color: '#f59e0b',
+    description: 'Exploración completa de nuestro vecindario cósmico: planetas, lunas, asteroides y cometas.',
+    topics: ['Los 8 Planetas', 'Lunas del Sistema Solar', 'Cinturón de Asteroides', 'Cometas y Meteoritos', 'El Sol'],
+  },
+  {
+    name: 'Estrellas y Galaxias',
+    emoji: '✨',
+    lessons: 15,
+    gradient: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+    color: '#7c3aed',
+    description: 'Nacimiento, vida y muerte de las estrellas, estructura y clasificación de galaxias.',
+    topics: ['Clasificación Espectral', 'Evolución Estelar', 'Enanas Blancas', 'Supernovas', 'Tipos de Galaxias', 'Agujeros Negros'],
+  },
+  {
+    name: 'Exploración Espacial',
+    emoji: '🚀',
+    lessons: 14,
+    gradient: 'linear-gradient(135deg, #00d4ff, #10b981)',
+    color: '#10b981',
+    description: 'Historia de los viajes espaciales: desde el Sputnik hasta las misiones a Marte y más allá.',
+    topics: ['La Carrera Espacial', 'Misiones Apollo', 'Estación Espacial', 'Rovers en Marte', 'Misión Artemis', 'Viaje a Marte'],
+  },
+  {
+    name: 'Telescopios y Observación',
+    emoji: '🔭',
+    lessons: 10,
+    gradient: 'linear-gradient(135deg, #ec4899, #f59e0b)',
+    color: '#ec4899',
+    description: 'Tipos de telescopios, técnicas de observación y astrofotografía para principiantes.',
+    topics: ['Refractores vs Reflectores', 'Astrofotografía', 'Filtros Ópticos', 'Cielos Oscuros', 'Calibración'],
+  },
+  {
+    name: 'Astrofísica Básica',
+    emoji: '🧪',
+    lessons: 16,
+    gradient: 'linear-gradient(135deg, #10b981, #00d4ff)',
+    color: '#10b981',
+    description: 'Principios físicos que gobiernan el universo: gravedad, luz, relatividad y mecánica cuántica.',
+    topics: ['Ley de Gravitación', 'Espectroscopía', 'Relatividad General', 'Constantes Fundamentales', 'Materia Oscura'],
+  },
+  {
+    name: 'Exoplanetas y Vida Extraterrestre',
+    emoji: '🌍',
+    lessons: 11,
+    gradient: 'linear-gradient(135deg, #3b82f6, #10b981)',
+    color: '#3b82f6',
+    description: 'Búsqueda de planetas fuera del sistema solar y las condiciones necesarias para la vida.',
+    topics: ['Métodos de Detección', 'Zona Habitable', 'Biosignaturas', 'SETI', 'Proyecto Kepler'],
+  },
+  {
+    name: 'El Universo Profundo',
+    emoji: '🔮',
+    lessons: 13,
+    gradient: 'linear-gradient(135deg, #7c3aed, #3b82f6)',
+    color: '#7c3aed',
+    description: 'Cosmología moderna: Big Bang, expansión del universo, materia oscura y energía oscura.',
+    topics: ['Big Bang', 'Radiación Fondo', 'Expansión Acelerada', 'Materia Oscura', 'Energía Oscura', 'Multiverso'],
+  },
+  {
+    name: 'Mecánica Orbital',
+    emoji: '🛰️',
+    lessons: 12,
+    gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+    color: '#ef4444',
+    description: 'Órbitas planetarias, leyes de Kepler, transferencias orbitales y satélites artificiales.',
+    topics: ['Leyes de Kepler', 'Órbitas Transferencia', 'Satélites Geoestacionarios', 'Mecánica de Vuelo', 'Puntos de Lagrange'],
+  },
+  {
+    name: 'Astronomía de Radio',
+    emoji: '📡',
+    lessons: 9,
+    gradient: 'linear-gradient(135deg, #00d4ff, #f59e0b)',
+    color: '#f59e0b',
+    description: 'El universo en frecuencias de radio: pulsares, quásares y el fondo cósmico de microondas.',
+    topics: ['Radiotelescopios', 'Pulsares', 'Quásares', 'CMB', 'ALMA'],
+  },
+  {
+    name: 'El Clima Espacial',
+    emoji: '⛈️',
+    lessons: 8,
+    gradient: 'linear-gradient(135deg, #6366f1, #ec4899)',
+    color: '#6366f1',
+    description: 'Actividad solar, tormentas geomagnéticas y su impacto en la Tierra y la tecnología.',
+    topics: ['Ciclo Solar', 'Eyecciones de Masa', 'Auroras', 'Magnetosfera', 'Impacto en Satélites'],
+  },
+  {
+    name: 'Colonización del Espacio',
+    emoji: '🏘️',
+    lessons: 10,
+    gradient: 'linear-gradient(135deg, #10b981, #f59e0b)',
+    color: '#10b981',
+    description: 'Futuro de la humanidad en el espacio: hábitats espaciales, terraformación y viajes interestelares.',
+    topics: ['Hábitats en Marte', 'Terraformación', 'Vuelo Interestelar', 'Propulsión Avanzada', 'Biodomo Espacial'],
+  },
 ]
 
 // ─── Confetti Particle Component ─────────────────────────────
@@ -92,8 +203,53 @@ function ConfettiBurst({ active }: { active: boolean }) {
   )
 }
 
-// ─── Certificate Card Component ──────────────────────────────
-function CertificateCard({ cert, userName }: { cert: Certificate; userName: string }) {
+// ─── PDF Download Handler ────────────────────────────────────
+async function handleDownloadPDF(cert: Certificate, courseInfo: Course | undefined) {
+  const element = document.getElementById(`certificate-${cert.id}`)
+  if (!element) return
+
+  try {
+    toast.loading('Generando PDF...')
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#0a0e27',
+      logging: false,
+    })
+    const imgData = canvas.toDataURL('image/png')
+    const pdf = new jsPDF('l', 'mm', 'a4')
+    const pdfWidth = pdf.internal.pageSize.getWidth()
+    const pdfHeight = pdf.internal.pageSize.getHeight()
+    const imgWidth = canvas.width
+    const imgHeight = canvas.height
+    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
+    const imgX = (pdfWidth - imgWidth * ratio) / 2
+    const imgY = (pdfHeight - imgHeight * ratio) / 2
+
+    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio)
+    const courseName = courseInfo?.name || element.getAttribute('data-course-name') || 'certificado'
+    pdf.save(`Certificado_AstroVerse_${courseName.replace(/\s+/g, '_')}.pdf`)
+
+    toast.dismiss()
+    toast.success('PDF descargado exitosamente')
+  } catch {
+    toast.dismiss()
+    toast.error('Error al generar PDF')
+  }
+}
+
+// ─── Certificate Preview Modal ──────────────────────────────
+function CertificateModal({
+  cert,
+  userName,
+  courseInfo,
+  onClose,
+}: {
+  cert: Certificate
+  userName: string
+  courseInfo: Course | undefined
+  onClose: () => void
+}) {
   const dateFormatted = new Date(cert.createdAt).toLocaleDateString('es-ES', {
     day: 'numeric',
     month: 'long',
@@ -101,125 +257,76 @@ function CertificateCard({ cert, userName }: { cert: Certificate; userName: stri
   })
 
   return (
-    <motion.div
-      variants={staggerItem}
-      className="relative overflow-hidden rounded-2xl"
-    >
-      {/* Gold gradient outer border */}
-      <div
-        className="rounded-2xl p-[2px]"
-        style={{
-          background: 'linear-gradient(135deg, #f59e0b, #fbbf24, #f59e0b, #d97706, #f59e0b)',
-          backgroundSize: '200% 200%',
-        }}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+        style={{ backgroundColor: 'rgba(5, 5, 16, 0.95)' }}
+        onClick={onClose}
       >
-        {/* Inner card */}
-        <div
-          className="rounded-2xl p-6 relative overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(5,5,16,0.95) 50%, rgba(245,158,11,0.04) 100%)',
-            backdropFilter: 'blur(24px)',
-          }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="relative w-full max-w-[1200px]"
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Decorative inner border */}
-          <div
-            className="absolute inset-3 rounded-xl pointer-events-none"
+          {/* Close button */}
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={onClose}
+            className="absolute -top-12 right-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium z-10"
             style={{
-              border: '1px solid rgba(245,158,11,0.15)',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: '#ffffff',
             }}
-          />
+          >
+            <X className="w-4 h-4" />
+            Cerrar
+          </motion.button>
 
-          {/* Corner stars */}
-          <div className="absolute top-4 left-4 text-amber-500/20 text-lg">★</div>
-          <div className="absolute top-4 right-4 text-amber-500/20 text-lg">★</div>
-          <div className="absolute bottom-4 left-4 text-amber-500/20 text-lg">★</div>
-          <div className="absolute bottom-4 right-4 text-amber-500/20 text-lg">★</div>
-
-          <div className="relative z-10">
-            {/* Header */}
-            <div className="text-center mb-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4" style={{ color: '#f59e0b' }} />
-                <span className="text-amber-400/80 text-xs font-medium tracking-widest uppercase">
-                  Certificado de Estudio
-                </span>
-                <Sparkles className="w-4 h-4" style={{ color: '#f59e0b' }} />
-              </div>
-              <div
-                className="w-16 h-[1px] mx-auto"
-                style={{ background: 'linear-gradient(90deg, transparent, #f59e0b, transparent)' }}
-              />
-            </div>
-
-            {/* Course name */}
-            <h3
-              className="text-center text-lg font-bold mb-4"
-              style={{
-                fontFamily: 'Georgia, "Times New Roman", serif',
-                color: '#fbbf24',
-              }}
-            >
-              {cert.courseName}
-            </h3>
-
-            {/* Details */}
-            <div className="text-center space-y-2 mb-4">
-              <p className="text-white/70 text-sm">
-                Otorgado a:{' '}
-                <span className="text-white font-semibold">{userName}</span>
-              </p>
-              <p className="text-white/40 text-xs font-mono">{cert.certificateId}</p>
-              <p className="text-white/50 text-xs">{dateFormatted}</p>
-            </div>
-
-            {/* AstroVerse branding */}
-            <div className="text-center mb-4">
-              <span
-                className="text-xs font-bold tracking-wider"
-                style={{
-                  background: 'linear-gradient(135deg, #00d4ff, #7c3aed)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                ASTROVERSE
-              </span>
-            </div>
-
-            {/* Decorative divider */}
-            <div
-              className="w-full h-[1px] mb-4"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.3), transparent)' }}
+          {/* Certificate - scrollable on mobile */}
+          <div
+            className="overflow-auto rounded-xl"
+            style={{
+              maxHeight: '85vh',
+              border: '1px solid rgba(212, 165, 55, 0.3)',
+              boxShadow: '0 0 60px rgba(212, 165, 55, 0.1), 0 25px 50px rgba(0,0,0,0.5)',
+            }}
+          >
+            <CertificateTemplate
+              studentName={userName}
+              courseName={cert.courseName}
+              courseDescription={courseInfo?.description || cert.description || ''}
+              certificateId={cert.certificateId}
+              issueDate={dateFormatted}
+              certDbId={cert.id}
             />
-
-            {/* Download button */}
-            <motion.button
-              onClick={() =>
-                toast.success('PDF generado', {
-                  description: `Certificado de "${cert.courseName}" listo para descargar`,
-                  style: {
-                    background: 'rgba(245,158,11,0.15)',
-                    border: '1px solid rgba(245,158,11,0.3)',
-                    color: '#f59e0b',
-                  },
-                })
-              }
-              whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(245,158,11,0.2)' }}
-              whileTap={{ scale: 0.97 }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all"
-              style={{
-                background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.15))',
-                border: '1px solid rgba(245,158,11,0.3)',
-                color: '#f59e0b',
-              }}
-            >
-              <Download className="w-4 h-4" />
-              Descargar PDF
-            </motion.button>
           </div>
-        </div>
-      </div>
-    </motion.div>
+
+          {/* Download PDF button */}
+          <motion.button
+            whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(245,158,11,0.3)' }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => handleDownloadPDF(cert, courseInfo)}
+            className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all"
+            style={{
+              background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+              border: '1px solid rgba(245,158,11,0.5)',
+              color: '#ffffff',
+            }}
+          >
+            <Download className="w-4 h-4" />
+            Descargar PDF
+          </motion.button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   )
 }
 
@@ -237,10 +344,14 @@ export default function CertificatesPage({
   const [loading, setLoading] = useState(true)
   const [completingCourse, setCompletingCourse] = useState<string | null>(null)
   const [confettiCourse, setConfettiCourse] = useState<string | null>(null)
+  const [previewCert, setPreviewCert] = useState<Certificate | null>(null)
   const confettiTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Determine completed course names from certificates
   const completedCourseNames = new Set(certificates.map((c) => c.courseName))
+
+  // Helper to get course info by name
+  const getCourseInfo = (name: string) => courses.find((c) => c.name === name)
 
   // ─── Fetch certificates on mount ──────────────────────────
   useEffect(() => {
@@ -284,7 +395,7 @@ export default function CertificatesPage({
           body: JSON.stringify({
             userId,
             courseName: course.name,
-            description: `Completó el curso "${course.name}" (${course.lessons} lecciones)`,
+            description: course.description,
           }),
         })
 
@@ -395,7 +506,7 @@ export default function CertificatesPage({
               className="text-white/50 text-sm md:text-base mb-8 max-w-md mx-auto"
             >
               Los certificados están disponibles para miembros PRO. Completa cursos y obtén certificados
-              profesionales de AstroVerse.
+              profesionales avalados a nivel mundial con contenido basado en datos de la NASA.
             </motion.p>
 
             {/* Features list */}
@@ -405,9 +516,10 @@ export default function CertificatesPage({
               className="flex flex-col items-center gap-2 mb-8"
             >
               {[
-                { icon: BookOpen, text: '6 cursos de astronomía' },
-                { icon: GraduationCap, text: 'Certificados descargables' },
-                { icon: Trophy, text: 'Reconocimiento profesional' },
+                { icon: BookOpen, text: '12 cursos de astronomía con contenido real' },
+                { icon: GraduationCap, text: 'Certificados PDF descargables' },
+                { icon: Globe, text: 'Avalado a nivel mundial — NASA DATA' },
+                { icon: Trophy, text: 'Reconocimiento profesional internacional' },
               ].map((feat) => (
                 <div key={feat.text} className="flex items-center gap-2 text-white/60 text-sm">
                   <feat.icon className="w-4 h-4" style={{ color: '#f59e0b' }} />
@@ -438,14 +550,15 @@ export default function CertificatesPage({
 
   // ─── PRO User View ────────────────────────────────────────
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6 space-y-8">
+    <div className="w-full max-w-5xl mx-auto px-4 py-6 space-y-8">
       {/* ─── Header ──────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
         className="text-center mb-2"
       >
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
+        <div
+          className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
           style={{
             background: 'linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))',
             border: '1px solid rgba(0,212,255,0.2)',
@@ -459,9 +572,17 @@ export default function CertificatesPage({
         >
           Certificados de Estudio
         </h1>
-        <p className="text-white/50 text-sm md:text-base">
-          Obtén certificados al completar cursos en AstroVerse
+        <p className="text-white/50 text-sm md:text-base mb-2">
+          Obtén certificados profesionales al completar cursos en AstroVerse
         </p>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs" style={{
+          background: 'rgba(0,212,255,0.08)',
+          border: '1px solid rgba(0,212,255,0.15)',
+          color: '#00d4ff',
+        }}>
+          <Globe className="w-3 h-3" />
+          Avalado a Nivel Mundial — NASA DATA
+        </div>
       </motion.div>
 
       {/* ─── Course Grid ─────────────────────────────────── */}
@@ -485,7 +606,7 @@ export default function CertificatesPage({
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
           {courses.map((course) => {
             const isCompleted = completedCourseNames.has(course.name)
@@ -519,7 +640,7 @@ export default function CertificatesPage({
                     {/* Status badge */}
                     {isCompleted ? (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0"
                         style={{
                           background: 'rgba(16,185,129,0.15)',
                           border: '1px solid rgba(16,185,129,0.3)',
@@ -531,7 +652,7 @@ export default function CertificatesPage({
                       </span>
                     ) : (
                       <span
-                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium shrink-0"
                         style={{
                           background: 'rgba(255,255,255,0.05)',
                           border: '1px solid rgba(255,255,255,0.1)',
@@ -539,6 +660,40 @@ export default function CertificatesPage({
                         }}
                       >
                         Disponible
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-white/50 text-xs leading-relaxed mb-3">
+                    {course.description}
+                  </p>
+
+                  {/* Topics tags */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {course.topics.slice(0, 3).map((topic) => (
+                      <span
+                        key={topic}
+                        className="px-2 py-0.5 rounded-md text-[10px] font-medium"
+                        style={{
+                          background: `${course.color}15`,
+                          border: `1px solid ${course.color}25`,
+                          color: `${course.color}cc`,
+                        }}
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                    {course.topics.length > 3 && (
+                      <span
+                        className="px-2 py-0.5 rounded-md text-[10px] font-medium"
+                        style={{
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          color: 'rgba(255,255,255,0.4)',
+                        }}
+                      >
+                        +{course.topics.length - 3} más
                       </span>
                     )}
                   </div>
@@ -578,32 +733,44 @@ export default function CertificatesPage({
                     </div>
                   </div>
 
-                  {/* Action button */}
+                  {/* Action buttons */}
                   <div className="relative">
                     {isCompleted ? (
-                      <motion.button
-                        whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() =>
-                          toast.success('PDF generado', {
-                            description: `Certificado de "${course.name}" listo para descargar`,
-                            style: {
-                              background: 'rgba(16,185,129,0.15)',
-                              border: '1px solid rgba(16,185,129,0.3)',
-                              color: '#10b981',
-                            },
-                          })
-                        }
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.08))',
-                          border: '1px solid rgba(16,185,129,0.3)',
-                          color: '#10b981',
-                        }}
-                      >
-                        <Download className="w-4 h-4" />
-                        Descargar
-                      </motion.button>
+                      <div className="flex gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(0,212,255,0.2)' }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            const cert = certificates.find((c) => c.courseName === course.name)
+                            if (cert) setPreviewCert(cert)
+                          }}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))',
+                            border: '1px solid rgba(0,212,255,0.3)',
+                            color: '#00d4ff',
+                          }}
+                        >
+                          <Eye className="w-4 h-4" />
+                          Ver Certificado
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            const cert = certificates.find((c) => c.courseName === course.name)
+                            if (cert) handleDownloadPDF(cert, course)
+                          }}
+                          className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.08))',
+                            border: '1px solid rgba(16,185,129,0.3)',
+                            color: '#10b981',
+                          }}
+                        >
+                          <Download className="w-4 h-4" />
+                        </motion.button>
+                      </div>
                     ) : (
                       <motion.button
                         whileHover={{ scale: 1.02, boxShadow: `0 0 20px ${course.color}20` }}
@@ -683,11 +850,107 @@ export default function CertificatesPage({
             variants={staggerContainer}
             initial="initial"
             animate="animate"
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
           >
-            {certificates.map((cert) => (
-              <CertificateCard key={cert.id} cert={cert} userName={userName} />
-            ))}
+            {certificates.map((cert) => {
+              const courseInfo = getCourseInfo(cert.courseName)
+              const dateFormatted = new Date(cert.createdAt).toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })
+
+              return (
+                <motion.div
+                  key={cert.id}
+                  variants={staggerItem}
+                  className="relative overflow-hidden rounded-2xl cursor-pointer group"
+                  style={cardBase}
+                  onClick={() => setPreviewCert(cert)}
+                >
+                  {/* Gold gradient top accent */}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-[2px] rounded-t-xl"
+                    style={{ background: 'linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b)' }}
+                  />
+
+                  <div className="relative z-10 p-5">
+                    <div className="flex items-start gap-3">
+                      {/* Course emoji */}
+                      <span className="text-3xl mt-1">{courseInfo?.emoji || '🎓'}</span>
+
+                      <div className="flex-1 min-w-0">
+                        {/* Course name */}
+                        <h3
+                          className="text-base font-bold mb-1 truncate"
+                          style={{
+                            fontFamily: 'Georgia, "Times New Roman", serif',
+                            color: '#fbbf24',
+                          }}
+                        >
+                          {cert.courseName}
+                        </h3>
+
+                        {/* Description preview */}
+                        <p className="text-white/50 text-xs leading-relaxed mb-3 line-clamp-2">
+                          {courseInfo?.description || cert.description || 'Curso completado exitosamente'}
+                        </p>
+
+                        {/* Details */}
+                        <div className="flex items-center gap-3 text-xs mb-3">
+                          <div className="flex items-center gap-1">
+                            <FileText className="w-3 h-3" style={{ color: '#ffffff40' }} />
+                            <span className="text-white/40 font-mono">{cert.certificateId}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3" style={{ color: '#ffffff40' }} />
+                            <span className="text-white/40">{dateFormatted}</span>
+                          </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex gap-2">
+                          <motion.button
+                            whileHover={{ scale: 1.02, boxShadow: '0 0 20px rgba(0,212,255,0.2)' }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setPreviewCert(cert)
+                            }}
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15))',
+                              border: '1px solid rgba(0,212,255,0.3)',
+                              color: '#00d4ff',
+                            }}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            Ver Certificado
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(16,185,129,0.2)' }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDownloadPDF(cert, courseInfo)
+                            }}
+                            className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.08))',
+                              border: '1px solid rgba(16,185,129,0.3)',
+                              color: '#10b981',
+                            }}
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            PDF
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
           </motion.div>
         ) : (
           <motion.div
@@ -711,6 +974,18 @@ export default function CertificatesPage({
           </motion.div>
         )}
       </div>
+
+      {/* ─── Certificate Preview Modal ──────────────────── */}
+      <AnimatePresence>
+        {previewCert && (
+          <CertificateModal
+            cert={previewCert}
+            userName={userName}
+            courseInfo={getCourseInfo(previewCert.courseName)}
+            onClose={() => setPreviewCert(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

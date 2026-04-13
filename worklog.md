@@ -387,3 +387,63 @@ Stage Summary:
 - All URLs point to real domains: nasa.gov, science.nasa.gov, space.com, esa.int, spacex.com, eso.org, starlink.com
 - All thumbnails use Unsplash CDN with 20 different space images
 - ESLint: 0 errors | Dev Server: 200 OK
+
+---
+Task ID: 4
+Agent: Main Agent + fullstack-developer subagent
+Task: Build professional certificate system with NASA logo, worldwide endorsement, real courses, PDF download
+
+Work Log:
+- Installed html2canvas-pro and jspdf for PDF generation
+- Created CertificateTemplate.tsx (522 lines): A4 landscape certificate with NASA meatball logo, double gold border, corner ornaments, star dots, student name, course name, "Avalado a Nivel Mundial" endorsement, OKS LABS signature, NASA DATA verification badge
+- Rewrote CertificatesPage.tsx (991 lines): 12 real astronomy courses (up from 6), each with description and topic tags
+- Added certificate preview modal with fullscreen dark overlay and scrollable on mobile
+- Implemented real PDF download via html2canvas + jsPDF (A4 landscape)
+- Course cards show: emoji, name, lesson count, description, topic tags, progress bar, status badge
+- "Ver Certificado" and "Descargar PDF" buttons on completed courses
+- Confetti burst animation on course completion preserved
+- PRO gate updated with 12 courses, NASA DATA endorsement, worldwide recognition
+- SpaceX badge already present in LandingPage partner badges section
+
+Stage Summary:
+- Professional certificate system with NASA logo, worldwide endorsement, 12 real courses
+- Real PDF download (html2canvas-pro + jsPDF) - A4 landscape format
+- Certificate includes: NASA meatball SVG, gold ornate border, star background, student name, course name, certificate ID, OKS LABS signature, NASA DATA verification
+- ESLint: 0 errors | Dev Server: 200 OK
+
+---
+Task ID: 4
+Agent: fullstack-developer
+Task: Build professional certificate system with NASA logo, worldwide endorsement, real courses
+
+Work Log:
+- Created `/src/components/astroverse/CertificateTemplate.tsx` — self-contained certificate div with all inline styles for html2canvas PDF capture
+  - A4 landscape proportions (1122x794px), deep navy background (#0a0e27) with 50 procedural star dots
+  - Double gold border (#d4a537 / #b8860b) with 4 SVG corner ornaments (data URI images)
+  - Top: NASA meatball SVG logo + "ASTROVERSE" gradient cyan-to-violet text
+  - Title: "CERTIFICADO DE COMPLETACIÓN" in Georgia serif with gold text-shadow
+  - Worldwide endorsement: globe emoji + "Avalado a Nivel Mundial" + "Reconocimiento Internacional"
+  - Student name (large serif, 36px), course name (gold, 26px), course description
+  - Certificate ID (monospace), issue date in a horizontal layout
+  - Bottom left: OKS LABS branding with signature line + "Oscar David Marulanda Galvez - Director"
+  - Bottom right: NASA DATA badge with "Contenido basado en datos oficiales de la NASA"
+  - Bottom center: ASTROVERSE gradient text
+  - No framer-motion, no Tailwind classes — pure inline styles for html2canvas compatibility
+- Completely rewrote `/src/components/astroverse/pages/CertificatesPage.tsx`
+  - 12 real astronomy courses (was 6) with descriptions and topic arrays in Spanish
+  - Course cards: emoji, name, lesson count, description, topic tags (first 3 shown + "+N más"), progress bar
+  - Certificate preview modal: fullscreen dark overlay, scrollable on mobile, renders CertificateTemplate with real cert data
+  - PDF download: html2canvas-pro (scale: 2, backgroundColor: #0a0e27) → jsPDF('l', 'mm', 'a4') → save as Certificado_AstroVerse_[courseName].pdf
+  - "Ver Certificado" button on completed course cards opens modal
+  - "Descargar PDF" button in modal and as standalone button on cards
+  - Confetti burst animation preserved on course completion
+  - PRO gate updated: mentions 12 courses, NASA DATA, worldwide endorsement
+  - Mis Certificados section: compact cards with emoji, gold serif title, description preview, cert ID, date, view + PDF buttons
+  - Toast notifications for PDF generation (loading/success/error)
+- Verified: `html2canvas-pro` and `jspdf` already in package.json
+- ESLint: 0 errors
+
+Stage Summary:
+- CertificateTemplate.tsx: professional A4 landscape certificate with NASA logo, gold borders, corner ornaments, worldwide endorsement, all inline styles
+- CertificatesPage.tsx: 12 real courses, certificate preview modal, real PDF download (html2canvas-pro + jsPDF), confetti animations, PRO gate
+- ESLint: 0 errors | Dependencies already installed
