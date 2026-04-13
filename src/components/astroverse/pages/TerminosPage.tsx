@@ -41,7 +41,7 @@ export default function TerminosPage() {
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Términos y Condiciones</h1>
         <div className="flex items-center justify-center gap-2 text-white/30 text-sm">
           <Calendar size={14} />
-          <span>Última actualización: 15 de enero de 2025</span>
+          <span>Última actualización: 15 de enero de 2026</span>
         </div>
       </motion.div>
 
