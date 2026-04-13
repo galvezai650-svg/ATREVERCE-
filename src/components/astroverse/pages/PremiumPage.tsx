@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   GraduationCap, Users, BookOpen, ChevronDown,
@@ -17,6 +17,8 @@ import CardGradientTop from '../shared/CardGradientTop'
 // ============================================================
 export default function PremiumPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null)
+  const [paypalReady, setPaypalReady] = useState(false)
+  const paypalContainerRef = useRef<HTMLDivElement>(null)
   const [isPro, setIsPro] = useState(() => {
     if (typeof window !== 'undefined') return localStorage.getItem('astroverse_pro') === 'true'
     return false
@@ -28,6 +30,72 @@ export default function PremiumPage() {
     localStorage.setItem('astroverse_pro', String(next))
     toast.success(next ? '🎓 ¡ASTROVERSE PRO Activado por $4.99/mes!' : 'Plan Básico activado')
   }
+
+  const paypalLoadedRef = useRef(false)
+
+  const renderPaypalButton = useCallback(() => {
+    const paypal = (window as any).paypal
+    if (!paypal || !paypal.Buttons || !paypalContainerRef.current) return
+
+    setPaypalReady(true)
+    paypalContainerRef.current.innerHTML = ''
+
+    paypal.Buttons({
+      style: {
+        shape: 'pill',
+        color: 'gold',
+        layout: 'vertical',
+        label: 'subscribe',
+        height: 45,
+      },
+      createSubscription: function (data: any, actions: any) {
+        return actions.subscription.create({
+          plan_id: 'P-2YH58611DA4123336NHODNII',
+        })
+      },
+      onApprove: function (data: any) {
+        toast.success('¡Suscripción aprobada! Activando AstroVerse PRO...')
+        setIsPro(true)
+        localStorage.setItem('astroverse_pro', 'true')
+      },
+      onError: function () {
+        toast.error('Error en la suscripción. Intenta de nuevo.')
+      },
+    }).render('#paypal-button-container')
+  }, [])
+
+  // Load PayPal SDK dynamically
+  useEffect(() => {
+    if (isPro) return
+    if (paypalReady) return
+    if (typeof window === 'undefined') return
+    if (paypalLoadedRef.current) return
+
+    paypalLoadedRef.current = true
+
+    const handleReady = () => renderPaypalButton()
+
+    // If PayPal SDK already loaded (e.g. script tag exists)
+    if ((window as any).paypal) {
+      // Use microtask to avoid synchronous setState in effect
+      setTimeout(handleReady, 0)
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = 'https://www.paypal.com/sdk/js?client-id=AVkYiXbBU-3ryFBNnOqTfADMIk-oCwsN6nN-O7cTh8eTRoHOJGXN1BnbOGn5hetdFxqdxw7SIbe4YO_g&vault=true&intent=subscription'
+    script.async = true
+    script.onload = handleReady
+    script.onerror = () => toast.error('Error al cargar PayPal. Intenta de nuevo.')
+    document.head.appendChild(script)
+
+    return () => {
+      if (paypalContainerRef.current) {
+        paypalContainerRef.current.innerHTML = ''
+      }
+      paypalLoadedRef.current = false
+    }
+  }, [isPro, paypalReady, renderPaypalButton])
 
   const proFeatures = [
     { text: 'Panel de Profesor completo', icon: School },
@@ -205,16 +273,28 @@ export default function PremiumPage() {
                 </motion.button>
               </div>
             ) : (
-              <motion.button
-                onClick={togglePro}
-                className="w-full py-3.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 mb-4"
-                style={{ background: 'linear-gradient(135deg, #00d4ff, #10b981)', boxShadow: '0 0 30px rgba(0,212,255,0.3), 0 4px 15px rgba(0,0,0,0.3)' }}
-                whileHover={{ scale: 1.03, boxShadow: '0 0 45px rgba(0,212,255,0.45), 0 4px 15px rgba(0,0,0,0.3)' }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <CreditCard size={16} />
-                Obtener PRO — $4.99/mes
-              </motion.button>
+              <div className="space-y-3 mb-4">
+                {/* PayPal Subscription Button */}
+                <div className="w-full rounded-xl overflow-hidden min-h-[45px] flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  {!paypalReady && (
+                    <div className="flex items-center gap-2 py-2">
+                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
+                        <CreditCard size={14} className="text-cyan-400/40" />
+                      </motion.div>
+                      <span className="text-white/30 text-xs">Cargando PayPal...</span>
+                    </div>
+                  )}
+                  <div ref={paypalContainerRef} id="paypal-button-container" />
+                </div>
+                {/* Fallback demo toggle */}
+                <button
+                  onClick={togglePro}
+                  className="w-full py-2 rounded-xl text-[11px] text-white/20 hover:text-white/40 transition-all"
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                >
+                  Activar demo (sin pago)
+                </button>
+              </div>
             )}
           </div>
           <div className="space-y-3 mt-2 relative z-10">
