@@ -23,6 +23,7 @@ model User {
   missionProgress MissionProgress[]
   communityPosts  CommunityPost[]
   certificates    Certificate[]
+  certificationExams CertificationExam[]
 }
 
 model Subscription {
@@ -94,4 +95,19 @@ model Certificate {
   certificateId String  @unique
   description  String   @default("")
   createdAt    DateTime @default(now())
+}
+
+model CertificationExam {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  courseName      String
+  score           Int
+  totalQuestions  Int
+  correctAnswers  Int
+  grade           String
+  verificationCode String  @unique
+  passed          Boolean
+  timeSpent       Int
+  createdAt       DateTime @default(now())
 }

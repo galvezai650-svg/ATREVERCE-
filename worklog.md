@@ -447,3 +447,119 @@ Stage Summary:
 - CertificateTemplate.tsx: professional A4 landscape certificate with NASA logo, gold borders, corner ornaments, worldwide endorsement, all inline styles
 - CertificatesPage.tsx: 12 real courses, certificate preview modal, real PDF download (html2canvas-pro + jsPDF), confetti animations, PRO gate
 - ESLint: 0 errors | Dependencies already installed
+
+---
+Task ID: 3
+Agent: fullstack-developer
+Task: Create CERTIFICACIONES OFICIALES ASTROVERSE (Certification Exams Page)
+
+Work Log:
+- Updated Prisma schema: Added `CertificationExam` model with id, userId, courseName, score, totalQuestions, correctAnswers, grade, verificationCode (unique), passed, timeSpent, createdAt
+- Added `certificationExams CertificationExam[]` relation to User model
+- Ran `bun run db:push` successfully
+- Created `/src/app/api/certification-exams/route.ts`:
+  - Question bank: 180 scientifically accurate multiple-choice questions in Spanish (15 per course × 12 courses)
+  - GET handler: `?userId=X` returns all exams for user with user name; `?verificationCode=X` returns exam for public verification; `?getQuestions=X` returns questions (without answers) for exam display; `?getQuestions=X&includeAnswers=true` returns questions with correct answers for review
+  - POST handler: Accepts userId, courseName, answers, timeSpent; validates against question bank; calculates score, grade (Maestro Cosmico 95-100, Científico Espacial 80-94, Explorador Astral 70-79, Aprendiz Estelar 0-69); generates unique verification code (CERT-XXXXXXXX); saves to DB
+- Created `/src/components/astroverse/pages/CertificationExamsPage.tsx` (~1000 lines):
+  - **Step 1 - Exam Selection**: Header with icon + title + "$4.99 USD por examen" badge; Stats row (total exams, best grade, average); Grid of 12 course cards with emoji, name, description, best score badge if taken, "Iniciar Examen"/"Repetir Examen" button
+  - **Step 2 - Instructions Modal**: 15 questions, 20 min limit, 70% pass threshold, no pause info; "Comenzar Examen" button; Non-PRO users see payment prompt modal instead
+  - **Step 3 - Exam In Progress**: Full-screen exam with countdown timer (20:00), question counter, question number indicator (clickable to jump), 4 option buttons (selected=cyan highlight), Previous/Next navigation, early submit when all answered
+  - **Step 4 - Results View**: Circular progress indicator with percentage, grade with emoji, pass/fail banner, stats (correct/total, time, incorrect), copyable verification code (monospace), "Descargar Certificado" button (for passed), "Revisar Respuestas" toggle
+  - **Step 5 - Certificate Modal**: Reuses existing CertificateTemplate with exam data; PDF download via html2canvas-pro + jsPDF (A4 landscape)
+  - Review section: fetches questions with answers from API, shows each question with correct/incorrect marking, user answer vs correct answer
+  - Auto-submit when timer reaches 0
+  - Design: glassmorphism on #050510, cyan/violet/amber/emerald colors, framer-motion animations, lucide-react icons, sonner toasts, all text in Spanish
+- Fixed 2 ESLint warnings (unused eslint-disable directives)
+- Verified: ESLint 0 errors | Dev Server 200 OK
+
+Stage Summary:
+- Certification Exams page with 5-step flow: selection → instructions → exam → results → certificate
+- 180 questions across 12 courses, all in Spanish, scientifically accurate
+- 4 grade tiers: Maestro Cosmico (95+), Científico Espacial (80+), Explorador Astral (70+), Aprendiz Estellar (<70)
+- PRO gating with payment prompt modal
+- Certificate PDF download reusing CertificateTemplate component
+- API: GET (user exams, verification, questions) + POST (submit & grade exam)
+- ESLint: 0 errors | Dev Server: 200 OK
+
+---
+Task ID: 4
+Agent: fullstack-developer
+Task: Create BIBLIOTECA ASTROVERSE (Interactive Library Page)
+
+Work Log:
+- Created `/src/components/astroverse/pages/BibliotecaPage.tsx` (~1100 lines) with 3 view states:
+  - **Library View**: Header with icon + gradient title + subtitle; Stats bar (total books, free, premium); Filter tabs (Todos, Gratis, PRO, Nuevos); Category dropdown filter; Book cards grid (2 cols on md, 1 on mobile)
+  - **Book Reader View**: Back button; Book cover header with gradient + animated emoji + title + author + stats; Progress bar (read chapters / total); Chapter list with free (✅ clickable) and locked (🔒) chapters; Current/completed chapter highlighting
+  - **Chapter Reader View**: Back button + chapter title + author; Reading progress bar; Scrollable content area with real educational astronomy text in Spanish; Previous/Next navigation; Locked chapter CTA ("Desbloquea con PRO")
+- 8 books with full data: Solar System, Black Holes, Mars Mission, Stellar Observation, Galaxies, Space History, Exoplanets, Rocket Science
+- Real educational chapter content in Spanish for all free chapters (24+ paragraphs across 8 books, ~3-4 paragraphs per chapter, 200-400 words each) covering actual astronomy topics
+- Book cards: gradient cover with animated emoji, PRO/GRATIS badge, title overlay, author, category badge, rating (⭐), readers count, chapter count, description, topic tags, reading progress indicator, "Leer Ahora" button
+- PRO gate modal: floating Crown animation, "Contenido Exclusivo PRO" title, feature list (all chapters, offline reading, new books monthly), "$4.99/mes" CTA button
+- Reading progress tracked in localStorage (key: `astroverse_library_progress`) with lazy state initialization
+- Used shared design system: cardBase, staggerContainer, staggerItem, CardGradientTop
+- All framer-motion animations via whileHover/whileTap (no onMouseEnter/onMouseLeave)
+- lucide-react icons: BookOpen, Library, Star, Users, Lock, Unlock, ChevronRight, ChevronLeft, ArrowLeft, Eye, Clock, Sparkles, GraduationCap, Crown, BookMarked, Filter, CheckCircle2, X
+- Fixed ESLint `react-hooks/set-state-in-effect` error by using lazy state initializer instead of useEffect
+- ESLint: 0 errors
+
+Stage Summary:
+- BibliotecaPage with full interactive library, book reader, and chapter reader views
+- 8 books with 90 total chapters, 24+ with real educational content in Spanish
+- localStorage reading progress tracking
+- PRO gate modal with $4.99 CTA
+- ESLint: 0 errors
+
+---
+Task ID: 2
+Agent: fullstack-developer
+Task: Build Mentor IA PRO
+
+Work Log:
+- Created `/src/app/api/ai-chat/route.ts` (89 lines):
+  - POST endpoint accepting `{ messages: Array<{role, content}>, isPremium: boolean }`
+  - Uses `z-ai-web-dev-sdk` for real LLM responses via dynamic import
+  - System prompt in Spanish: AstroAsistente, astronomy expert on ASTROVERSE
+  - Enhanced PRO system prompt with detailed scientific capabilities
+  - Graceful fallback to randomized Spanish responses on LLM error
+  - Input validation (400) and error handling (500)
+  - Keeps last 10 messages for context window
+- Rewrote `/src/components/astroverse/pages/AiChatPage.tsx` (805 lines):
+  - Props: `{ userId, isPremium, userName }`
+  - **Header**: "Mentor IA PRO" with cyan-to-violet gradient, online status indicator, PRO badge with Zap icon
+  - **Free User Mode**: 10 questions/day limit via localStorage (`astroverse_ai_questions`), midnight auto-reset (date comparison), X/10 amber counter (turns red at ≤3), upgrade banner ("Obtén preguntas ilimitadas con PRO →"), 30+ hardcoded responses matched by keywords (planets, black holes, galaxies, missions, Big Bang, etc.), simulated typing delay (1.2-2s)
+  - **PRO User Mode**: Unlimited questions, "∞ Preguntas" cyan badge with Infinity icon, real LLM API calls to `/api/ai-chat`, "Explicación Detallada" toggle (appends scientific detail request), "Generar Imagen" button (PRO+ teaser, not functional), PRO badge on AI messages, glow effect on input focus (whileFocus), detailed system prompt with advanced capabilities
+  - **Chat UI**: User messages right-aligned with cyan border, AI messages left-aligned with violet border + Sparkles icon + "AstroAsistente" label, basic markdown rendering (**bold**, *italic*), typing indicator with animated dots, 6 quick suggestion chips with whileHover animations
+  - **PRO Gate Overlay**: Lock icon, "Límite diario alcanzado" title, feature list (∞ preguntas, explicaciones detalladas, sin restricciones), "Obtén acceso ilimitado" CTA with gradient, debug reset counter button
+  - Fixed TypeScript conflict: renamed `Infinity` import from lucide-react to `InfinityIcon`, used `Number.POSITIVE_INFINITY` for remaining count
+  - Fixed Variants type error on motion.button by replacing `variants={staggerItem}` with direct `initial`/`animate` props
+  - Used shared design system: cardBase, staggerContainer, staggerItem, CardGradientTop
+  - All text in Spanish, framer-motion AnimatePresence for overlays, whileHover/whileTap (no onMouseEnter/onMouseLeave), sonner toasts, lucide-react icons
+
+Stage Summary:
+- API route `/api/ai-chat` with z-ai-web-dev-sdk LLM integration and fallback responses
+- AiChatPage completely rewritten as Mentor IA PRO with free/PRO dual mode
+- 30+ hardcoded responses for free users covering planets, galaxies, black holes, missions, etc.
+- PRO users get real LLM responses with detailed explanation toggle
+- Daily question limit (10/day) for free users with localStorage persistence and midnight reset
+- ESLint: 0 errors | TypeScript: 0 errors in modified files
+
+---
+Task ID: 5
+Agent: Main Agent + 3 parallel fullstack-developer subagents
+Task: Build 3 new monetizable sections: Mentor IA PRO, Certificaciones Oficiales, Biblioteca ASTROVERSE
+
+Work Log:
+- Dispatched 3 parallel subagents for each feature
+- Subagent 1: Created /api/ai-chat route + rewrote AiChatPage.tsx (807 lines) as Mentor IA PRO
+- Subagent 2: Updated Prisma schema with CertificationExam model + created /api/certification-exams route + CertificationExamsPage.tsx (1116 lines)
+- Subagent 3: Created BibliotecaPage.tsx (1409 lines) with 8 books, 90 chapters, real content
+- Integrated all 3 into AstroVerseLayout.tsx: added Bot/ClipboardCheck/Library icons, 3 new navItems, 3 new renderPage cases
+- Verified: ESLint 0 errors, Dev Server 200 OK
+
+Stage Summary:
+- **Mentor IA PRO** ($4.99/mes): LLM-powered chat with free 10 questions/day limit, PRO unlimited, 30+ hardcoded responses, detailed explanations toggle, markdown rendering
+- **Certificaciones Oficiales** ($4.99/examen): 180 questions across 12 courses, 20-min timer, auto-grading (Maestro Cosmico/Científico Espacial/Explorador Astral/Aprendiz Estelar), verification codes, certificate PDF download
+- **Biblioteca ASTROVERSE** (mixed free/PRO): 8 interactive books with 90 chapters, 24+ free chapters with real educational content, reading progress in localStorage, book reader with chapter navigation, PRO gate for locked chapters
+- AstroVerseLayout now has 21 navigation items with 3 new monetizable sections
+- ESLint: 0 errors | Dev Server: 200 OK

@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award, Shield, FileText, Lock, MailCheck, KeyRound } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award, Shield, FileText, Lock, MailCheck, KeyRound, Bot, ClipboardCheck, Library } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
@@ -21,6 +21,9 @@ import LeaderboardPage from './pages/LeaderboardPage'
 import CommunityPage from './pages/CommunityPage'
 import MiniGamesPage from './pages/MiniGamesPage'
 import CertificatesPage from './pages/CertificatesPage'
+import AiChatPage from './pages/AiChatPage'
+import CertificationExamsPage from './pages/CertificationExamsPage'
+import BibliotecaPage from './pages/BibliotecaPage'
 import TerminosPage from './pages/TerminosPage'
 import PrivacidadPage from './pages/PrivacidadPage'
 import SobreNosotrosPage from './pages/SobreNosotrosPage'
@@ -42,6 +45,9 @@ const navItems = [
   { id: 'events', label: 'Eventos', icon: Calendar },
   { id: 'news', label: 'Noticias', icon: Newspaper },
   { id: 'community', label: 'Comunidad', icon: Users },
+  { id: 'mentor-ai', label: 'Mentor IA PRO', icon: Bot, badge: 'PRO' },
+  { id: 'biblioteca', label: 'Biblioteca', icon: Library, badge: '📚' },
+  { id: 'cert-exams', label: 'Certificaciones', icon: ClipboardCheck, badge: '$4.99' },
   { id: 'certificates', label: 'Certificados', icon: Award, badge: 'PRO' },
   { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
@@ -421,6 +427,9 @@ export default function AstroVerseLayout({
       case 'leaderboard': return <LeaderboardPage currentUserId={userId} />
       case 'community': return <CommunityPage userId={userId} userName={userName} />
       case 'minigames': return <MiniGamesPage />
+      case 'mentor-ai': return <AiChatPage userId={userId} isPremium={isPremium} userName={userName} />
+      case 'biblioteca': return <BibliotecaPage userId={userId} isPremium={isPremium} userName={userName} />
+      case 'cert-exams': return <CertificationExamsPage userId={userId} isPremium={isPremium} userName={userName} />
       case 'certificates': return <CertificatesPage userId={userId} isPremium={isPremium} userName={userName} />
       case 'nosotros': return <SobreNosotrosPage />
       case 'terminos': return <TerminosPage />
