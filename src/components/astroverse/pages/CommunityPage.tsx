@@ -286,7 +286,7 @@ export default function CommunityPage({
   const fetchPosts = () => {
     fetch('/api/community')
       .then((res) => res.json())
-      .then((data) => setPosts(data.posts || data || []))
+      .then((data) => setPosts(Array.isArray(data) ? data : Array.isArray(data?.posts) ? data.posts : []))
       .catch(() => setPosts([]))
       .finally(() => setLoading(false))
   }

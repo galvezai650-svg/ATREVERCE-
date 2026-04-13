@@ -251,7 +251,7 @@ export default function CertificatesPage({
         const res = await fetch(`/api/certificates?userId=${userId}`)
         if (res.ok) {
           const data = await res.json()
-          setCertificates(Array.isArray(data) ? data : data.certificates || [])
+          setCertificates(Array.isArray(data) ? data : Array.isArray(data?.certificates) ? data.certificates : [])
         }
       } catch {
         // Silently fail — certificates will just show as empty
