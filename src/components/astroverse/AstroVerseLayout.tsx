@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award, Shield } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award, Shield, FileText, Lock, MailCheck, KeyRound } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
@@ -21,6 +21,8 @@ import LeaderboardPage from './pages/LeaderboardPage'
 import CommunityPage from './pages/CommunityPage'
 import MiniGamesPage from './pages/MiniGamesPage'
 import CertificatesPage from './pages/CertificatesPage'
+import TerminosPage from './pages/TerminosPage'
+import PrivacidadPage from './pages/PrivacidadPage'
 
 // ============================================================
 // Sidebar Navigation
@@ -44,6 +46,8 @@ const navItems = [
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
   { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
   { id: 'profile', label: 'Perfil', icon: User },
+  { id: 'terminos', label: 'Términos', icon: FileText },
+  { id: 'privacidad', label: 'Privacidad', icon: Shield },
 ]
 
 const notifications = [
@@ -369,6 +373,8 @@ export default function AstroVerseLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
   const [userId, setUserId] = useState('')
   const [isPremium, setIsPremium] = useState(false)
+  const [emailVerified, setEmailVerified] = useState(true)
+  const [showVerifyBanner, setShowVerifyBanner] = useState(false)
 
   // Fetch userId and premium status on mount
   useEffect(() => {
@@ -379,6 +385,10 @@ export default function AstroVerseLayout({
           const data = await res.json()
           if (data.user?.id) setUserId(data.user.id)
           if (data.isPremium) setIsPremium(true)
+          if (data.emailVerified === false) {
+            setEmailVerified(false)
+            setShowVerifyBanner(true)
+          }
         }
       } catch { /* silent */ }
     }
@@ -410,6 +420,8 @@ export default function AstroVerseLayout({
       case 'community': return <CommunityPage userId={userId} userName={userName} />
       case 'minigames': return <MiniGamesPage />
       case 'certificates': return <CertificatesPage userId={userId} isPremium={isPremium} userName={userName} />
+      case 'terminos': return <TerminosPage />
+      case 'privacidad': return <PrivacidadPage />
       default: return <HomePage userName={userName} onNavigate={handleNavigate} />
     }
   }
@@ -429,6 +441,52 @@ export default function AstroVerseLayout({
           </div>
           <span className="text-sm font-bold flex-1" style={{ background: 'linear-gradient(to right, #00d4ff, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>AstroVerse</span>
         </div>
+
+        {/* Email Verification Banner */}
+        <AnimatePresence>
+          {showVerifyBanner && !emailVerified && (
+            <motion.div
+              className="mx-6 md:mx-8 mt-4 rounded-xl p-4 flex items-center gap-4"
+              style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: 'rgba(245,158,11,0.15)' }}>
+                <MailCheck size={20} className="text-amber-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-amber-400">Verifica tu email</p>
+                <p className="text-xs text-white/40 mt-0.5">Confirma tu cuenta para acceder a todas las funciones</p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <motion.button
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('/api/auth/verify-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: userEmail }),
+                      })
+                      if (res.ok) {
+                        setEmailVerified(true)
+                        setShowVerifyBanner(false)
+                      }
+                    } catch { /* silent */ }
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-[11px] font-semibold text-emerald-400"
+                  style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+                  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                >
+                  ✅ Verificar Ahora
+                </motion.button>
+                <button onClick={() => setShowVerifyBanner(false)} className="w-7 h-7 rounded-md flex items-center justify-center text-white/30 hover:text-white hover:bg-white/10 transition-all">
+                  <X size={14} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="p-6 md:p-8">
           <AnimatePresence mode="wait">

@@ -15,7 +15,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ isPremium: false })
     }
 
-    return NextResponse.json({ isPremium: user.isPremium, user: { id: user.id, name: user.name, email: user.email } })
+    return NextResponse.json({
+      isPremium: user.isPremium,
+      emailVerified: user.emailVerified,
+      user: { id: user.id, name: user.name, email: user.email },
+    })
   } catch (error) {
     console.error('Check premium error:', error)
     return NextResponse.json({ isPremium: false }, { status: 500 })
