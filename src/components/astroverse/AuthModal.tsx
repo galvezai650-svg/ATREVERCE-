@@ -9,11 +9,12 @@ interface AuthModalProps {
   onClose: () => void
   initialMode?: 'login' | 'register'
   onSuccess: (data: { name: string; email: string }) => void
+  onShowLegal?: (page: 'terminos' | 'privacidad') => void
 }
 
 type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password' | 'verify-email'
 
-export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSuccess }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSuccess, onShowLegal }: AuthModalProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -458,8 +459,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
                 <div className="mt-4 pt-4 text-center" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
                   <p className="text-[10px] text-white/20">
                     Al continuar, aceptas nuestros{' '}
-                    <span className="text-cyan-400/40 hover:text-cyan-400 cursor-pointer">Términos</span> y{' '}
-                    <span className="text-cyan-400/40 hover:text-cyan-400 cursor-pointer">Política de Privacidad</span>
+                    <span onClick={() => onShowLegal?.('terminos')} className="text-cyan-400/40 hover:text-cyan-400 cursor-pointer">Términos</span> y{' '}
+                    <span onClick={() => onShowLegal?.('privacidad')} className="text-cyan-400/40 hover:text-cyan-400 cursor-pointer">Política de Privacidad</span>
                   </p>
                 </div>
               )}

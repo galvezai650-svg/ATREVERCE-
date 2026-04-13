@@ -741,18 +741,10 @@ function LandingNavbar({
             onClick={onLogin}
             className="relative px-4 py-2 rounded-lg text-sm text-white/70 hover:text-white font-medium transition-colors duration-300 overflow-hidden"
             whileTap={{ scale: 0.98 }}
-            style={{ border: '1px solid rgba(255,255,255,0.1)' }}
-            onMouseEnter={e => {
-              if (e.currentTarget) {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(0,212,255,0.4)'
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 15px rgba(0,212,255,0.15)'
-              }
-            }}
-            onMouseLeave={e => {
-              if (e.currentTarget) {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.1)'
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none'
-              }
+            style={{ border: '1px solid', borderColor: 'rgba(255,255,255,0.1)' }}
+            whileHover={{
+              borderColor: 'rgba(0,212,255,0.4)',
+              boxShadow: '0 0 15px rgba(0,212,255,0.15)',
             }}
           >
             Iniciar Sesión
@@ -949,10 +941,11 @@ function GradientBorderContainer({ children, className = '', colors = ['#00d4ff'
 // MAIN LandingPage Component
 // ============================================================
 export default function LandingPage({
-  onLogin, onRegister
+  onLogin, onRegister, onShowLegal
 }: {
   onLogin: () => void
   onRegister: () => void
+  onShowLegal?: (page: 'terminos' | 'privacidad') => void
 }) {
   const features = [
     {
@@ -1760,8 +1753,8 @@ export default function LandingPage({
               <div className="space-y-2">
                 <p onClick={() => toast.info('FAQ próximamente disponible')} className="text-white/30 text-sm hover:text-white/50 cursor-pointer transition-colors">FAQ</p>
                 <p onClick={() => toast.info('Formulario de contacto próximamente')} className="text-white/30 text-sm hover:text-white/50 cursor-pointer transition-colors">Contacto</p>
-                <p onClick={() => toast.info('Términos y condiciones próximamente')} className="text-white/30 text-sm hover:text-white/50 cursor-pointer transition-colors">Términos</p>
-                <p onClick={() => toast.info('Política de privacidad próximamente')} className="text-white/30 text-sm hover:text-white/50 cursor-pointer transition-colors">Privacidad</p>
+                <p onClick={() => onShowLegal?.('terminos')} className="text-white/30 text-sm hover:text-white/50 cursor-pointer transition-colors">Términos</p>
+                <p onClick={() => onShowLegal?.('privacidad')} className="text-white/30 text-sm hover:text-white/50 cursor-pointer transition-colors">Privacidad</p>
               </div>
             </div>
           </div>
@@ -1769,8 +1762,12 @@ export default function LandingPage({
             className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
             style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
           >
-            <p className="text-white/20 text-sm">
+            <p className="text-white/20 text-sm flex flex-wrap items-center justify-center gap-x-2">
               © 2025 AstroVerse. Todos los derechos reservados.
+              <span className="hidden sm:inline">·</span>
+              <span onClick={() => onShowLegal?.('terminos')} className="hover:text-white/40 cursor-pointer transition-colors">Términos</span>
+              <span>·</span>
+              <span onClick={() => onShowLegal?.('privacidad')} className="hover:text-white/40 cursor-pointer transition-colors">Privacidad</span>
             </p>
             <p className="text-white/20 text-xs flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">

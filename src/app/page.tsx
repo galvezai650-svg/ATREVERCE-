@@ -6,6 +6,7 @@ import { Orbit } from 'lucide-react'
 import LandingPage from '@/components/astroverse/LandingPage'
 import AuthModal from '@/components/astroverse/AuthModal'
 import AstroVerseLayout from '@/components/astroverse/AstroVerseLayout'
+import LegalOverlay from '@/components/astroverse/LegalOverlay'
 
 type AppView = 'loading' | 'landing' | 'app'
 
@@ -31,6 +32,7 @@ export default function Home() {
   const [showAuth, setShowAuth] = useState(false)
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
+  const [legalPage, setLegalPage] = useState<'terminos' | 'privacidad' | null>(null)
 
   // On mount: check for stored session
   useEffect(() => {
@@ -102,7 +104,7 @@ export default function Home() {
     <>
       {/* Landing Page */}
       {view === 'landing' && (
-        <LandingPage onLogin={handleLogin} onRegister={handleRegister} />
+        <LandingPage onLogin={handleLogin} onRegister={handleRegister} onShowLegal={page => setLegalPage(page)} />
       )}
 
       {/* App */}
@@ -127,6 +129,14 @@ export default function Home() {
         onClose={() => setShowAuth(false)}
         initialMode={authMode}
         onSuccess={handleAuthSuccess}
+        onShowLegal={page => { setShowAuth(false); setLegalPage(page) }}
+      />
+
+      {/* Legal Overlay */}
+      <LegalOverlay
+        isOpen={!!legalPage}
+        onClose={() => setLegalPage(null)}
+        page={legalPage || 'terminos'}
       />
     </>
   )
