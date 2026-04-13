@@ -408,6 +408,19 @@ export default function AstroVerseLayout({
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
+  // Listen for navigation events from child components
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const customEvent = e as CustomEvent<string>
+      if (customEvent.detail) {
+        setActivePage(customEvent.detail)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+    window.addEventListener('astroverse:navigate', handler)
+    return () => window.removeEventListener('astroverse:navigate', handler)
+  }, [])
+
   const renderPage = () => {
     switch (activePage) {
       case 'home': return <HomePage userName={userName} onNavigate={handleNavigate} />

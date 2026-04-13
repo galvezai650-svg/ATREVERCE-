@@ -603,3 +603,24 @@ Stage Summary:
 - **Certificaciones Oficiales**: PAID per exam ($4.99 USD) — click "Iniciar Examen" → payment prompt → simulated payment → instructions → exam
 - Sidebar: Certificados shows green 'FREE' badge, Certificaciones shows amber '$4.99' badge
 - ESLint: 0 errors | Dev Server: Compiling successfully | All routes: 200 OK
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Remove simulated payment from CertificationExamsPage — real paywall only
+
+Work Log:
+- Removed simulated payment (useState paying + setTimeout) from PaymentPromptModal
+- Removed `onPay` callback prop — modal can no longer proceed to exam
+- Replaced with real paywall: "Ir a AstroVerse PRO" button navigates to Premium page via custom event `astroverse:navigate`
+- Added "Contactar por WhatsApp" link (+573026812303) for alternative payment
+- Added `MessageCircle` import from lucide-react
+- Added custom event listener in AstroVerseLayout.tsx to handle `astroverse:navigate` events from child components
+- Cleaned up leftover duplicate modal code (lines 327-423)
+
+Stage Summary:
+- **Certificaciones Oficiales**: Real paywall — clicking "Iniciar Examen" shows payment modal with NO bypass
+- Modal has 2 options: "Ir a AstroVerse PRO" (navigates to payment page) or "Contactar por WhatsApp"
+- No simulated payment processing — users must actually pay via the Premium page flow
+- **Certificados de Estudio**: Still completely FREE for everyone
+- ESLint: 0 errors | Dev Server: Compiling successfully

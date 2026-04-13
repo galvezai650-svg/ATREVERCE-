@@ -26,6 +26,7 @@ import {
   X,
   Sparkles,
   Globe,
+  MessageCircle,
 } from 'lucide-react'
 
 // ─── Types ───────────────────────────────────────────────────
@@ -219,24 +220,11 @@ function InstructionsModal({ course, onStart, onClose }: { course: CourseInfo; o
 // ─── Payment Prompt Modal ────────────────────────────────────
 function PaymentPromptModal({
   course,
-  onPay,
   onClose,
 }: {
   course: CourseInfo
-  onPay: () => void
   onClose: () => void
 }) {
-  const [paying, setPaying] = useState(false)
-
-  const handlePay = () => {
-    setPaying(true)
-    // Simulate payment processing (testing purposes)
-    setTimeout(() => {
-      setPaying(false)
-      onPay()
-    }, 1500)
-  }
-
   return (
     <AnimatePresence>
       <motion.div
@@ -295,36 +283,37 @@ function PaymentPromptModal({
               ))}
             </div>
 
-            {/* Pay button */}
+            {/* Go to Premium button */}
             <motion.button
               whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(245,158,11,0.3)' }}
               whileTap={{ scale: 0.97 }}
-              onClick={handlePay}
-              disabled={paying}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-60"
+              onClick={() => {
+                onClose()
+                window.dispatchEvent(new CustomEvent('astroverse:navigate', { detail: 'pro' }))
+              }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #ec4899)', color: 'white' }}
             >
-              {paying ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-4 h-4 border-2 border-t-transparent rounded-full"
-                    style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: 'transparent' }}
-                  />\n                  Procesando pago...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4" />
-                  Pagar $4.99 — Comenzar Examen
-                </>
-              )}
+              <Sparkles className="w-4 h-4" />
+              Ir a AstroVerse PRO
             </motion.button>
+
+            {/* WhatsApp contact */}
+            <a
+              href="https://wa.me/573026812303?text=Hola%2C%20quiero%20pagar%20por%20un%20examen%20de%20certificaci%C3%B3n%20en%20AstroVerse"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-medium mt-2 transition-all hover:bg-white/[0.06]"
+              style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', color: '#10b981' }}
+            >
+              <MessageCircle className="w-4 h-4" />
+              Contactar por WhatsApp
+            </a>
 
             {/* Cancel link */}
             <button
               onClick={onClose}
-              className="mt-3 text-white/30 text-xs hover:text-white/50 transition-colors"
+              className="mt-3 text-white/30 text-xs hover:text-white/50 transition-colors block w-full"
             >
               Cancelar
             </button>
@@ -1161,10 +1150,6 @@ export default function CertificationExamsPage({
         {showPaymentPrompt && selectedCourse && (
           <PaymentPromptModal
             course={selectedCourse}
-            onPay={() => {
-              setShowPaymentPrompt(false)
-              setView('instructions')
-            }}
             onClose={() => setShowPaymentPrompt(false)}
           />
         )}
