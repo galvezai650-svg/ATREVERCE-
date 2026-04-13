@@ -1668,6 +1668,14 @@ export default function LandingPage({
       {/* ===== PARTNER BADGES ===== */}
       <section className="relative z-10 py-16 px-6">
         <div className="max-w-5xl mx-auto">
+          <motion.p
+            className="text-center text-white/20 text-xs font-medium uppercase tracking-[0.2em] mb-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            Respaldado por
+          </motion.p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* NASA DATA Badge */}
             <motion.div
@@ -1697,12 +1705,15 @@ export default function LandingPage({
                   transition={{ repeat: Infinity, duration: 3 }}
                   style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%)' }}
                 />
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48" className="relative z-10">
-                  <path fill="#0e3a5d" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
-                  <path fill="#1a5276" d="M24 8c-8.82 0-16 7.18-16 16s7.18 16 16 16 16-7.18 16-16S32.82 8 24 8z"/>
-                  <path fill="#2196F3" d="M24 12c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12S30.63 12 24 12z"/>
-                  <path fill="#E53935" d="M8 28l8-4 8 4"/>
-                  <path fill="white" d="M16 24c0 0 4 4 4 4s4-4 4-4"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" className="relative z-10">
+                  <path fill="#2a2f96" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"/>
+                  <path fill="#e53935" d="M4.597,30H3c0,0,4.077-3.084,12.928-5.535c0,0,14.202-4.313,23.428-10.583C42.565,11.177,45.071,8.764,46 7c0,0-1.193,4.725-6.726,10.351C38.191,17.906,37.768,18.64,37,19c0.126-0.142-0.096-0.871,0-1c0,0-7.195,3.355-22.02,7.77C14.981,25.768,8.742,27.352,4.597,30z"/>
+                  <path fill="#fafafa" d="M19.282 25.221l1.503.025-.771-1.835L19.282 25.221zM18.969 26.366l-.274.96.802.441-2.661-.004.826-.463 1.714-5.602-.935-.467h3.167l2.639 6.068.528.467H21.08l.528-.467-.528-.934H18.969zM29.12 23.374c.576.135 2.526 1.143 1.848 3.129 0 0-.841 2.476-5.435.998L25.021 28v-1.995l.512.499c0 0 3.492 1.321 3.474-.316-.005-.319-.603-.845-2.205-1.048 0 0-1.802-.053-1.781-2.128.008-.843.626-2.964 5.121-1.497l.464-.518-.011 1.963-.453-.448c0 0-2.661-.834-2.926-.008C26.934 23.381 28.316 23.185 29.12 23.374z"/>
+                  <path fill="#e53935" d="M39.461,17.149c-1.06,1.224-3.203,2.847-4.899,4.11c0,0-13.626,8.805-19.033,12.769c0,0-4.167,2.72-6.529,6.972v-1.618c0,0,2.255-3.163,7.585-6.937C21.273,29.125,35.281,20.744,37,18L39.461,17.149z"/>
+                  <path fill="#fafafa" d="M8.667 21.257L11.834 21.257 14.473 25.459 14.473 21.724 13.945 21.257 16.056 21.257 15.528 21.724 15.528 27.326 16.056 27.793 12.889 27.793 10.251 23.592 10.251 27.326 10.778 27.793 8.667 27.793 9.195 27.326 9.195 21.724zM34.44 25.275l1.62-.007-.87-1.919L34.44 25.275zM34.275 26.366l-.33.934.858.467-2.661-.004.826-.463 1.714-5.602-.935-.467h3.167l2.639 6.068.528.467h-3.694l.528-.467-.528-.934H34.275z"/>
+                  <path fill="#fafafa" d="M33.596,30.256c-0.743-2.933-2.427-6.293-4.742-9.462c-4.81-6.582-10.901-10.274-13.578-8.232c-1.316,1.006-1.627,3.2-0.871,6.181c0.743,2.933,2.427,6.293,4.742,9.462c1.008,1.379,1.618,2.143,2.695,3.243l0.68,0.255c-1.064-1.09-2.119-2.324-3.119-3.693c-2.291-3.135-3.957-6.455-4.689-9.348c-0.72-2.844-0.453-4.918,0.753-5.839c0.459-0.351,1.029-0.518,1.681-0.518c2.95,0,7.598,3.412,11.451,8.684c2.291,3.135,3.957,6.455,4.689,9.348c0.72,2.844,0.453,4.918-0.753,5.839c-1.617,1.235-4.605,0.181-7.779-2.414l-0.22,0.225C26.889,35.903,29.162,37,30.9,37c0.708,0,1.326-0.181,1.825-0.564C34.041,35.433,34.35,33.237,33.596,30.256z"/>
+                  <path fill="#fafafa" d="M22.158 30.091A0.435 1.058 0 1 0 22.158 32.207A0.435 1.058 0 1 0 22.158 30.091Z" transform="rotate(-43.348 22.157 31.15)"/>
+                  <path fill="#fafafa" d="M27.5 7.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23L28.02 9.731c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L27.5 7.389zM18.5 14.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L18.5 14.389zM19.5 35.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L19.5 35.389zM38.5 28.389l.231 1.591c.011.073.044.14.097.193.052.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.053-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.052-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.053-.087.12-.097.193L38.5 28.389zM36.5 33A.5.5 0 1 0 36.5 34 .5.5 0 1 0 36.5 33zM12.5 32A.5.5 0 1 0 12.5 33 .5.5 0 1 0 12.5 32zM9.5 30A.5.5 0 1 0 9.5 31 .5.5 0 1 0 9.5 30zM24.5 11A.5.5 0 1 0 24.5 12 .5.5 0 1 0 24.5 11zM20.5 18A.5.5 0 1 0 20.5 19 .5.5 0 1 0 20.5 18z"/>
                 </svg>
               </motion.div>
               <h3 className="text-lg md:text-xl font-bold text-white mb-1">NASA DATA</h3>
@@ -1751,10 +1762,11 @@ export default function LandingPage({
               <h3 className="text-lg md:text-xl font-bold text-white mb-1">
                 <span style={{ background: 'linear-gradient(to right, #f59e0b, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>OKS LABS</span>
               </h3>
-              <p className="text-white/30 text-xs mb-4">Tecnología educativa colombiana</p>
+              <p className="text-white/30 text-xs mb-2">por Oscar David Marulanda Galvez</p>
+              <p className="text-white/20 text-[10px] mb-4">Tecnología educativa colombiana</p>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}>CEO: OSKITAR</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(0,212,255,0.15)', color: '#00d4ff', border: '1px solid rgba(0,212,255,0.25)' }}>Fullstack</span>
+                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(0,212,255,0.15)', color: '#00d4ff', border: '1px solid rgba(0,212,255,0.25)' }}>Fullstack Dev</span>
                 <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(124,58,237,0.15)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.25)' }}>16 años</span>
               </div>
             </motion.div>
@@ -1801,139 +1813,114 @@ export default function LandingPage({
         </div>
       </section>
 
-      {/* ===== PARTNER BADGES ===== */}
-      <section className="relative z-10 py-16 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* NASA DATA Badge */}
-            <motion.div
-              className="relative rounded-2xl p-6 md:p-8 text-center group cursor-default transition-all duration-500"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                backdropFilter: 'blur(20px)',
-              }}
-              whileHover={{
-                y: -6,
-                borderColor: 'rgba(59,130,246,0.3)',
-                boxShadow: '0 0 40px rgba(59,130,246,0.15)',
-              }}
-            >
-              <motion.div
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center relative overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(16,185,129,0.1))',
-                  border: '1px solid rgba(59,130,246,0.25)',
-                  boxShadow: '0 0 30px rgba(59,130,246,0.15)',
-                }}
-              >
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  animate={{ opacity: [0.3, 0.7, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 3 }}
-                  style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.15), transparent 70%)' }}
-                />
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48" className="relative z-10">
-                  <path fill="#0e3a5d" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
-                  <path fill="#1a5276" d="M24 8c-8.82 0-16 7.18-16 16s7.18 16 16 16 16-7.18 16-16S32.82 8 24 8z"/>
-                  <path fill="#2196F3" d="M24 12c-6.63 0-12 5.37-12 12s5.37 12 12 12 12-5.37 12-12S30.63 12 24 12z"/>
-                  <path fill="#E53935" d="M8 28l8-4 8 4"/>
-                  <path fill="white" d="M16 24c0 0 4 4 4 4s4-4 4-4"/>
-                </svg>
-              </motion.div>
-              <h3 className="text-lg md:text-xl font-bold text-white mb-1">NASA DATA</h3>
-              <p className="text-white/30 text-xs mb-4">Contenido basado en datos e investigaciones</p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.25)' }}>API NASA</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.25)' }}>Tiempo Real</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.25)' }}>APOD</span>
-              </div>
-            </motion.div>
+      {/* ===== ACERCA DEL CREADOR ===== */}
+      <section className="relative z-10 py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            className="text-center mb-10"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-white/20 text-xs font-medium uppercase tracking-[0.2em] mb-3">El creador detrás del proyecto</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              Acerca del{' '}
+              <span style={{
+                background: 'linear-gradient(to right, #f59e0b, #ec4899, #7c3aed)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>Creador</span>
+            </h2>
+          </motion.div>
 
-            {/* OKS LABS Badge */}
-            <motion.div
-              className="relative rounded-2xl p-6 md:p-8 text-center group cursor-default transition-all duration-500"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                backdropFilter: 'blur(20px)',
-              }}
-              whileHover={{
-                y: -6,
-                borderColor: 'rgba(245,158,11,0.3)',
-                boxShadow: '0 0 40px rgba(245,158,11,0.15)',
-              }}
-            >
-              <motion.div
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center relative overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.1))',
-                  border: '1px solid rgba(245,158,11,0.25)',
-                  boxShadow: '0 0 30px rgba(245,158,11,0.15)',
-                }}
-              >
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  animate={{ opacity: [0.3, 0.7, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 2.5 }}
-                  style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.15), transparent 70%)' }}
-                />
-                <motion.span
-                  className="text-3xl md:text-4xl relative z-10"
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >⚡</motion.span>
-              </motion.div>
-              <h3 className="text-lg md:text-xl font-bold text-white mb-1">
-                <span style={{ background: 'linear-gradient(to right, #f59e0b, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>OKS LABS</span>
-              </h3>
-              <p className="text-white/30 text-xs mb-4">Tecnología educativa colombiana</p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}>CEO: OSKITAR</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(0,212,255,0.15)', color: '#00d4ff', border: '1px solid rgba(0,212,255,0.25)' }}>Fullstack</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(124,58,237,0.15)', color: '#7c3aed', border: '1px solid rgba(124,58,237,0.25)' }}>16 años</span>
-              </div>
-            </motion.div>
+          <motion.div
+            className="rounded-2xl p-8 md:p-10 relative overflow-hidden"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(20px)',
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            {/* Gradient accent line */}
+            <div
+              className="absolute top-0 left-0 right-0 h-[2px]"
+              style={{ background: 'linear-gradient(90deg, #f59e0b, #ec4899, #7c3aed, transparent)' }}
+            />
 
-            {/* Colombia Badge */}
-            <motion.div
-              className="relative rounded-2xl p-6 md:p-8 text-center group cursor-default transition-all duration-500"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                backdropFilter: 'blur(20px)',
-              }}
-              whileHover={{
-                y: -6,
-                borderColor: 'rgba(16,185,129,0.3)',
-                boxShadow: '0 0 40px rgba(16,185,129,0.15)',
-              }}
-            >
+            <div className="flex flex-col md:flex-row items-start gap-8">
+              {/* Avatar */}
               <motion.div
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center relative overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(245,158,11,0.1))',
-                  border: '1px solid rgba(16,185,129,0.25)',
-                  boxShadow: '0 0 30px rgba(16,185,129,0.15)',
-                }}
+                className="relative shrink-0 mx-auto md:mx-0"
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  animate={{ opacity: [0.3, 0.7, 0.3] }}
-                  transition={{ repeat: Infinity, duration: 3.5 }}
-                  style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)' }}
-                />
-                <span className="text-3xl md:text-4xl relative z-10">🇨🇴</span>
+                <div
+                  className="w-28 h-28 rounded-2xl flex items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(236,72,153,0.2))',
+                    border: '2px solid rgba(245,158,11,0.3)',
+                  }}
+                >
+                  <span className="text-5xl">👨‍💻</span>
+                  <motion.div
+                    className="absolute inset-0 rounded-2xl pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.15), transparent 70%)' }}
+                    animate={{ opacity: [0.3, 0.8, 0.3] }}
+                    transition={{ repeat: Infinity, duration: 2.5 }}
+                  />
+                </div>
+                <div
+                  className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, #10b981, #059669)', border: '2px solid #050510' }}
+                >
+                  <Zap size={12} className="text-white" />
+                </div>
               </motion.div>
-              <h3 className="text-lg md:text-xl font-bold text-white mb-1">Hecho en Colombia</h3>
-              <p className="text-white/30 text-xs mb-4">Plataforma educativa 100% colombiana</p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.25)' }}>🇨🇴 Origen</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.25)' }}>Ley 1581</span>
-                <span className="px-2.5 py-1 rounded-lg text-[10px] font-medium" style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.25)' }}>Educación</span>
+
+              {/* Info */}
+              <div className="flex-1 text-center md:text-left">
+                <div className="flex items-center gap-2 mb-1 flex-wrap justify-center md:justify-start">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white">Oscar David Marulanda Galvez</h3>
+                  <span
+                    className="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider"
+                    style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.3)' }}
+                  >
+                    OSKITAR
+                  </span>
+                </div>
+                <p className="text-amber-400/80 text-sm font-medium mb-4">
+                  CEO & Fundador · <span style={{ background: 'linear-gradient(to right, #f59e0b, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>OKS LABS</span>
+                </p>
+                <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-xl">
+                  Desarrollador Fullstack de <span className="text-white/60 font-semibold">16 años</span> con pasión por la tecnología,
+                  la astronomía y la educación. Creador de AstroVerse, una plataforma educativa espacial que busca
+                  democratizar el conocimiento del universo para estudiantes de toda Latinoamérica.
+                </p>
+                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                  {[
+                    { label: 'Fullstack Developer', color: '#00d4ff' },
+                    { label: 'UI/UX Design', color: '#7c3aed' },
+                    { label: '16 años', color: '#f59e0b' },
+                    { label: 'Colombia 🇨🇴', color: '#10b981' },
+                    { label: 'Next.js', color: '#ec4899' },
+                  ].map(tag => (
+                    <span
+                      key={tag.label}
+                      className="px-3 py-1.5 rounded-lg text-[11px] font-medium"
+                      style={{ background: `${tag.color}15`, color: tag.color, border: `1px solid ${tag.color}25` }}
+                    >
+                      {tag.label}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1947,7 +1934,7 @@ export default function LandingPage({
                 Plataforma educativa espacial que te permite explorar el universo de forma interactiva.
               </p>
               <p className="text-white/20 text-xs mt-2">
-                Un proyecto de <span className="text-amber-400/60 font-semibold">OKS LABS</span> · Creado por <span className="text-cyan-400/60 font-semibold">OSKITAR</span>
+                Un proyecto de <span className="text-amber-400/60 font-semibold">OKS LABS</span> · Creado por <span className="text-cyan-400/60 font-semibold">Oscar David Marulanda Galvez (OSKITAR)</span>
               </p>
               {/* Social media icons */}
               <div className="flex items-center gap-3 mt-6">
@@ -2047,16 +2034,16 @@ export default function LandingPage({
               <span onClick={() => onShowLegal?.('privacidad')} className="hover:text-white/40 cursor-pointer transition-colors">Privacidad</span>
             </p>
             <p className="text-white/20 text-xs flex items-center gap-2">
-              Hecho con ❤️ por <span className="text-cyan-400/50 font-semibold">OSKITAR</span> desde Colombia 🇨🇴
+              Hecho con ❤️ por <span className="text-cyan-400/50 font-semibold">Oscar David Marulanda Galvez (OSKITAR)</span> · <span className="text-amber-400/40 font-semibold">OKS LABS</span> · Colombia 🇨🇴
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
-                <path fill="#2a2f96" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path>
-                <path fill="#e53935" d="M4.597,30H3c0,0,4.077-3.084,12.928-5.535c0,0,14.202-4.313,23.428-10.583C42.565,11.177,45.071,8.764,46 7c0,0-1.193,4.725-6.726,10.351C38.191,17.906,37.768,18.64,37,19c0.126-0.142-0.096-0.871,0-1c0,0-7.195,3.355-22.02,7.77C14.981,25.768,8.742,27.352,4.597,30z"></path>
-                <path fill="#fafafa" d="M19.282 25.221l1.503.025-.771-1.835L19.282 25.221zM18.969 26.366l-.274.96.802.441-2.661-.004.826-.463 1.714-5.602-.935-.467h3.167l2.639 6.068.528.467H21.08l.528-.467-.528-.934H18.969zM29.12 23.374c.576.135 2.526 1.143 1.848 3.129 0 0-.841 2.476-5.435.998L25.021 28v-1.995l.512.499c0 0 3.492 1.321 3.474-.316-.005-.319-.603-.845-2.205-1.048 0 0-1.802-.053-1.781-2.128.008-.843.626-2.964 5.121-1.497l.464-.518-.011 1.963-.453-.448c0 0-2.661-.834-2.926-.008C26.934 23.381 28.316 23.185 29.12 23.374z"></path>
-                <path fill="#e53935" d="M39.461,17.149c-1.06,1.224-3.203,2.847-4.899,4.11c0,0-13.626,8.805-19.033,12.769c0,0-4.167,2.72-6.529,6.972v-1.618c0,0,2.255-3.163,7.585-6.937C21.273,29.125,35.281,20.744,37,18L39.461,17.149z"></path>
-                <path fill="#fafafa" d="M8.667 21.257L11.834 21.257 14.473 25.459 14.473 21.724 13.945 21.257 16.056 21.257 15.528 21.724 15.528 27.326 16.056 27.793 12.889 27.793 10.251 23.592 10.251 27.326 10.778 27.793 8.667 27.793 9.195 27.326 9.195 21.724zM34.44 25.275l1.62-.007-.87-1.919L34.44 25.275zM34.275 26.366l-.33.934.858.467-2.661-.004.826-.463 1.714-5.602-.935-.467h3.167l2.639 6.068.528.467h-3.694l.528-.467-.528-.934H34.275z"></path>
-                <path fill="#fafafa" d="M33.596,30.256c-0.743-2.933-2.427-6.293-4.742-9.462c-4.81-6.582-10.901-10.274-13.578-8.232c-1.316,1.006-1.627,3.2-0.871,6.181c0.743,2.933,2.427,6.293,4.742,9.462c1.008,1.379,1.618,2.143,2.695,3.243l0.68,0.255c-1.064-1.09-2.119-2.324-3.119-3.693c-2.291-3.135-3.957-6.455-4.689-9.348c-0.72-2.844-0.453-4.918,0.753-5.839c0.459-0.351,1.029-0.518,1.681-0.518c2.95,0,7.598,3.412,11.451,8.684c2.291,3.135,3.957,6.455,4.689,9.348c0.72,2.844,0.453,4.918-0.753,5.839c-1.617,1.235-4.605,0.181-7.779-2.414l-0.22,0.225C26.889,35.903,29.162,37,30.9,37c0.708,0,1.326-0.181,1.825-0.564C34.041,35.433,34.35,33.237,33.596,30.256z"></path>
-                <path fill="#fafafa" d="M22.158 30.091A0.435 1.058 0 1 0 22.158 32.207A0.435 1.058 0 1 0 22.158 30.091Z" transform="rotate(-43.348 22.157 31.15)"></path>
-                <path fill="#fafafa" d="M27.5 7.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23L28.02 9.731c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L27.5 7.389zM18.5 14.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L18.5 14.389zM19.5 35.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L19.5 35.389zM38.5 28.389l.231 1.591c.011.073.044.14.097.193.052.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.053-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.052-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.053-.087.12-.097.193L38.5 28.389zM36.5 33A.5.5 0 1 0 36.5 34 .5.5 0 1 0 36.5 33zM12.5 32A.5.5 0 1 0 12.5 33 .5.5 0 1 0 12.5 32zM9.5 30A.5.5 0 1 0 9.5 31 .5.5 0 1 0 9.5 30zM24.5 11A.5.5 0 1 0 24.5 12 .5.5 0 1 0 24.5 11zM20.5 18A.5.5 0 1 0 20.5 19 .5.5 0 1 0 20.5 18z"></path>
+                <path fill="#2a2f96" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"/>
+                <path fill="#e53935" d="M4.597,30H3c0,0,4.077-3.084,12.928-5.535c0,0,14.202-4.313,23.428-10.583C42.565,11.177,45.071,8.764,46 7c0,0-1.193,4.725-6.726,10.351C38.191,17.906,37.768,18.64,37,19c0.126-0.142-0.096-0.871,0-1c0,0-7.195,3.355-22.02,7.77C14.981,25.768,8.742,27.352,4.597,30z"/>
+                <path fill="#fafafa" d="M19.282 25.221l1.503.025-.771-1.835L19.282 25.221zM18.969 26.366l-.274.96.802.441-2.661-.004.826-.463 1.714-5.602-.935-.467h3.167l2.639 6.068.528.467H21.08l.528-.467-.528-.934H18.969zM29.12 23.374c.576.135 2.526 1.143 1.848 3.129 0 0-.841 2.476-5.435.998L25.021 28v-1.995l.512.499c0 0 3.492 1.321 3.474-.316-.005-.319-.603-.845-2.205-1.048 0 0-1.802-.053-1.781-2.128.008-.843.626-2.964 5.121-1.497l.464-.518-.011 1.963-.453-.448c0 0-2.661-.834-2.926-.008C26.934 23.381 28.316 23.185 29.12 23.374z"/>
+                <path fill="#e53935" d="M39.461,17.149c-1.06,1.224-3.203,2.847-4.899,4.11c0,0-13.626,8.805-19.033,12.769c0,0-4.167,2.72-6.529,6.972v-1.618c0,0,2.255-3.163,7.585-6.937C21.273,29.125,35.281,20.744,37,18L39.461,17.149z"/>
+                <path fill="#fafafa" d="M8.667 21.257L11.834 21.257 14.473 25.459 14.473 21.724 13.945 21.257 16.056 21.257 15.528 21.724 15.528 27.326 16.056 27.793 12.889 27.793 10.251 23.592 10.251 27.326 10.778 27.793 8.667 27.793 9.195 27.326 9.195 21.724zM34.44 25.275l1.62-.007-.87-1.919L34.44 25.275zM34.275 26.366l-.33.934.858.467-2.661-.004.826-.463 1.714-5.602-.935-.467h3.167l2.639 6.068.528.467h-3.694l.528-.467-.528-.934H34.275z"/>
+                <path fill="#fafafa" d="M33.596,30.256c-0.743-2.933-2.427-6.293-4.742-9.462c-4.81-6.582-10.901-10.274-13.578-8.232c-1.316,1.006-1.627,3.2-0.871,6.181c0.743,2.933,2.427,6.293,4.742,9.462c1.008,1.379,1.618,2.143,2.695,3.243l0.68,0.255c-1.064-1.09-2.119-2.324-3.119-3.693c-2.291-3.135-3.957-6.455-4.689-9.348c-0.72-2.844-0.453-4.918,0.753-5.839c0.459-0.351,1.029-0.518,1.681-0.518c2.95,0,7.598,3.412,11.451,8.684c2.291,3.135,3.957,6.455,4.689,9.348c0.72,2.844,0.453,4.918-0.753,5.839c-1.617,1.235-4.605,0.181-7.779-2.414l-0.22,0.225C26.889,35.903,29.162,37,30.9,37c0.708,0,1.326-0.181,1.825-0.564C34.041,35.433,34.35,33.237,33.596,30.256z"/>
+                <path fill="#fafafa" d="M22.158 30.091A0.435 1.058 0 1 0 22.158 32.207A0.435 1.058 0 1 0 22.158 30.091Z" transform="rotate(-43.348 22.157 31.15)"/>
+                <path fill="#fafafa" d="M27.5 7.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23L28.02 9.731c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L27.5 7.389zM18.5 14.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L18.5 14.389zM19.5 35.389l.231 1.591c.011.073.044.14.097.193.053.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.052-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.053-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.052.087-.12.097-.193L19.5 35.389zM38.5 28.389l.231 1.591c.011.073.044.14.097.193.052.052.12.087.193.097l1.59.23-1.591.231c-.073.011-.14.044-.193.097-.052.053-.087.12-.097.193l-.23 1.59-.231-1.591c-.011-.073-.044-.14-.097-.193-.052-.052-.12-.087-.193-.097l-1.59-.23 1.591-.231c.073-.011.14-.044.193-.097.052-.053-.087.12-.097.193L38.5 28.389zM36.5 33A.5.5 0 1 0 36.5 34 .5.5 0 1 0 36.5 33zM12.5 32A.5.5 0 1 0 12.5 33 .5.5 0 1 0 12.5 32zM9.5 30A.5.5 0 1 0 9.5 31 .5.5 0 1 0 9.5 30zM24.5 11A.5.5 0 1 0 24.5 12 .5.5 0 1 0 24.5 11zM20.5 18A.5.5 0 1 0 20.5 19 .5.5 0 1 0 20.5 18z"/>
               </svg>
               Powered by NASA data
             </p>

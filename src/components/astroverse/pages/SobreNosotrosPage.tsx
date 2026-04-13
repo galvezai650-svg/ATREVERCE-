@@ -356,7 +356,7 @@ export default function SobreNosotrosPage() {
         transition={{ delay: 0.6 }}
       >
         <p className="text-white/25 text-xs">
-          © 2025 AstroVerse · Desarrollado con <Coffee size={10} className="inline text-amber-400" /> por <span className="text-amber-400/60">OSKITAR</span> para <span className="text-cyan-400/60">OKS LABS</span>
+          © 2026 AstroVerse · Desarrollado con <Coffee size={10} className="inline text-amber-400" /> por <span className="text-amber-400/60">Oscar David Marulanda Galvez (OSKITAR)</span> para <span className="text-cyan-400/60">OKS LABS</span>
         </p>
         <p className="text-white/15 text-[10px] mt-1">Plataforma educativa colombiana · Hecho con ❤️ desde Colombia</p>
       </motion.div>
