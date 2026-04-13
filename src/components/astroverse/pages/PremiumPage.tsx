@@ -37,6 +37,7 @@ export default function PremiumPage() {
   })
 
   const paypalLoadedRef = useRef(false)
+  const sdkScriptRef = useRef<HTMLScriptElement | null>(null)
 
   // Check premium from server on mount
   useEffect(() => {
@@ -114,36 +115,42 @@ export default function PremiumPage() {
     }).render('#paypal-button-container')
   }, [userEmail])
 
-  // Load PayPal SDK dynamically
+  // Load PayPal SDK — only once globally
   useEffect(() => {
     if (isPro) return
-    if (paypalReady) return
     if (typeof window === 'undefined') return
-    if (paypalLoadedRef.current) return
 
-    paypalLoadedRef.current = true
+    const render = () => {
+      if ((window as any).paypal && paypalContainerRef.current) {
+        renderPaypalButton()
+      }
+    }
 
-    const handleReady = () => renderPaypalButton()
-
+    // Already loaded?
     if ((window as any).paypal) {
-      setTimeout(handleReady, 0)
+      render()
       return
     }
+
+    // Don't load again if already injected
+    if (paypalLoadedRef.current) return
+    paypalLoadedRef.current = true
 
     const script = document.createElement('script')
     script.src = 'https://www.paypal.com/sdk/js?client-id=AVkYiXbBU-3ryFBNnOqTfADMIk-oCwsN6nN-O7cTh8eTRoHOJGXN1BnbOGn5hetdFxqdxw7SIbe4YO_g&vault=true&intent=subscription'
     script.async = true
-    script.onload = handleReady
+    script.onload = render
     script.onerror = () => toast.error('Error al cargar PayPal. Intenta de nuevo.')
+    sdkScriptRef.current = script
     document.head.appendChild(script)
 
+    // Cleanup only the container, NOT the script — PayPal SDK is single-instance
     return () => {
       if (paypalContainerRef.current) {
         paypalContainerRef.current.innerHTML = ''
       }
-      paypalLoadedRef.current = false
     }
-  }, [isPro, paypalReady, renderPaypalButton])
+  }, [isPro, renderPaypalButton])
 
   const proFeatures = [
     { text: 'Panel de Profesor completo', icon: School },
