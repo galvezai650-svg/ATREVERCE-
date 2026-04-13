@@ -203,7 +203,7 @@ export default function PrivacidadPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
       >
-        <p className="text-white/25 text-xs">© 2025 AstroVerse · Protegido bajo la Ley 1581 de 2012 · República de Colombia</p>
+        <p className="text-white/25 text-xs">© 2025 AstroVerse · <span className="text-amber-400/50">OKS LABS</span> · Protegido bajo la Ley 1581 de 2012 · República de Colombia</p>
       </motion.div>
     </div>
   )

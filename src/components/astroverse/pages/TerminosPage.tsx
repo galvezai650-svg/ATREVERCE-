@@ -148,7 +148,7 @@ export default function TerminosPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
       >
-        <p className="text-white/25 text-xs">© 2025 AstroVerse. Todos los derechos reservados. Plataforma educativa colombiana.</p>
+        <p className="text-white/25 text-xs">© 2025 AstroVerse · <span className="text-amber-400/50">OKS LABS</span> · Plataforma educativa colombiana</p>
       </motion.div>
     </div>
   )

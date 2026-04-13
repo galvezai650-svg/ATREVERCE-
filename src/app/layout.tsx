@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "AstroVerse - Explora el Universo",
   description: "Plataforma educativa espacial interactiva. Explora planetas, galaxias, nebulosas y más con simuladores 3D y contenido educativo.",
   keywords: ["AstroVerse", "espacio", "educación", "planetas", "galaxias", "astronomía"],
-  authors: [{ name: "AstroVerse Team" }],
+  authors: [{ name: "OKS LABS", url: "https://github.com/galvezai650-svg/ASTROVERSE" }],
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },

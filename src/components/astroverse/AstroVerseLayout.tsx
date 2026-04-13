@@ -23,6 +23,7 @@ import MiniGamesPage from './pages/MiniGamesPage'
 import CertificatesPage from './pages/CertificatesPage'
 import TerminosPage from './pages/TerminosPage'
 import PrivacidadPage from './pages/PrivacidadPage'
+import SobreNosotrosPage from './pages/SobreNosotrosPage'
 
 // ============================================================
 // Sidebar Navigation
@@ -46,6 +47,7 @@ const navItems = [
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
   { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
   { id: 'profile', label: 'Perfil', icon: User },
+  { id: 'nosotros', label: 'Sobre Nosotros', icon: Sparkles, badge: 'OKS' },
   { id: 'terminos', label: 'Términos', icon: FileText },
   { id: 'privacidad', label: 'Privacidad', icon: Shield },
 ]
@@ -420,6 +422,7 @@ export default function AstroVerseLayout({
       case 'community': return <CommunityPage userId={userId} userName={userName} />
       case 'minigames': return <MiniGamesPage />
       case 'certificates': return <CertificatesPage userId={userId} isPremium={isPremium} userName={userName} />
+      case 'nosotros': return <SobreNosotrosPage />
       case 'terminos': return <TerminosPage />
       case 'privacidad': return <PrivacidadPage />
       default: return <HomePage userName={userName} onNavigate={handleNavigate} />

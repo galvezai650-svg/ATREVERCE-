@@ -206,7 +206,7 @@ export default function DonacionesPage() {
           Cada donación, por pequeña que sea, marca la diferencia. Ayudás a que miles de estudiantes puedan <span className="text-amber-400 font-bold">explorar el universo gratis</span>.
         </p>
         <p className="text-white/20 text-xs mt-3">
-          AstroVerse es un proyecto sin fines de lucro · Todas las donaciones van directamente a la plataforma
+          AstroVerse es un proyecto de <span className="text-amber-400/50">OKS LABS</span> · Todas las donaciones van directamente a la plataforma
         </p>
       </motion.div>
     </div>

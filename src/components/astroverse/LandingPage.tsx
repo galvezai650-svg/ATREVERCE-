@@ -1674,6 +1674,9 @@ export default function LandingPage({
               <p className="text-white/30 text-sm mt-4">
                 Plataforma educativa espacial que te permite explorar el universo de forma interactiva.
               </p>
+              <p className="text-white/20 text-xs mt-2">
+                Un proyecto de <span className="text-amber-400/60 font-semibold">OKS LABS</span> · Creado por <span className="text-cyan-400/60 font-semibold">OSKITAR</span>
+              </p>
               {/* Social media icons */}
               <div className="flex items-center gap-3 mt-6">
                 <motion.button
@@ -1694,8 +1697,10 @@ export default function LandingPage({
                 >
                   <Twitter size={16} />
                 </motion.button>
-                <motion.button
-                  onClick={() => toast.info('¡Próximamente!', { description: 'Visita nuestro repositorio en GitHub' })}
+                <motion.a
+                  href="https://github.com/galvezai650-svg/ASTROVERSE"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 hover:text-white"
                   style={{
                     background: 'rgba(255,255,255,0.05)',
@@ -1711,7 +1716,7 @@ export default function LandingPage({
                   aria-label="GitHub"
                 >
                   <Github size={16} />
-                </motion.button>
+                </motion.a>
                 <motion.button
                   onClick={() => toast.info('¡Próximamente!', { description: 'Únete a nuestra comunidad en Discord' })}
                   className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 hover:text-white"
@@ -1763,13 +1768,14 @@ export default function LandingPage({
             style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
           >
             <p className="text-white/20 text-sm flex flex-wrap items-center justify-center gap-x-2">
-              © 2025 AstroVerse. Todos los derechos reservados.
+              © 2025 AstroVerse por <span className="text-amber-400/40 font-semibold">OKS LABS</span>. Todos los derechos reservados.
               <span className="hidden sm:inline">·</span>
               <span onClick={() => onShowLegal?.('terminos')} className="hover:text-white/40 cursor-pointer transition-colors">Términos</span>
               <span>·</span>
               <span onClick={() => onShowLegal?.('privacidad')} className="hover:text-white/40 cursor-pointer transition-colors">Privacidad</span>
             </p>
             <p className="text-white/20 text-xs flex items-center gap-2">
+              Hecho con ❤️ por <span className="text-cyan-400/50 font-semibold">OSKITAR</span> desde Colombia 🇨🇴
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
                 <path fill="#2a2f96" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path>
                 <path fill="#e53935" d="M4.597,30H3c0,0,4.077-3.084,12.928-5.535c0,0,14.202-4.313,23.428-10.583C42.565,11.177,45.071,8.764,46 7c0,0-1.193,4.725-6.726,10.351C38.191,17.906,37.768,18.64,37,19c0.126-0.142-0.096-0.871,0-1c0,0-7.195,3.355-22.02,7.77C14.981,25.768,8.742,27.352,4.597,30z"></path>
