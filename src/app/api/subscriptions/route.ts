@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, email, subscriptionId, planId } = await request.json()
+    const { userId, email, subscriptionId, planId, autoApproved } = await request.json()
 
     if (!email) {
       return NextResponse.json({ error: 'Email es requerido' }, { status: 400 })
@@ -20,23 +20,31 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Create subscription as pending
+    // If PayPal confirmed payment (autoApproved), set user as premium
+    if (autoApproved) {
+      user = await db.user.update({
+        where: { id: user.id },
+        data: { isPremium: true },
+      })
+    }
+
+    // Create subscription
     const subscription = await db.subscription.create({
       data: {
         userId: user.id,
         subscriptionId: subscriptionId || null,
         planId: planId || 'P-2YH58611DA4123336NHODNII',
-        status: 'pending',
+        status: autoApproved ? 'approved' : 'pending',
         amount: 4.99,
         currency: 'USD',
+        reviewedAt: autoApproved ? new Date() : null,
       },
     })
 
     return NextResponse.json({
       success: true,
       subscriptionId: subscription.id,
-      status: 'pending',
-      message: 'Suscripción registrada. Estamos revisando tu pago.',
+      status: subscription.status,
     })
   } catch (error) {
     console.error('Subscription error:', error)
@@ -58,7 +66,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ isPremium: false, status: 'not_found' })
     }
 
-    // Check for any approved subscription
     const approvedSub = await db.subscription.findFirst({
       where: { userId: user.id, status: 'approved' },
       orderBy: { createdAt: 'desc' },

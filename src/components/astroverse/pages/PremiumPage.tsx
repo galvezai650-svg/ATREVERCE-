@@ -4,9 +4,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   GraduationCap, Users, BookOpen, ChevronDown,
-  Check, Zap, Rocket, Sparkles,
+  Check, Zap, Sparkles,
   Crown, Star, Shield, Monitor, School, Eye, Award, Video,
-  Lock, CreditCard, Clock, MessageCircle, Phone
+  CreditCard,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cardBase } from '../shared/styles'
@@ -14,6 +14,8 @@ import CardGradientTop from '../shared/CardGradientTop'
 
 // ============================================================
 // PremiumPage → ASTROVERSE PRO  ($4.99/mes)
+// PayPal maneja la verificación automáticamente.
+// Si onApprove se dispara, el pago ya fue exitoso → PRO al instante.
 // ============================================================
 export default function PremiumPage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null)
@@ -23,7 +25,7 @@ export default function PremiumPage() {
     if (typeof window !== 'undefined') return localStorage.getItem('astroverse_pro') === 'true'
     return false
   })
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'pending' | 'reviewing'>('idle')
+
   const [userEmail, setUserEmail] = useState(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -36,29 +38,7 @@ export default function PremiumPage() {
 
   const paypalLoadedRef = useRef(false)
 
-  const checkPremiumFromServer = useCallback(async (email: string) => {
-    if (!email) return
-    try {
-      const res = await fetch(`/api/check-premium?email=${encodeURIComponent(email)}`)
-      const data = await res.json()
-      if (data.isPremium) {
-        setIsPro(true)
-        localStorage.setItem('astroverse_pro', 'true')
-        setPaymentStatus('idle')
-      }
-    } catch { /* ignore */ }
-  }, [])
-
-  // Poll server for premium status when reviewing
-  useEffect(() => {
-    if (paymentStatus !== 'reviewing' || !userEmail) return
-    const interval = setInterval(() => {
-      checkPremiumFromServer(userEmail)
-    }, 10000) // every 10 seconds
-    return () => clearInterval(interval)
-  }, [paymentStatus, userEmail, checkPremiumFromServer])
-
-  // Check on mount — fetch premium status from server
+  // Check premium from server on mount
   useEffect(() => {
     if (!userEmail) return
     let cancelled = false
@@ -71,7 +51,6 @@ export default function PremiumPage() {
         if (data.isPremium) {
           setIsPro(true)
           localStorage.setItem('astroverse_pro', 'true')
-          setPaymentStatus('idle')
         }
       } catch { /* ignore */ }
     }
@@ -100,30 +79,38 @@ export default function PremiumPage() {
         })
       },
       onApprove: async function (data: any) {
-        setPaymentStatus('reviewing')
-        toast.success('¡Pago recibido! Estamos verificando tu suscripción...')
+        // PayPal ya verificó el pago → activar PRO al instante
+        toast.success('🎉 ¡Pago exitoso! ASTROVERSE PRO activado.')
+        setIsPro(true)
+        localStorage.setItem('astroverse_pro', 'true')
 
-        // Register subscription as pending in DB
+        // Registrar suscripción aprobada en la DB
         try {
-          const email = userEmail || localStorage.getItem('astroverse_user')?.replace(/"/g, '')
+          let email = userEmail
+          if (!email) {
+            try {
+              const raw = localStorage.getItem('astroverse_user')
+              if (raw) email = JSON.parse(raw).email
+            } catch { /* ignore */ }
+          }
           if (email) {
             await fetch('/api/subscriptions', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                email: typeof email === 'string' ? email.replace(/"/g, '') : '',
+                email,
                 subscriptionId: data.subscriptionID,
                 planId: 'P-2YH58611DA4123336NHODNII',
+                autoApproved: true,
               }),
             })
           }
         } catch (err) {
-          console.error('Error registering subscription:', err)
+          console.error('Error registrando suscripción:', err)
         }
       },
       onError: function () {
         toast.error('Error en la suscripción. Intenta de nuevo.')
-        setPaymentStatus('idle')
       },
     }).render('#paypal-button-container')
   }, [userEmail])
@@ -192,6 +179,7 @@ export default function PremiumPage() {
     { q: '¿Cuánto cuesta?', a: '$4.99 USD al mes. Cancela cuando quieras. Sin contratos ni compromisos.' },
     { q: '¿Qué incluye el plan básico?', a: 'Todo el contenido educativo: simuladores, enciclopedia, videos, modelos 3D y más. ¡Completamente gratis!' },
     { q: '¿Puedo entrar a un aula sin PRO?', a: '¡Sí! Entrar a un aula es gratis. Solo necesitas PRO si quieres CREAR y gestionar aulas como profesor.' },
+    { q: '¿Cómo se activa PRO?', a: 'Realizas el pago con PayPal y se activa automáticamente al instante. Si no pagas, no se activa. Simple.' },
   ]
 
   return (
@@ -247,80 +235,6 @@ export default function PremiumPage() {
         </motion.div>
       )}
 
-      {/* REVIEWING PAYMENT BANNER */}
-      {paymentStatus === 'reviewing' && !isPro && (
-        <motion.div
-          className="rounded-2xl p-6 md:p-8 relative overflow-hidden"
-          style={{
-            ...cardBase,
-            background: 'linear-gradient(135deg, rgba(245,158,11,0.06), rgba(236,72,153,0.06))',
-            border: '1px solid rgba(245,158,11,0.2)',
-          }}
-          initial={{ opacity: 0, y: 15, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ type: 'spring', damping: 20 }}
-        >
-          <motion.div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(245,158,11,0.04) 50%, transparent 100%)' }} animate={{ x: ['-100%', '100%'] }} transition={{ repeat: Infinity, duration: 3, ease: 'linear' }} />
-
-          <div className="flex flex-col items-center text-center relative z-10 gap-4">
-            {/* Animated clock */}
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)' }}>
-              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}>
-                <Clock size={32} className="text-amber-400" />
-              </motion.div>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold text-white mb-1">⏳ Estamos Revisando tu Pago</h2>
-              <p className="text-white/50 text-sm max-w-md">
-                Tu suscripción ha sido registrada exitosamente. Nuestro equipo está verificando tu pago.
-                Esto puede tardar unos minutos.
-              </p>
-            </div>
-
-            {/* Animated dots */}
-            <div className="flex items-center gap-1">
-              {[0, 1, 2].map(i => (
-                <motion.div
-                  key={i}
-                  className="w-2 h-2 rounded-full bg-amber-400"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.15, ease: 'easeInOut' }}
-                />
-              ))}
-            </div>
-
-            {/* WhatsApp CTA */}
-            <motion.div
-              className="mt-2 w-full max-w-sm rounded-xl p-4"
-              style={{ background: 'rgba(37,211,102,0.08)', border: '1px solid rgba(37,211,102,0.2)' }}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <p className="text-white/60 text-xs mb-3">¿Lo quieres más rápido? Escríbenos y te activamos al instante:</p>
-              <motion.a
-                href={`https://wa.me/573026812303?text=Hola%2C%20acabo%20de%20pagar%20ASTROVERSE%20PRO.%20Mi%20email%20es%3A%20${encodeURIComponent(userEmail || '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white"
-                style={{
-                  background: 'linear-gradient(135deg, #25D366, #128C7E)',
-                  boxShadow: '0 0 20px rgba(37,211,102,0.3)',
-                }}
-                whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(37,211,102,0.4)' }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <MessageCircle size={18} />
-                +57 302 681 2303
-                <Phone size={14} />
-              </motion.a>
-              <p className="text-emerald-400/40 text-[10px] mt-2">Click para abrir WhatsApp directamente</p>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-
       {/* Subscription Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Basic Plan */}
@@ -335,7 +249,7 @@ export default function PremiumPage() {
               <span className="text-4xl font-black text-white">Gratis</span>
               <span className="text-white/30 text-sm"> / para siempre</span>
             </div>
-            {!isPro && paymentStatus !== 'reviewing' && (
+            {!isPro && (
               <div className="px-3 py-1.5 rounded-full text-[10px] font-bold inline-block mb-4" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#10b981' }}>
                 TU PLAN ACTUAL
               </div>
@@ -388,21 +302,12 @@ export default function PremiumPage() {
             </div>
             <p className="text-white/30 text-xs mb-6">USD / mes · Cancela cuando quieras</p>
             {isPro ? (
-              <div className="space-y-3 mb-2">
+              <div className="mb-2">
                 <div className="px-4 py-2 rounded-full text-[11px] font-bold inline-flex items-center gap-2" style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.3)', color: '#00d4ff' }}>
                   <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
                     <Sparkles size={12} />
                   </motion.span>
                   ACTIVO — $4.99/mes
-                </div>
-              </div>
-            ) : paymentStatus === 'reviewing' ? (
-              <div className="mb-4">
-                <div className="px-4 py-2.5 rounded-full text-[11px] font-bold inline-flex items-center gap-2" style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', color: '#f59e0b' }}>
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}>
-                    <Clock size={12} />
-                  </motion.div>
-                  VERIFICANDO PAGO...
                 </div>
               </div>
             ) : (
@@ -419,6 +324,7 @@ export default function PremiumPage() {
                   )}
                   <div ref={paypalContainerRef} id="paypal-button-container" />
                 </div>
+                <p className="text-white/15 text-[10px]">Pago seguro con PayPal · Se activa al instante</p>
               </div>
             )}
           </div>
