@@ -8,14 +8,18 @@ datasource db {
 }
 
 model User {
-  id        String        @id @default(cuid())
-  email     String        @unique
+  id        String            @id @default(cuid())
+  email     String            @unique
   name      String
   password  String?
-  isPremium Boolean       @default(false)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  isPremium Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
   subscriptions Subscription[]
+  quizScores   QuizScore[]
+  missionProgress MissionProgress[]
+  communityPosts  CommunityPost[]
+  certificates    Certificate[]
 }
 
 model Subscription {
@@ -39,4 +43,52 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model QuizScore {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  score         Int
+  correctCount  Int
+  totalQuestions Int
+  bestStreak    Int      @default(0)
+  grade         String   // Maestro del Universo, Científico Espacial, Astronauta, Explorador Novato
+  percentage    Int
+  createdAt     DateTime @default(now())
+}
+
+model MissionProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  missionId String
+  completed Boolean  @default(false)
+  progress  Int      @default(0) // 0-100
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, missionId])
+}
+
+model CommunityPost {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  content   String
+  category  String   @default("general") // general, fotos, preguntas, descubrimientos
+  likes     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Certificate {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  courseName   String
+  certificateId String  @unique
+  description  String   @default("")
+  createdAt    DateTime @default(now())
 }

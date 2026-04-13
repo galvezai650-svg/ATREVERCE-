@@ -182,3 +182,149 @@ Stage Summary:
 - Admin panel at `/admin` (password: astroverse2025)
 - Payment flow: PayPal → "reviewing" banner → WhatsApp CTA → Admin approves → auto-activated
 - ESLint: 0 errors | Dev Server: Compiling successfully
+
+---
+Task ID: 2-a
+Agent: fullstack-developer
+Task: Create API routes for new features
+
+Work Log:
+- Created /src/app/api/apod/route.ts - NASA APOD proxy with ?count support and fallback
+- Created /src/app/api/quiz-scores/route.ts - GET (top 50 with user names), POST (create score)
+- Created /src/app/api/missions/route.ts - GET (daily rotation from 10 missions, optional userId), POST (upsert progress)
+- Created /src/app/api/community/route.ts - GET (latest 50 with user names), POST (create post)
+- Created /src/app/api/community/[id]/like/route.ts - POST (increment likes)
+- Created /src/app/api/certificates/route.ts - GET (by userId), POST (premium-only, unique certId)
+
+Stage Summary:
+- All 6 API routes created with proper error handling (try/catch, 400/404/500 status codes)
+- TypeScript: 0 errors in new routes | ESLint: 0 errors
+- Routes follow existing project patterns (import { db } from '@/lib/db', NextResponse.json)
+
+---
+Task ID: 6
+Agent: fullstack-developer
+Task: Create Community Forum page
+
+Work Log:
+- Created CommunityPage.tsx with post creation, feed, likes, category filters
+- Implemented post creation form with title input, content textarea (500 char limit with counter), and category selector (General/Fotos/Preguntas/Descubrimientos)
+- Added filter tabs to filter posts by category with active state styling
+- Built posts feed with user avatar (first letter), name, relative Spanish time, category badge, title, content
+- Implemented optimistic like system with heart animation on POST to /api/community/{id}/like
+- Added "Tu publicación" indicator for current user's posts
+- Added inline validation for empty fields with animated error messages
+- Added loading skeleton cards and empty state message
+- Applied hover glow effects matching category color on post cards
+- Used cardBase, CardGradientTop, staggerContainer, staggerItem from shared design system
+- Fixed ESLint duplicate props error, verified 0 errors
+
+Stage Summary:
+- Community page with post creation, category filters, like system, feed display
+- ESLint: 0 errors | Clean build
+
+---
+Task ID: 8
+Agent: fullstack-developer
+Task: Create Certificates page
+
+Work Log:
+- Created CertificatesPage.tsx with course grid, PRO gate, certificate generation
+- Implemented PRO gate with lock icon, "PRO Only" badge, feature list, and styled CTA button
+- Built 6 course cards with emoji, lesson count, progress bar, status badge, and complete/download buttons
+- Added certificate fetch on mount (GET /api/certificates?userId=...) and creation on course completion (POST /api/certificates)
+- Implemented confetti burst animation with 30 colored particles on course completion
+- Created CertificateCard component with gold gradient border, decorative inner border, serif title, certificate ID, date, and download button
+- Added toast notifications for completion, PDF download, and error states
+- Used cardBase, staggerContainer, staggerItem, CardGradientTop from shared design system
+- All text in Spanish, framer-motion animations, lucide-react icons, sonner toasts
+- ESLint: 0 errors
+
+Stage Summary:
+- Certificates page with 6 courses, PRO gate, certificate display, completion animations
+
+---
+Task ID: 5
+Agent: fullstack-developer
+Task: Create Global Leaderboard page
+
+Work Log:
+- Created LeaderboardPage.tsx with podium, ranked list, user highlighting
+
+Stage Summary:
+- Leaderboard page with top-3 podium, ranked list, grade colors, stats summary, empty state
+
+---
+Task ID: 3
+Agent: fullstack-developer
+Task: Create NASA APOD Gallery page
+
+Work Log:
+- Created NasaApodPage.tsx with hero APOD, gallery grid, image modal
+
+Stage Summary:
+- NASA APOD page with featured image, 7-day gallery, modal viewer, loading skeletons
+
+---
+Task ID: 4
+Agent: fullstack-developer
+Task: Create Daily Missions page
+
+Work Log:
+- Created DailyMissionsPage.tsx with 10 missions, daily rotation, XP system, progress tracking
+- Implemented 5 rotating daily missions selected via day-of-year index from 10-mission pool
+- Built XP progress bar with animated gradient (amber→pink→violet), shimmer effect, and animated counter
+- Created mission cards with emoji, name, description, XP badge (amber), individual progress bar, status badges
+- Added "Completada" (green checkmark) and "En progreso" (animated cyan pulse) status indicators
+- Implemented green glow effect on completed mission cards
+- Added floating "+XP" animation on mission completion using framer-motion AnimatePresence
+- Integrated sonner toast notifications on mission complete and all-missions-complete events
+- Added "Simular Completar" demo button on each incomplete mission for testing
+- Implemented API integration: GET /api/missions for progress fetch, POST /api/missions for save
+- Added optimistic state updates for instant UI feedback
+- Built XP counter animation (count up with ease-out cubic) when missions are completed
+- Added "Reset Misiones" debug button at bottom to clear today's progress
+- Used cardBase, staggerContainer, staggerItem, CardGradientTop from shared design system
+- ESLint: 0 errors | Next.js build: ✅ Clean
+
+Stage Summary:
+- Daily Missions page with 5 rotating daily missions, XP bar, completion animations, API integration
+
+---
+Task ID: 7
+Agent: fullstack-developer
+Task: Create Mini Games page
+
+Work Log:
+- Created MiniGamesPage.tsx with game selection screen and 2 complete games
+- Implemented "Adivina el Planeta" (Guess the Planet): 8 rounds, 3 progressive clues per planet, 4 answer options, scoring (3/2/1 pts by clue level), round breakdown on results
+- Implemented "Memoria Espacial" (Space Memory): 4x4 grid (8 pairs), 3D flip animation, move counter, timer, star rating system (⭐⭐⭐ <12 moves, ⭐⭐ <20, ⭐ 20+)
+- Used shared design system: cardBase, staggerContainer, staggerItem, CardGradientTop
+- Applied framer-motion AnimatePresence for screen transitions, hover/press animations on cards
+- Added sonner toast notifications for correct/wrong guesses and game completion
+- Made both games fully responsive with mobile-friendly grids
+- ESLint: 0 errors | Dev Server: 200 OK
+
+Stage Summary:
+- Mini Games page with 2 complete games: Adivina el Planeta (8 rounds, progressive clues) and Memoria Espacial (4x4 memory match)
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Update sidebar navigation with all 6 new pages and integrate everything
+
+Work Log:
+- Updated AstroVerseLayout.tsx imports: added Telescope, Target, Trophy, Users, Gamepad2, Award icons
+- Added 6 new page imports: NasaApodPage, DailyMissionsPage, LeaderboardPage, CommunityPage, MiniGamesPage, CertificatesPage
+- Added 6 new nav items to sidebar: Galería NASA, Ranking (TOP badge), Misiones, Mini Juegos, Comunidad, Certificados (PRO badge)
+- Added badge styling for TOP (amber) and PRO (violet) badges
+- Added userId and isPremium state to layout, fetched via /api/check-premium on mount
+- Updated check-premium API to return user object with id, name, email
+- Added 6 new cases to renderPage switch with proper prop passing
+- Ran ESLint: 0 errors
+- Verified dev server: compiling successfully, pages loading 200
+
+Stage Summary:
+- Sidebar now has 18 navigation items with all 6 new features integrated
+- userId and isPremium flow: layout fetches from check-premium API → passes to child components
+- ESLint: 0 errors | Dev Server: Compiling successfully

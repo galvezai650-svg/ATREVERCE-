@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper } from 'lucide-react'
+import { Orbit, Home, Compass, Box, FlaskConical, GraduationCap, User, BookOpen, LogOut, X, Menu, School, Heart, Sparkles, Bell, Brain, Calendar, Newspaper, Telescope, Target, Trophy, Users, Gamepad2, Award } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import Models3DPage from './pages/Models3DPage'
@@ -15,6 +15,12 @@ import DonacionesPage from './pages/DonacionesPage'
 import QuizPage from './pages/QuizPage'
 import EventsPage from './pages/EventsPage'
 import NewsPage from './pages/NewsPage'
+import NasaApodPage from './pages/NasaApodPage'
+import DailyMissionsPage from './pages/DailyMissionsPage'
+import LeaderboardPage from './pages/LeaderboardPage'
+import CommunityPage from './pages/CommunityPage'
+import MiniGamesPage from './pages/MiniGamesPage'
+import CertificatesPage from './pages/CertificatesPage'
 
 // ============================================================
 // Sidebar Navigation
@@ -25,9 +31,15 @@ const navItems = [
   { id: 'models3d', label: 'Modelos 3D', icon: Box },
   { id: 'simulators', label: 'Simuladores', icon: FlaskConical },
   { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
+  { id: 'apod', label: 'Galería NASA', icon: Telescope },
   { id: 'quiz', label: 'Quiz Espacial', icon: Brain },
+  { id: 'leaderboard', label: 'Ranking', icon: Trophy, badge: 'TOP' },
+  { id: 'missions', label: 'Misiones', icon: Target },
+  { id: 'minigames', label: 'Mini Juegos', icon: Gamepad2 },
   { id: 'events', label: 'Eventos', icon: Calendar },
   { id: 'news', label: 'Noticias', icon: Newspaper },
+  { id: 'community', label: 'Comunidad', icon: Users },
+  { id: 'certificates', label: 'Certificados', icon: Award, badge: 'PRO' },
   { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
   { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
@@ -223,9 +235,9 @@ function Sidebar({
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.badge && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{
-                        background: item.id === 'aula' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : 'rgba(0,212,255,0.1)',
-                        color: item.id === 'aula' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : '#00d4ff',
-                        border: item.id === 'aula' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(0,212,255,0.2)',
+                        background: item.id === 'aula' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : item.id === 'leaderboard' ? 'rgba(245,158,11,0.1)' : item.id === 'certificates' ? 'rgba(124,58,237,0.1)' : 'rgba(0,212,255,0.1)',
+                        color: item.id === 'aula' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : item.id === 'leaderboard' ? '#f59e0b' : item.id === 'certificates' ? '#7c3aed' : '#00d4ff',
+                        border: item.id === 'aula' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'leaderboard' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'certificates' ? '1px solid rgba(124,58,237,0.2)' : '1px solid rgba(0,212,255,0.2)',
                       }}>
                         {item.badge}
                       </span>
@@ -345,6 +357,23 @@ export default function AstroVerseLayout({
 }) {
   const [activePage, setActivePage] = useState('home')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true)
+  const [userId, setUserId] = useState('')
+  const [isPremium, setIsPremium] = useState(false)
+
+  // Fetch userId and premium status on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`/api/check-premium?email=${encodeURIComponent(userEmail)}`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data.user?.id) setUserId(data.user.id)
+          if (data.isPremium) setIsPremium(true)
+        }
+      } catch { /* silent */ }
+    }
+    fetchUser()
+  }, [userEmail])
 
   const handleNavigate = useCallback((page: string) => {
     setActivePage(page)
@@ -365,6 +394,12 @@ export default function AstroVerseLayout({
       case 'quiz': return <QuizPage />
       case 'events': return <EventsPage />
       case 'news': return <NewsPage />
+      case 'apod': return <NasaApodPage />
+      case 'missions': return <DailyMissionsPage userId={userId} />
+      case 'leaderboard': return <LeaderboardPage currentUserId={userId} />
+      case 'community': return <CommunityPage userId={userId} userName={userName} />
+      case 'minigames': return <MiniGamesPage />
+      case 'certificates': return <CertificatesPage userId={userId} isPremium={isPremium} userName={userName} />
       default: return <HomePage userName={userName} onNavigate={handleNavigate} />
     }
   }
