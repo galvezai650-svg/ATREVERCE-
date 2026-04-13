@@ -48,7 +48,7 @@ const navItems = [
   { id: 'mentor-ai', label: 'Mentor IA PRO', icon: Bot, badge: 'PRO' },
   { id: 'biblioteca', label: 'Biblioteca', icon: Library, badge: '📚' },
   { id: 'cert-exams', label: 'Certificaciones', icon: ClipboardCheck, badge: '$4.99' },
-  { id: 'certificates', label: 'Certificados', icon: Award, badge: 'PRO' },
+  { id: 'certificates', label: 'Certificados', icon: Award, badge: 'FREE' },
   { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
   { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
   { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
@@ -247,9 +247,9 @@ function Sidebar({
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.badge && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{
-                        background: item.id === 'aula' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : item.id === 'leaderboard' ? 'rgba(245,158,11,0.1)' : item.id === 'certificates' ? 'rgba(124,58,237,0.1)' : 'rgba(0,212,255,0.1)',
-                        color: item.id === 'aula' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : item.id === 'leaderboard' ? '#f59e0b' : item.id === 'certificates' ? '#7c3aed' : '#00d4ff',
-                        border: item.id === 'aula' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'leaderboard' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'certificates' ? '1px solid rgba(124,58,237,0.2)' : '1px solid rgba(0,212,255,0.2)',
+                        background: item.id === 'aula' || item.id === 'certificates' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : item.id === 'leaderboard' ? 'rgba(245,158,11,0.1)' : 'rgba(0,212,255,0.1)',
+                        color: item.id === 'aula' || item.id === 'certificates' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : item.id === 'leaderboard' ? '#f59e0b' : '#00d4ff',
+                        border: item.id === 'aula' || item.id === 'certificates' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'leaderboard' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(0,212,255,0.2)',
                       }}>
                         {item.badge}
                       </span>

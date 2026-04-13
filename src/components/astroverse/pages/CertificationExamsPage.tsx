@@ -217,7 +217,26 @@ function InstructionsModal({ course, onStart, onClose }: { course: CourseInfo; o
 }
 
 // ─── Payment Prompt Modal ────────────────────────────────────
-function PaymentPromptModal({ onClose }: { onClose: () => void }) {
+function PaymentPromptModal({
+  course,
+  onPay,
+  onClose,
+}: {
+  course: CourseInfo
+  onPay: () => void
+  onClose: () => void
+}) {
+  const [paying, setPaying] = useState(false)
+
+  const handlePay = () => {
+    setPaying(true)
+    // Simulate payment processing (testing purposes)
+    setTimeout(() => {
+      setPaying(false)
+      onPay()
+    }, 1500)
+  }
+
   return (
     <AnimatePresence>
       <motion.div
@@ -237,32 +256,78 @@ function PaymentPromptModal({ onClose }: { onClose: () => void }) {
           style={{ ...cardBase, border: '1px solid rgba(245,158,11,0.15)' }}
           onClick={(e) => e.stopPropagation()}
         >
-          <CardGradientTop color="linear-gradient(90deg, #f59e0b, #ec4899)" />
+          <CardGradientTop color={course.gradient} />
           <div className="relative z-10 p-6 text-center">
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-              style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15))', border: '1px solid rgba(245,158,11,0.2)' }}
+            {/* Course emoji + name */}
+            <span className="text-4xl block mb-3">{course.emoji}</span>
+            <h3 className="text-lg font-bold text-white mb-1">{course.name}</h3>
+            <p className="text-white/40 text-xs mb-5">Examen de Certificación Oficial</p>
+
+            {/* Price card */}
+            <div
+              className="relative overflow-hidden rounded-xl p-5 mb-5"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(245,158,11,0.2)' }}
             >
-              <Lock className="w-8 h-8" style={{ color: '#f59e0b' }} />
-            </motion.div>
+              <motion.div
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3"
+                style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15))', border: '1px solid rgba(245,158,11,0.2)' }}
+              >
+                <Lock className="w-7 h-7" style={{ color: '#f59e0b' }} />
+              </motion.div>
+              <div className="text-3xl font-bold text-white mb-1">$4.99 <span className="text-sm font-medium text-white/40">USD</span></div>
+              <p className="text-white/50 text-xs">Por este examen de certificación</p>
+            </div>
 
-            <h3 className="text-lg font-bold text-white mb-2">Se Requiere Membresía PRO</h3>
-            <p className="text-white/50 text-sm mb-4">
-              Los exámenes de certificación requieren membresía PRO a $4.99/mes. Obtén acceso a todos los exámenes, certificados y más.
-            </p>
+            {/* Features */}
+            <div className="space-y-2 mb-6 text-left">
+              {[
+                { icon: ClipboardCheck, text: '15 preguntas de opción múltiple' },
+                { icon: Timer, text: '20 minutos de tiempo límite' },
+                { icon: Award, text: 'Certificado avalado por NASA DATA' },
+                { icon: Globe, text: 'Código de verificación único' },
+              ].map((feat) => (
+                <div key={feat.text} className="flex items-center gap-2 text-white/50 text-xs">
+                  <feat.icon className="w-3.5 h-3.5 shrink-0" style={{ color: '#f59e0b' }} />
+                  {feat.text}
+                </div>
+              ))}
+            </div>
 
+            {/* Pay button */}
             <motion.button
               whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(245,158,11,0.3)' }}
               whileTap={{ scale: 0.97 }}
-              onClick={onClose}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm"
+              onClick={handlePay}
+              disabled={paying}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-60"
               style={{ background: 'linear-gradient(135deg, #f59e0b, #ec4899)', color: 'white' }}
             >
-              <Sparkles className="w-4 h-4" />
-              Hacerse PRO — $4.99/mes
+              {paying ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="w-4 h-4 border-2 border-t-transparent rounded-full"
+                    style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: 'transparent' }}
+                  />\n                  Procesando pago...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  Pagar $4.99 — Comenzar Examen
+                </>
+              )}
             </motion.button>
+
+            {/* Cancel link */}
+            <button
+              onClick={onClose}
+              className="mt-3 text-white/30 text-xs hover:text-white/50 transition-colors"
+            >
+              Cancelar
+            </button>
           </div>
         </motion.div>
       </motion.div>
@@ -465,13 +530,10 @@ export default function CertificationExamsPage({
 
   // ─── Handlers ──────────────────────────────────────────────
   const handleStartExam = useCallback((course: CourseInfo) => {
-    if (!isPremium) {
-      setShowPaymentPrompt(true)
-      return
-    }
+    // Always show payment prompt - $4.99 per exam
     setSelectedCourse(course)
-    setView('instructions')
-  }, [isPremium])
+    setShowPaymentPrompt(true)
+  }, [])
 
   const handleBeginExam = useCallback(() => {
     // We need questions to start - fetch from a dedicated endpoint
@@ -1096,8 +1158,15 @@ export default function CertificationExamsPage({
       </AnimatePresence>
 
       <AnimatePresence>
-        {showPaymentPrompt && (
-          <PaymentPromptModal onClose={() => setShowPaymentPrompt(false)} />
+        {showPaymentPrompt && selectedCourse && (
+          <PaymentPromptModal
+            course={selectedCourse}
+            onPay={() => {
+              setShowPaymentPrompt(false)
+              setView('instructions')
+            }}
+            onClose={() => setShowPaymentPrompt(false)}
+          />
         )}
       </AnimatePresence>
 

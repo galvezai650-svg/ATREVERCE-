@@ -12,7 +12,6 @@ import {
   Award,
   Search,
   Download,
-  Sparkles,
   Star,
   Globe,
   FileText,
@@ -21,7 +20,6 @@ import {
   X,
   Eye,
   Copy,
-  ChevronRight,
   ShieldCheck,
   Clock,
   ArrowRight,
@@ -293,80 +291,7 @@ export default function CertificatesPage({
     return '#94a3b8'
   }
 
-  // ─── PRO Gate ─────────────────────────────────────────────
-  if (!isPremium) {
-    return (
-      <div className="w-full max-w-2xl mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }}
-          className="relative overflow-hidden rounded-2xl"
-          style={cardBase}
-        >
-          <CardGradientTop color="linear-gradient(90deg, #f59e0b, #ec4899)" />
-
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full"
-              style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.08) 0%, transparent 70%)' }}
-            />
-          </div>
-
-          <div className="relative z-10 p-8 md:p-12 text-center">
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6"
-              style={{
-                background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(236,72,153,0.15))',
-                border: '1px solid rgba(245,158,11,0.2)',
-              }}
-            >
-              <Award className="w-10 h-10" style={{ color: '#f59e0b' }} />
-            </motion.div>
-
-            <motion.div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold tracking-wider mb-4"
-              style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(236,72,153,0.2))', border: '1px solid rgba(245,158,11,0.3)', color: '#f59e0b' }}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              PRO Only
-            </motion.div>
-
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">Diplomas ASTROVERSE</h2>
-            <p className="text-white/50 text-sm md:text-base mb-8 max-w-md mx-auto">
-              Ingresa tu código de certificación para ver y descargar tu diploma profesional avalado a nivel mundial.
-            </p>
-
-            <div className="flex flex-col items-center gap-2 mb-8">
-              {[
-                { icon: Globe, text: 'Avalado a Nivel Mundial — NASA DATA' },
-                { icon: FileText, text: 'Código de verificación único por diploma' },
-                { icon: Download, text: 'Descarga PDF de alta calidad' },
-                { icon: ShieldCheck, text: 'Reconocimiento profesional internacional' },
-              ].map((feat) => (
-                <div key={feat.text} className="flex items-center gap-2 text-white/60 text-sm">
-                  <feat.icon className="w-4 h-4" style={{ color: '#f59e0b' }} />
-                  {feat.text}
-                </div>
-              ))}
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(245,158,11,0.3)' }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-sm"
-              style={{ background: 'linear-gradient(135deg, #f59e0b, #ec4899)', color: 'white' }}
-            >
-              <Sparkles className="w-4 h-4" />
-              Hacerse PRO
-              <ChevronRight className="w-4 h-4" />
-            </motion.button>
-          </div>
-        </motion.div>
-      </div>
-    )
-  }
-
-  // ─── PRO User View ────────────────────────────────────────
+  // ─── FREE for everyone ────────────────────────────────────
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-6 space-y-8">
       {/* ─── Header ──────────────────────────────────────── */}

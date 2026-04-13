@@ -583,3 +583,23 @@ Stage Summary:
 - Certificados de Estudio is now a diploma verification page (enter CERT code)
 - Users earn codes via Certificaciones Oficiales exams to unlock/download diplomas
 - ESLint: 0 errors | Dev Server: 200 OK
+
+---
+Task ID: 7
+Agent: Main Agent
+Task: Make Certificados (code entry) FREE and Certificaciones Oficiales (exams) PAID per exam
+
+Work Log:
+- Removed PRO gate from CertificatesPage.tsx (lines 297-367) — now anyone can enter codes and download diplomas for free
+- Removed unused imports (Sparkles, ChevronRight) from CertificatesPage.tsx
+- Updated PaymentPromptModal in CertificationExamsPage.tsx: redesigned with course emoji, name, price card ($4.99 USD por examen), feature list, animated lock icon, simulated payment processing (1.5s delay), "Pagar $4.99 — Comenzar Examen" button, Cancel link
+- Changed handleStartExam to always show payment prompt (removed isPremium check)
+- Updated PaymentPromptModal usage to pass course prop and onPay callback that proceeds to instructions
+- Changed sidebar badge for Certificados from 'PRO' (violet) to 'FREE' (green)
+- Updated badge color logic in sidebar nav rendering
+
+Stage Summary:
+- **Certificados de Estudio**: Completely FREE for all users — enter code → verify → download diploma
+- **Certificaciones Oficiales**: PAID per exam ($4.99 USD) — click "Iniciar Examen" → payment prompt → simulated payment → instructions → exam
+- Sidebar: Certificados shows green 'FREE' badge, Certificaciones shows amber '$4.99' badge
+- ESLint: 0 errors | Dev Server: Compiling successfully | All routes: 200 OK
