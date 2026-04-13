@@ -164,3 +164,21 @@ Stage Summary:
 - Sidebar navigation now clearly differentiates FREE (Aula) vs PAID ($4.99 PRO)
 - Aula Virtual = FREE green badge, AstroVerse PRO = $4.99 cyan badge
 - ESLint: 0 errors | Dev Server: Compiling successfully | Page: 200 OK
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Remove demo button, create Admin Panel at /admin, add payment review flow with WhatsApp CTA
+
+Work Log:
+- Updated Prisma schema: Added `isPremium` boolean to User model, created `Subscription` model with status (pending/approved/rejected), subscriptionId, planId, amount, currency, reviewedAt
+- Ran `bun run db:push` to sync schema
+- Created 9 API routes for auth, subscriptions, and admin management
+- Created `/admin` page with password-protected login, stats dashboard, users tab with PRO toggle, transactions tab with approve/reject
+- Updated PremiumPage: removed demo button, added "Estamos Revisando tu Pago" + WhatsApp CTA (+573026812303)
+- Updated AuthModal: persists users to DB, syncs premium status from server
+
+Stage Summary:
+- Admin panel at `/admin` (password: astroverse2025)
+- Payment flow: PayPal → "reviewing" banner → WhatsApp CTA → Admin approves → auto-activated
+- ESLint: 0 errors | Dev Server: Compiling successfully

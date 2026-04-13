@@ -25,7 +25,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
     confirmPassword: '',
   })
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
@@ -35,13 +35,35 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
     }
 
     setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      // Register/login user in DB
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginForm.email, password: loginForm.password }),
+      })
+      const data = await res.json()
+
+      if (res.ok) {
+        // Check if user is premium from server
+        onSuccess({ name: data.name || loginForm.email.split('@')[0], email: data.email })
+        // Sync premium status from server
+        if (data.isPremium) {
+          localStorage.setItem('astroverse_pro', 'true')
+        } else {
+          localStorage.setItem('astroverse_pro', 'false')
+        }
+      } else {
+        setError(data.error || 'Error al iniciar sesión')
+      }
+    } catch {
+      // Fallback to localStorage-only login
       onSuccess({ name: loginForm.email.split('@')[0], email: loginForm.email })
-    }, 1500)
+    }
+    setLoading(false)
   }
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
@@ -59,10 +81,44 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', onSu
     }
 
     setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      // Register user in DB
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: registerForm.name,
+          email: registerForm.email,
+          password: registerForm.password,
+        }),
+      })
+      const data = await res.json()
+
+      if (res.ok) {
+        onSuccess({ name: data.name, email: data.email })
+      } else {
+        // If user already exists, login instead
+        if (res.status === 409) {
+          const loginRes = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: registerForm.email, password: registerForm.password }),
+          })
+          const loginData = await loginRes.json()
+          if (loginRes.ok) {
+            onSuccess({ name: loginData.name, email: loginData.email })
+          } else {
+            setError(loginData.error || 'Error al crear cuenta')
+          }
+        } else {
+          setError(data.error || 'Error al crear cuenta')
+        }
+      }
+    } catch {
+      // Fallback to localStorage-only register
       onSuccess({ name: registerForm.name, email: registerForm.email })
-    }, 1500)
+    }
+    setLoading(false)
   }
 
   const inputStyle = {
