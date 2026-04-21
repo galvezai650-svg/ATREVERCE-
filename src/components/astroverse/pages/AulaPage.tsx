@@ -29,7 +29,7 @@ const mockStudents = [
 const mockTasks = [
   { id: 't1', title: 'Ver: Exploración Espacial', type: 'video', videoSrc: '/videos/video1.mp4', status: 'active' as const, dueDate: '20 Jul 2025', completions: 6, total: 8, color: '#00d4ff', emoji: '🚀' },
   { id: 't2', title: 'Ver: El Cosmos en Movimiento', type: 'video', videoSrc: '/videos/video2.mp4', status: 'active' as const, dueDate: '22 Jul 2025', completions: 4, total: 8, color: '#a855f7', emoji: '🌌' },
-  { id: 't3', title: 'Ver: Misterios del Universo Profundo', type: 'video', videoSrc: '/videos/video3.mp4', status: 'active' as const, dueDate: '24 Jul 2025', completions: 3, total: 8, color: '#10b981', emoji: '🔭' },
+  { id: 't3', title: 'Ver: ¿Qué pasaría si estuvieras un día en cada uno de los planetas?', type: 'video', videoSrc: '/videos/video3.mp4', status: 'active' as const, dueDate: '24 Jul 2025', completions: 3, total: 8, color: '#10b981', emoji: '🔭' },
   { id: 't4', title: 'Simulador de Gravedad - Experimento', type: 'simulator', status: 'active' as const, dueDate: '25 Jul 2025', completions: 2, total: 8, color: '#f59e0b', emoji: '⚖️' },
   { id: 't5', title: 'Explorar el Sistema Solar 3D', type: 'interactive', status: 'active' as const, dueDate: '28 Jul 2025', completions: 5, total: 8, color: '#10b981', emoji: '🪐' },
   { id: 't6', title: 'Cuestionario: Planetas del Sistema Solar', type: 'quiz', status: 'completed' as const, dueDate: '15 Jul 2025', completions: 8, total: 8, color: '#ec4899', emoji: '📝' },

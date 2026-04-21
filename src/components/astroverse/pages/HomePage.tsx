@@ -47,7 +47,7 @@ export default function HomePage({ userName, onNavigate }: {
     {
       id: 'v4',
       src: '/videos/video3.mp4',
-      title: 'Misterios del Universo Profundo',
+      title: '¿Qué pasaría si estuvieras un día en cada uno de los planetas?',
       desc: 'Explora los secretos más fascinantes del espacio profundo y la cosmología moderna',
       gradient: 'from-emerald-500/30 to-cyan-500/30',
       color: '#10b981',
