@@ -19,10 +19,12 @@ export default function HomePage({ userName, onNavigate }: {
   const [searchQuery, setSearchQuery] = useState('')
   const [factIndex, setFactIndex] = useState(0)
 
+  const VIDEOS_BASE = 'https://github.com/galvezai650-svg/ATREVERCE-/releases/download/videos-v1.0'
+
   const videos = [
     {
       id: 'v1',
-      src: '/videos/video1.mp4',
+      src: `${VIDEOS_BASE}/video1.mp4`,
       title: 'Exploración Espacial',
       desc: 'Mira la increíble inmensidad del universo y sus fenómenos más impresionantes',
       gradient: 'from-cyan-500/30 to-violet-500/30',
@@ -30,7 +32,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v2',
-      src: '/videos/video2.mp4',
+      src: `${VIDEOS_BASE}/video2.mp4`,
       title: 'El Cosmos en Movimiento',
       desc: 'Viaja a través de galaxias, nebulosas y sistemas estelares',
       gradient: 'from-violet-500/30 to-pink-500/30',
@@ -38,7 +40,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v3',
-      src: '/videos/artemis2-moon-mission.mp4',
+      src: `${VIDEOS_BASE}/artemis2-moon-mission.mp4`,
       title: 'Artemis II Moon Mission Complete!',
       desc: 'Mira la histórica misión Artemis II que lleva humanos de vuelta a la órbita de la Luna',
       gradient: 'from-amber-500/30 to-red-500/30',
@@ -46,7 +48,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v4',
-      src: '/videos/video3.mp4',
+      src: `${VIDEOS_BASE}/video3.mp4`,
       title: '¿Qué pasaría si estuvieras un día en cada uno de los planetas?',
       desc: 'Explora los secretos más fascinantes del espacio profundo y la cosmología moderna',
       gradient: 'from-emerald-500/30 to-cyan-500/30',
@@ -54,7 +56,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v5',
-      src: '/videos/kepler-planeta.mp4',
+      src: `${VIDEOS_BASE}/kepler-planeta.mp4`,
       title: '¿ESTE planeta Kepler es apto para el ser humano?',
       desc: 'Descubre los planetas Kepler y si alguno podría ser habitable para la humanidad',
       gradient: 'from-rose-500/30 to-amber-500/30',
@@ -62,7 +64,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v6',
-      src: '/videos/betelgeuse.mp4',
+      src: `${VIDEOS_BASE}/betelgeuse.mp4`,
       title: 'Si Betelgeuse fuera nuestro Sol | El fin de la Tierra',
       desc: 'Imagina la supergigante roja Betelgeuse reemplazando a nuestro Sol y sus consecuencias catastróficas',
       gradient: 'from-red-500/30 to-orange-500/30',
@@ -70,7 +72,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v7',
-      src: '/videos/intercambio-sol.mp4',
+      src: `${VIDEOS_BASE}/intercambio-sol.mp4`,
       title: '¿Y si intercambiamos nuestro Sol con otros objetos del universo?',
       desc: 'Descubre qué pasaría si nuestro Sol fuera reemplazado por agujeros negros, estrellas de neutrones y otros objetos cósmicos',
       gradient: 'from-yellow-500/30 to-red-500/30',
@@ -78,7 +80,7 @@ export default function HomePage({ userName, onNavigate }: {
     },
     {
       id: 'v8',
-      src: '/videos/kepler452b.mp4',
+      src: `${VIDEOS_BASE}/kepler452b.mp4`,
       title: 'Kepler-452b: el mejor candidato para la nueva Tierra',
       desc: 'Conoce el exoplaneta Kepler-452b y por qué los científicos lo consideran el mejor candidato para ser una segunda Tierra',
       gradient: 'from-teal-500/30 to-emerald-500/30',
@@ -287,6 +289,7 @@ export default function HomePage({ userName, onNavigate }: {
                   <video
                     ref={el => { videoRefs.current[video.id] = el }}
                     src={video.src}
+                    crossOrigin="anonymous"
                     className="w-full aspect-video object-cover"
                     playsInline
                     preload="metadata"
