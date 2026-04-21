@@ -60,6 +60,14 @@ export default function HomePage({ userName, onNavigate }: {
       gradient: 'from-rose-500/30 to-amber-500/30',
       color: '#f43f5e',
     },
+    {
+      id: 'v6',
+      src: '/videos/betelgeuse.mp4',
+      title: 'Si Betelgeuse fuera nuestro Sol | El fin de la Tierra',
+      desc: 'Imagina la supergigante roja Betelgeuse reemplazando a nuestro Sol y sus consecuencias catastróficas',
+      gradient: 'from-red-500/30 to-orange-500/30',
+      color: '#ef4444',
+    },
   ]
 
   const spaceFacts = [
@@ -73,7 +81,7 @@ export default function HomePage({ userName, onNavigate }: {
 
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const [playing, setPlaying] = useState<Record<string, boolean>>({})
-  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true, v5: true })
+  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true, v5: true, v6: true })
 
   const cycleFact = () => {
     setFactIndex(prev => (prev + 1) % spaceFacts.length)
