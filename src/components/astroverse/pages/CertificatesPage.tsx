@@ -43,17 +43,50 @@ interface VerifiedExam {
 
 // ─── PDF Download Handler ────────────────────────────────────
 async function handleDownloadPDF(exam: VerifiedExam) {
-  const element = document.getElementById(`certificate-${exam.id}`)
-  if (!element) return
+  const elementId = `certificate-${exam.id}`
+  const element = document.getElementById(elementId)
+
+  if (!element) {
+    toast.error('No se encontró el certificado. Intenta recargar la página.')
+    console.error('[PDF] Element not found:', elementId)
+    return
+  }
 
   try {
-    toast.loading('Generando PDF...')
+    toast.loading('Generando PDF del diploma...')
+
+    // Temporarily fix the element for proper capture
+    const originalOverflow = element.style.overflow
+    const originalHeight = element.style.minHeight
+    const parent = element.parentElement
+    const originalParentOverflow = parent?.style.overflow
+    const originalParentMaxHeight = parent?.style.maxHeight
+
+    // Ensure element is fully visible for capture
+    element.style.overflow = 'visible'
+    if (parent) {
+      parent.style.overflow = 'visible'
+      parent.style.maxHeight = 'none'
+    }
+
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
+      allowTaint: true,
       backgroundColor: '#0a0e27',
       logging: false,
+      width: 1122,
+      windowWidth: 1122,
     })
+
+    // Restore styles
+    element.style.overflow = originalOverflow
+    element.style.minHeight = originalHeight
+    if (parent) {
+      parent.style.overflow = originalParentOverflow || ''
+      parent.style.maxHeight = originalParentMaxHeight || ''
+    }
+
     const imgData = canvas.toDataURL('image/png')
     const pdf = new jsPDF('l', 'mm', 'a4')
     const pdfWidth = pdf.internal.pageSize.getWidth()
@@ -72,9 +105,10 @@ async function handleDownloadPDF(exam: VerifiedExam) {
     toast.success('📄 PDF descargado exitosamente', {
       description: `Diploma de "${exam.courseName}"`,
     })
-  } catch {
+  } catch (err) {
     toast.dismiss()
-    toast.error('Error al generar PDF')
+    toast.error('Error al generar PDF. Intenta de nuevo.')
+    console.error('[PDF] Generation error:', err)
   }
 }
 
