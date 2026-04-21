@@ -519,9 +519,40 @@ export default function CertificationExamsPage({
 
   // ─── Handlers ──────────────────────────────────────────────
   const handleStartExam = useCallback((course: CourseInfo) => {
-    // Always show payment prompt - $4.99 per exam
     setSelectedCourse(course)
-    setShowPaymentPrompt(true)
+    if (isPremium) {
+      // PRO users go directly to the exam, no payment needed
+      handleBeginExamDirect(course)
+    } else {
+      // Free users see the paywall
+      setShowPaymentPrompt(true)
+    }
+  }, [isPremium])
+
+  // Direct exam start for PRO users (no payment wall)
+  const handleBeginExamDirect = useCallback((course: CourseInfo) => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await fetch(`/api/certification-exams?getQuestions=${encodeURIComponent(course.name)}`)
+        if (res.ok) {
+          const data = await res.json()
+          const q: Question[] = data.questions || []
+          if (q.length > 0) {
+            setQuestions(q)
+            setCurrentQuestion(0)
+            setAnswers({})
+            setTimeLeft(TIME_LIMIT)
+            setExamStarted(true)
+            setView('exam')
+            toast.success('¡Examen iniciado! Incluido en tu plan PRO 🚀')
+            return
+          }
+        }
+      } catch { /* silent */ }
+      toast.error('No se pudieron cargar las preguntas')
+      setView('selection')
+    }
+    fetchQuestions()
   }, [])
 
   const handleBeginExam = useCallback(() => {

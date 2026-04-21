@@ -31,32 +31,34 @@ import SobreNosotrosPage from './pages/SobreNosotrosPage'
 // ============================================================
 // Sidebar Navigation
 // ============================================================
-const navItems = [
-  { id: 'home', label: 'Inicio', icon: Home },
-  { id: 'explore', label: 'Explorar', icon: Compass },
-  { id: 'models3d', label: 'Modelos 3D', icon: Box },
-  { id: 'simulators', label: 'Simuladores', icon: FlaskConical },
-  { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
-  { id: 'apod', label: 'Galería NASA', icon: Telescope },
-  { id: 'quiz', label: 'Quiz Espacial', icon: Brain },
-  { id: 'leaderboard', label: 'Ranking', icon: Trophy, badge: 'TOP' },
-  { id: 'missions', label: 'Misiones', icon: Target },
-  { id: 'minigames', label: 'Mini Juegos', icon: Gamepad2 },
-  { id: 'events', label: 'Eventos', icon: Calendar },
-  { id: 'news', label: 'Noticias', icon: Newspaper },
-  { id: 'community', label: 'Comunidad', icon: Users },
-  { id: 'mentor-ai', label: 'Mentor IA PRO', icon: Bot, badge: 'PRO' },
-  { id: 'biblioteca', label: 'Biblioteca', icon: Library, badge: '📚' },
-  { id: 'cert-exams', label: 'Certificaciones', icon: ClipboardCheck, badge: '$4.99' },
-  { id: 'certificates', label: 'Certificados', icon: Award, badge: 'FREE' },
-  { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
-  { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: '$4.99' },
-  { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
-  { id: 'profile', label: 'Perfil', icon: User },
-  { id: 'nosotros', label: 'Sobre Nosotros', icon: Sparkles, badge: 'OKS' },
-  { id: 'terminos', label: 'Términos', icon: FileText },
-  { id: 'privacidad', label: 'Privacidad', icon: Shield },
-]
+function getNavItems(isPremium: boolean) {
+  return [
+    { id: 'home', label: 'Inicio', icon: Home },
+    { id: 'explore', label: 'Explorar', icon: Compass },
+    { id: 'models3d', label: 'Modelos 3D', icon: Box },
+    { id: 'simulators', label: 'Simuladores', icon: FlaskConical },
+    { id: 'encyclopedia', label: 'Enciclopedia', icon: BookOpen },
+    { id: 'apod', label: 'Galería NASA', icon: Telescope },
+    { id: 'quiz', label: 'Quiz Espacial', icon: Brain },
+    { id: 'leaderboard', label: 'Ranking', icon: Trophy, badge: 'TOP' },
+    { id: 'missions', label: 'Misiones', icon: Target },
+    { id: 'minigames', label: 'Mini Juegos', icon: Gamepad2 },
+    { id: 'events', label: 'Eventos', icon: Calendar },
+    { id: 'news', label: 'Noticias', icon: Newspaper },
+    { id: 'community', label: 'Comunidad', icon: Users },
+    { id: 'mentor-ai', label: 'Mentor IA PRO', icon: Bot, badge: isPremium ? '✅' : 'PRO' },
+    { id: 'biblioteca', label: 'Biblioteca', icon: Library, badge: '📚' },
+    { id: 'cert-exams', label: 'Certificaciones', icon: ClipboardCheck, badge: isPremium ? '✅ PRO' : '$4.99' },
+    { id: 'certificates', label: 'Certificados', icon: Award, badge: 'FREE' },
+    { id: 'aula', label: 'Aula Virtual', icon: School, badge: 'FREE' },
+    { id: 'pro', label: 'AstroVerse PRO', icon: GraduationCap, badge: isPremium ? '✅ ACTIVO' : '$4.99' },
+    { id: 'donaciones', label: 'Donaciones', icon: Heart, badge: 'USD' },
+    { id: 'profile', label: 'Perfil', icon: User },
+    { id: 'nosotros', label: 'Sobre Nosotros', icon: Sparkles, badge: 'OKS' },
+    { id: 'terminos', label: 'Términos', icon: FileText },
+    { id: 'privacidad', label: 'Privacidad', icon: Shield },
+  ]
+}
 
 const notifications = [
   { id: 1, title: '¡Nueva lluvia de meteoros!', desc: 'Las Perseidas serán visibles esta noche', time: 'Hace 1h', emoji: '☄️', read: false },
@@ -66,7 +68,7 @@ const notifications = [
 ]
 
 function Sidebar({
-  activePage, onNavigate, userName, onLogout, collapsed, onToggleCollapse
+  activePage, onNavigate, userName, onLogout, collapsed, onToggleCollapse, isPremium
 }: {
   activePage: string
   onNavigate: (id: string) => void
@@ -74,6 +76,7 @@ function Sidebar({
   onLogout: () => void
   collapsed: boolean
   onToggleCollapse: () => void
+  isPremium: boolean
 }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [notifs] = useState(notifications)
@@ -251,7 +254,7 @@ function Sidebar({
 
         {/* Nav items */}
         <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
-          {navItems.map(item => {
+          {getNavItems(isPremium).map(item => {
             const isActive = activePage === item.id
             const isAula = item.id === 'aula'
             const isPro = item.id === 'pro'
@@ -278,9 +281,9 @@ function Sidebar({
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.badge && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{
-                        background: item.id === 'aula' || item.id === 'certificates' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : item.id === 'leaderboard' ? 'rgba(245,158,11,0.1)' : 'rgba(0,212,255,0.1)',
-                        color: item.id === 'aula' || item.id === 'certificates' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : item.id === 'leaderboard' ? '#f59e0b' : '#00d4ff',
-                        border: item.id === 'aula' || item.id === 'certificates' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'leaderboard' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(0,212,255,0.2)',
+                        background: item.badge.includes('✅') ? 'rgba(16,185,129,0.12)' : item.id === 'aula' || item.id === 'certificates' ? 'rgba(16,185,129,0.1)' : item.id === 'donaciones' ? 'rgba(245,158,11,0.1)' : item.id === 'leaderboard' ? 'rgba(245,158,11,0.1)' : 'rgba(0,212,255,0.1)',
+                        color: item.badge.includes('✅') ? '#10b981' : item.id === 'aula' || item.id === 'certificates' ? '#10b981' : item.id === 'donaciones' ? '#f59e0b' : item.id === 'leaderboard' ? '#f59e0b' : '#00d4ff',
+                        border: item.badge.includes('✅') ? '1px solid rgba(16,185,129,0.25)' : item.id === 'aula' || item.id === 'certificates' ? '1px solid rgba(16,185,129,0.2)' : item.id === 'donaciones' ? '1px solid rgba(245,158,11,0.2)' : item.id === 'leaderboard' ? '1px solid rgba(245,158,11,0.2)' : '1px solid rgba(0,212,255,0.2)',
                       }}>
                         {item.badge}
                       </span>
@@ -484,7 +487,7 @@ export default function AstroVerseLayout({
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#050510' }}>
-      <Sidebar activePage={activePage} onNavigate={handleNavigate} userName={userName} onLogout={onLogout} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} />
+      <Sidebar activePage={activePage} onNavigate={handleNavigate} userName={userName} onLogout={onLogout} collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} isPremium={isPremium} />
 
       <main className="transition-all duration-[250ms] min-h-screen lg:ml-20" style={{ transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)' }}>
         {/* Mobile header */}
