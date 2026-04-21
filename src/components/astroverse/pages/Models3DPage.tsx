@@ -193,18 +193,25 @@ export default function Models3DPage() {
   const [showSolarSystem, setShowSolarSystem] = useState(false)
 
   const nasa3DModels: Record<string, string> = {
+    'Mercurio': 'https://solarsystem.nasa.gov/gltf_embed/2369/',
+    'Venus': 'https://solarsystem.nasa.gov/gltf_embed/2342/',
     'Tierra': 'https://solarsystem.nasa.gov/gltf_embed/2393/',
+    'Marte': 'https://solarsystem.nasa.gov/gltf_embed/2372/',
+    'Júpiter': 'https://solarsystem.nasa.gov/gltf_embed/2375/',
+    'Saturno': 'https://solarsystem.nasa.gov/gltf_embed/2355/',
+    'Urano': 'https://solarsystem.nasa.gov/gltf_embed/2344/',
+    'Neptuno': 'https://solarsystem.nasa.gov/gltf_embed/2364/',
   }
 
   const planets = [
-    { name: 'Mercurio', gradient: 'from-gray-600 to-gray-800', size: '4,879 km', desc: 'El planeta más pequeño y cercano al Sol. No tiene atmósfera y sus temperaturas varían entre -180°C y 430°C.', moons: 0, dayLength: '59 días', color: '#9ca3af' },
-    { name: 'Venus', gradient: 'from-orange-400 to-yellow-600', size: '12,104 km', desc: 'El planeta más caliente del sistema solar. Su densa atmósfera de CO2 crea un efecto invernadero extremo.', moons: 0, dayLength: '243 días', color: '#f97316' },
+    { name: 'Mercurio', gradient: 'from-gray-600 to-gray-800', size: '4,879 km', desc: 'El planeta más pequeño y cercano al Sol. No tiene atmósfera y sus temperaturas varían entre -180°C y 430°C.', moons: 0, dayLength: '59 días', color: '#9ca3af', has3D: true },
+    { name: 'Venus', gradient: 'from-orange-400 to-yellow-600', size: '12,104 km', desc: 'El planeta más caliente del sistema solar. Su densa atmósfera de CO2 crea un efecto invernadero extremo.', moons: 0, dayLength: '243 días', color: '#f97316', has3D: true },
     { name: 'Tierra', gradient: 'from-cyan-400 to-blue-600', size: '12,756 km', desc: 'Nuestro hogar, el planeta azul. Único planeta conocido con vida y agua líquida en su superficie.', moons: 1, dayLength: '24 horas', color: '#00d4ff', has3D: true },
-    { name: 'Marte', gradient: 'from-red-500 to-red-800', size: '6,792 km', desc: 'El planeta rojo, objetivo de exploración humana. Tiene el volcán más alto del sistema solar: Monte Olimpo.', moons: 2, dayLength: '24.6 horas', color: '#ef4444' },
-    { name: 'Júpiter', gradient: 'from-amber-500 to-orange-700', size: '142,984 km', desc: 'El gigante gaseoso más grande. Su Gran Mancha Roja es una tormenta mayor que la Tierra.', moons: 95, dayLength: '10 horas', color: '#f59e0b' },
-    { name: 'Saturno', gradient: 'from-yellow-400 to-amber-600', size: '120,536 km', desc: 'Famoso por sus anillos espectaculares compuestos de hielo y roca. Es menos denso que el agua.', moons: 146, dayLength: '10.7 horas', color: '#eab308' },
-    { name: 'Urano', gradient: 'from-cyan-300 to-teal-500', size: '51,118 km', desc: 'El gigante de hielo inclinado. Rota de lado con una inclinación de 98 grados.', moons: 27, dayLength: '17 horas', color: '#14b8a6' },
-    { name: 'Neptuno', gradient: 'from-blue-500 to-indigo-700', size: '49,528 km', desc: 'El planeta más lejano del sistema solar. Tiene los vientos más rápidos, hasta 2,100 km/h.', moons: 16, dayLength: '16 horas', color: '#6366f1' },
+    { name: 'Marte', gradient: 'from-red-500 to-red-800', size: '6,792 km', desc: 'El planeta rojo, objetivo de exploración humana. Tiene el volcán más alto del sistema solar: Monte Olimpo.', moons: 2, dayLength: '24.6 horas', color: '#ef4444', has3D: true },
+    { name: 'Júpiter', gradient: 'from-amber-500 to-orange-700', size: '142,984 km', desc: 'El gigante gaseoso más grande. Su Gran Mancha Roja es una tormenta mayor que la Tierra.', moons: 95, dayLength: '10 horas', color: '#f59e0b', has3D: true },
+    { name: 'Saturno', gradient: 'from-yellow-400 to-amber-600', size: '120,536 km', desc: 'Famoso por sus anillos espectaculares compuestos de hielo y roca. Es menos denso que el agua.', moons: 146, dayLength: '10.7 horas', color: '#eab308', has3D: true },
+    { name: 'Urano', gradient: 'from-cyan-300 to-teal-500', size: '51,118 km', desc: 'El gigante de hielo inclinado. Rota de lado con una inclinación de 98 grados.', moons: 27, dayLength: '17 horas', color: '#14b8a6', has3D: true },
+    { name: 'Neptuno', gradient: 'from-blue-500 to-indigo-700', size: '49,528 km', desc: 'El planeta más lejano del sistema solar. Tiene los vientos más rápidos, hasta 2,100 km/h.', moons: 16, dayLength: '16 horas', color: '#6366f1', has3D: true },
   ]
 
   return (
@@ -338,10 +345,10 @@ export default function Models3DPage() {
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-white font-semibold">Modelos 3D Individuales</h3>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={{ background: 'rgba(0,212,255,0.15)', border: '1px solid rgba(0,212,255,0.3)', color: '#00d4ff' }}>
-                🌍 Tierra disponible
+                🪐 8 planetas disponibles
               </span>
             </div>
-            <p className="text-white/40 text-sm mt-1">Clic en la tarjeta de la Tierra para ver su modelo 3D individual. Más planetas próximamente.</p>
+            <p className="text-white/40 text-sm mt-1">Clic en cualquier planeta para ver su modelo 3D oficial de la NASA. Arrastra para rotar, scroll para zoom.</p>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
             <input
@@ -419,7 +426,7 @@ export default function Models3DPage() {
               </div>
             ) : (
               <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-medium text-violet-400" style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}>
-                Próximamente
+                Ver info
               </div>
             )}
             {(planet as any).has3D && (
@@ -618,7 +625,7 @@ export default function Models3DPage() {
                       { label: 'Diámetro', value: selectedPlanet.size },
                       { label: 'Lunas', value: String(selectedPlanet.moons) },
                       { label: 'Duración del día', value: selectedPlanet.dayLength },
-                      { label: 'Estado', value: 'Próximamente' },
+                      { label: 'Modelo 3D', value: 'Disponible' },
                     ].map(stat => (
                       <div key={stat.label} className="rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                         <p className="text-white/30 text-[10px] mb-0.5">{stat.label}</p>
