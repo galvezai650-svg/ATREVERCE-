@@ -76,6 +76,14 @@ export default function HomePage({ userName, onNavigate }: {
       gradient: 'from-yellow-500/30 to-red-500/30',
       color: '#eab308',
     },
+    {
+      id: 'v8',
+      src: '/videos/kepler452b.mp4',
+      title: 'Kepler-452b: el mejor candidato para la nueva Tierra',
+      desc: 'Conoce el exoplaneta Kepler-452b y por qué los científicos lo consideran el mejor candidato para ser una segunda Tierra',
+      gradient: 'from-teal-500/30 to-emerald-500/30',
+      color: '#14b8a6',
+    },
   ]
 
   const spaceFacts = [
@@ -89,7 +97,7 @@ export default function HomePage({ userName, onNavigate }: {
 
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const [playing, setPlaying] = useState<Record<string, boolean>>({})
-  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true, v5: true, v6: true, v7: true })
+  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true, v5: true, v6: true, v7: true, v8: true })
 
   const cycleFact = () => {
     setFactIndex(prev => (prev + 1) % spaceFacts.length)
