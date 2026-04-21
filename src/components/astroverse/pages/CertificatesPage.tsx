@@ -112,6 +112,26 @@ async function handleDownloadPDF(exam: VerifiedExam) {
   }
 }
 
+// ─── Course Descriptions ────────────────────────────────────
+const courseDescriptions: Record<string, string> = {
+  'Introducción a la Astronomía': 'Fundamentos de la astronomía moderna: historia, herramientas y métodos de observación del cielo nocturno.',
+  'El Sistema Solar': 'Exploración completa de nuestro vecindario cósmico: planetas, lunas, asteroides y cometas.',
+  'Estrellas y Galaxias': 'Nacimiento, vida y muerte de las estrellas, estructura y clasificación de galaxias.',
+  'Exploración Espacial': 'Historia de los viajes espaciales: desde el Sputnik hasta las misiones a Marte y más allá.',
+  'Telescopios y Observación': 'Tipos de telescopios, técnicas de observación y astrofotografía.',
+  'Astrofísica Básica': 'Principios físicos que gobiernan el universo: gravedad, luz, relatividad.',
+  'Exoplanetas y Vida Extraterrestre': 'Búsqueda de planetas fuera del sistema solar y condiciones para la vida.',
+  'El Universo Profundo': 'Cosmología moderna: Big Bang, expansión, materia oscura y energía oscura.',
+  'Mecánica Orbital': 'Órbitas planetarias, leyes de Kepler, transferencias orbitales.',
+  'Astronomía de Radio': 'El universo en frecuencias de radio: pulsares, quásares y CMB.',
+  'El Clima Espacial': 'Actividad solar, tormentas geomagnéticas y su impacto en la Tierra.',
+  'Colonización del Espacio': 'Futuro de la humanidad en el espacio: hábitats, terraformación.',
+}
+
+function getCourseDescription(courseName: string): string {
+  return courseDescriptions[courseName] || `Examen de certificación en ${courseName}`
+}
+
 // ─── Certificate Preview Modal ──────────────────────────────
 function CertificateModal({
   exam,
@@ -125,21 +145,6 @@ function CertificateModal({
     month: 'long',
     year: 'numeric',
   })
-
-  const courseDescriptions: Record<string, string> = {
-    'Introducción a la Astronomía': 'Fundamentos de la astronomía moderna: historia, herramientas y métodos de observación del cielo nocturno.',
-    'El Sistema Solar': 'Exploración completa de nuestro vecindario cósmico: planetas, lunas, asteroides y cometas.',
-    'Estrellas y Galaxias': 'Nacimiento, vida y muerte de las estrellas, estructura y clasificación de galaxias.',
-    'Exploración Espacial': 'Historia de los viajes espaciales: desde el Sputnik hasta las misiones a Marte y más allá.',
-    'Telescopios y Observación': 'Tipos de telescopios, técnicas de observación y astrofotografía.',
-    'Astrofísica Básica': 'Principios físicos que gobiernan el universo: gravedad, luz, relatividad.',
-    'Exoplanetas y Vida Extraterrestre': 'Búsqueda de planetas fuera del sistema solar y condiciones para la vida.',
-    'El Universo Profundo': 'Cosmología moderna: Big Bang, expansión, materia oscura y energía oscura.',
-    'Mecánica Orbital': 'Órbitas planetarias, leyes de Kepler, transferencias orbitales.',
-    'Astronomía de Radio': 'El universo en frecuencias de radio: pulsares, quásares y CMB.',
-    'El Clima Espacial': 'Actividad solar, tormentas geomagnéticas y su impacto en la Tierra.',
-    'Colonización del Espacio': 'Futuro de la humanidad en el espacio: hábitats, terraformación.',
-  }
 
   return (
     <AnimatePresence>
@@ -187,7 +192,7 @@ function CertificateModal({
             <CertificateTemplate
               studentName={exam.user.name}
               courseName={exam.courseName}
-              courseDescription={courseDescriptions[exam.courseName] || `Examen de certificación en ${exam.courseName}`}
+              courseDescription={getCourseDescription(exam.courseName)}
               certificateId={exam.verificationCode}
               issueDate={dateFormatted}
               certDbId={exam.id}
@@ -748,6 +753,48 @@ export default function CertificatesPage({
           />
         )}
       </AnimatePresence>
+      {/* ─── Hidden certificate templates for PDF generation ─── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: '0',
+          pointerEvents: 'none',
+          zIndex: -1,
+        }}
+      >
+        {history.map((exam) => (
+          <CertificateTemplate
+            key={`pdf-${exam.id}`}
+            studentName={exam.user.name}
+            courseName={exam.courseName}
+            courseDescription={getCourseDescription(exam.courseName)}
+            certificateId={exam.verificationCode}
+            issueDate={new Date(exam.createdAt).toLocaleDateString('es-ES', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+            certDbId={exam.id}
+          />
+        ))}
+        {verifiedExam && !history.find(h => h.id === verifiedExam.id) && (
+          <CertificateTemplate
+            key={`pdf-current-${verifiedExam.id}`}
+            studentName={verifiedExam.user.name}
+            courseName={verifiedExam.courseName}
+            courseDescription={getCourseDescription(verifiedExam.courseName)}
+            certificateId={verifiedExam.verificationCode}
+            issueDate={new Date(verifiedExam.createdAt).toLocaleDateString('es-ES', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })}
+            certDbId={verifiedExam.id}
+          />
+        )}
+      </div>
     </div>
   )
 }
