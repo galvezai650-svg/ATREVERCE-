@@ -44,6 +44,14 @@ export default function HomePage({ userName, onNavigate }: {
       gradient: 'from-amber-500/30 to-red-500/30',
       color: '#f59e0b',
     },
+    {
+      id: 'v4',
+      src: '/videos/video3.mp4',
+      title: 'Misterios del Universo Profundo',
+      desc: 'Explora los secretos más fascinantes del espacio profundo y la cosmología moderna',
+      gradient: 'from-emerald-500/30 to-cyan-500/30',
+      color: '#10b981',
+    },
   ]
 
   const spaceFacts = [
@@ -57,7 +65,7 @@ export default function HomePage({ userName, onNavigate }: {
 
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const [playing, setPlaying] = useState<Record<string, boolean>>({})
-  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true })
+  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true })
 
   const cycleFact = () => {
     setFactIndex(prev => (prev + 1) % spaceFacts.length)
