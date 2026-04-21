@@ -68,6 +68,14 @@ export default function HomePage({ userName, onNavigate }: {
       gradient: 'from-red-500/30 to-orange-500/30',
       color: '#ef4444',
     },
+    {
+      id: 'v7',
+      src: '/videos/intercambio-sol.mp4',
+      title: '¿Y si intercambiamos nuestro Sol con otros objetos del universo?',
+      desc: 'Descubre qué pasaría si nuestro Sol fuera reemplazado por agujeros negros, estrellas de neutrones y otros objetos cósmicos',
+      gradient: 'from-yellow-500/30 to-red-500/30',
+      color: '#eab308',
+    },
   ]
 
   const spaceFacts = [
@@ -81,7 +89,7 @@ export default function HomePage({ userName, onNavigate }: {
 
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({})
   const [playing, setPlaying] = useState<Record<string, boolean>>({})
-  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true, v5: true, v6: true })
+  const [muted, setMuted] = useState<Record<string, boolean>>({ v1: true, v2: true, v3: true, v4: true, v5: true, v6: true, v7: true })
 
   const cycleFact = () => {
     setFactIndex(prev => (prev + 1) % spaceFacts.length)
